@@ -37,7 +37,6 @@ ${Pond.Tutor.html.playerScared_()}
 
 ${BlocklyGames.html.dialog()}
 ${BlocklyGames.html.doneDialog()}
-${BlocklyGames.html.storageDialog()}
 
 ${Pond.Tutor.html.helpDialogs_(ij.level)}
 `;

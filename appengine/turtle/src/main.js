@@ -24,7 +24,6 @@ goog.require('Blockly.Xml');
 goog.require('Blockly.ZoomControls');
 goog.require('BlocklyCode');
 goog.require('BlocklyDialogs');
-goog.require('BlocklyGallery');
 goog.require('BlocklyGames');
 goog.require('BlocklyInterface');
 goog.require('Slider');
@@ -60,12 +59,6 @@ let interpreter = null;
  * @type boolean
  */
 let visible = true;
-
-/**
- * Is the drawing ready to be submitted to gallery?
- * @type boolean
- */
-let canSubmit = false;
 
 let speedSlider;
 let ctxDisplay;
@@ -124,10 +117,6 @@ function init() {
   Blockly.JavaScript.addReservedWords('moveForward,moveBackward,' +
       'turnRight,turnLeft,penUp,penDown,penWidth,penColour,' +
       'hideTurtle,showTurtle,print,font');
-
-  if (BlocklyGames.getElementById('submitButton')) {
-    BlocklyGames.bindClick('submitButton', submitToGallery);
-  }
 
   // Initialize the slider.
   const sliderSvg = BlocklyGames.getElementById('slider');
@@ -567,9 +556,6 @@ function resetButtonClick(e) {
   BlocklyGames.getElementById('spinner').style.visibility = 'hidden';
   BlocklyInterface.workspace.highlightBlock(null);
   reset();
-
-  // Image cleared; prevent user from submitting to gallery.
-  canSubmit = false;
 }
 
 /**
@@ -701,8 +687,6 @@ function executeChunk_() {
     BlocklyGames.getElementById('spinner').style.visibility = 'hidden';
     BlocklyInterface.workspace.highlightBlock(null);
     checkAnswer();
-    // Image complete; allow the user to submit this image to gallery.
-    canSubmit = true;
   }
 }
 
@@ -853,26 +837,6 @@ function checkAnswer() {
   } else {
     penColour('#ff0000');
   }
-}
-
-/**
- * Send an image of the canvas to gallery.
- */
-function submitToGallery() {
-  if (!canSubmit) {
-    alert(BlocklyGames.getMsg('Turtle.submitDisabled', false));
-    return;
-  }
-  // Encode the thumbnail.
-  const thumbnail = BlocklyGames.getElementById('thumbnail');
-  const ctxThumb = thumbnail.getContext('2d');
-  ctxThumb.globalCompositeOperation = 'copy';
-  ctxThumb.drawImage(ctxDisplay.canvas, 0, 0, 200, 200);
-  const thumbData = thumbnail.toDataURL('image/png');
-  BlocklyGames.getElementById('galleryThumb').value = thumbData;
-
-  // Show the dialog.
-  BlocklyGallery.showGalleryForm();
 }
 
 /**

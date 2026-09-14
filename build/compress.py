@@ -130,7 +130,7 @@ def language(gameName, lang):
 
 
 def generate_uncompressed(gameName):
-  cmd = ['third-party/closurebuilder/closurebuilder.py',
+  cmd = ['python3', 'third-party/closurebuilder/closurebuilder.py',
       '--root=appengine/third-party/',
       '--root=appengine/generated/',
       '--root=appengine/src/',
@@ -199,7 +199,6 @@ def generate_compressed(gameName):
     '--externs', 'externs/interpreter-externs.js',
     '--externs', 'externs/prettify-externs.js',
     '--externs', 'externs/soundJS-externs.js',
-    '--externs', 'externs/storage-externs.js',
     '--externs', 'externs/svg-externs.js',
     #'--language_in', 'STABLE',
     '--language_out', 'ECMASCRIPT5',

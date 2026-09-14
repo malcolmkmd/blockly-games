@@ -18,7 +18,6 @@ goog.require('Blockly.geras.Renderer');
 goog.require('Blockly.ShortcutItems');
 goog.require('Blockly.Xml');
 goog.require('BlocklyGames');
-goog.require('BlocklyStorage');
 
 
 /**
@@ -59,18 +58,6 @@ BlocklyInterface.nextLevelParam = '';
 BlocklyInterface.init = function(title) {
   BlocklyGames.init(title);
 
-  // Disable the link button if page isn't backed by App Engine storage.
-  const linkButton = BlocklyGames.getElementById('linkButton');
-  if (linkButton) {
-    if (!BlocklyGames.IS_HTML) {
-      BlocklyStorage.getCode = BlocklyInterface.getCode;
-      BlocklyStorage.setCode = BlocklyInterface.setCode;
-      BlocklyGames.bindClick(linkButton, BlocklyStorage.link);
-    } else {
-      linkButton.style.display = 'none';
-    }
-  }
-
   const languageMenu = BlocklyGames.getElementById('languageMenu');
   if (languageMenu) {
     languageMenu.addEventListener('change',
@@ -79,18 +66,12 @@ BlocklyInterface.init = function(title) {
 };
 
 /**
- * Load blocks saved on App Engine Storage or in session/local storage.
+ * Load blocks saved in session/local storage.
  * @param {string} defaultXml Text representation of default blocks.
  * @param {boolean|!Function} inherit If true or a function, load blocks from
  *     previous level.  If a function, call it to modify the inherited blocks.
  */
 BlocklyInterface.loadBlocks = function(defaultXml, inherit) {
-  if (!BlocklyGames.IS_HTML && window.location.hash.length > 1) {
-    // An href with #key triggers an AJAX call to retrieve saved blocks.
-    BlocklyStorage.retrieveXml(window.location.hash.substring(1));
-    return;
-  }
-
   // Language switching stores the blocks during the reload.
   let loadOnce;
   try {
@@ -165,18 +146,6 @@ BlocklyInterface.getCode = function() {
 };
 
 /**
- * Monitor the block or JS editor.  If a change is made that changes the code,
- * clear the key from the URL.
- */
-BlocklyInterface.codeChanged = function() {
-  if (BlocklyStorage.startCode !== null &&
-      BlocklyStorage.startCode !== BlocklyInterface.getCode()) {
-    window.location.hash = '';
-    BlocklyStorage.startCode = null;
-  }
-};
-
-/**
  * Inject Blockly workspace into page.
  * @param {!Object} options Dictionary of Blockly options.
  */
@@ -188,7 +157,6 @@ BlocklyInterface.injectBlockly = function(options) {
   options['media'] = 'third-party/blockly/media/';
   options['oneBasedIndex'] = false;
   BlocklyInterface.workspace = Blockly.inject('blockly', options);
-  BlocklyInterface.workspace.addChangeListener(BlocklyInterface.codeChanged);
 };
 
 /**

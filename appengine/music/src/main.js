@@ -21,7 +21,6 @@ goog.require('Blockly.VerticalFlyout');
 goog.require('Blockly.ZoomControls');
 goog.require('BlocklyCode');
 goog.require('BlocklyDialogs');
-goog.require('BlocklyGallery');
 goog.require('BlocklyGames');
 goog.require('BlocklyInterface');
 goog.require('FieldPitch');
@@ -83,12 +82,6 @@ let clock64ths = 0;
 let activeThread = null;
 
 /**
- * Is the composition ready to be submitted to gallery?
- * @type boolean
- */
-let canSubmit = false;
-
-/**
  * Constant denoting a rest.
  */
 const REST = -1;
@@ -141,15 +134,10 @@ function init() {
           'startScale': scale}});
   BlocklyInterface.workspace.addChangeListener(Blockly.Events.disableOrphans);
   BlocklyInterface.workspace.addChangeListener(disableExtraStarts);
-  BlocklyInterface.workspace.addChangeListener(disableSubmit);
   // Prevent collisions with user-defined functions or variables.
   Blockly.JavaScript.addReservedWords('play,rest,setInstrument,' +
       'start0,start1,start2,start3,start4,start5,start6,start7,start8,start9');
   // Only start1-4 are used, but no harm in being safe.
-
-  if (BlocklyGames.getElementById('submitButton')) {
-    BlocklyGames.bindClick('submitButton', submitToGallery);
-  }
 
   // Initialize the slider.
   const sliderSvg = BlocklyGames.getElementById('slider');
@@ -494,16 +482,6 @@ function disableExtraStarts(e) {
 }
 
 /**
- * Don't allow gallery submissions after a code change but before an execution.
- * @param {!Blockly.Events.Abstract} e Change event.
- */
-function disableSubmit(e) {
-  if (!e.isUiEvent) {
-    canSubmit = false;
-  }
-}
-
-/**
  * Reset the music to the start position, clear the display, and kill any
  * pending tasks.
  */
@@ -516,7 +494,6 @@ function reset() {
   threads.length = 0;
   clock64ths = 0;
   startTime = 0;
-  canSubmit = false;
 
   drawAnswer();
 }
@@ -658,8 +635,6 @@ function tick() {
     }
     BlocklyGames.getElementById('spinner').style.visibility = 'hidden';
     BlocklyInterface.workspace.highlightBlock(null);
-    // Playback complete; allow the user to submit this music to gallery.
-    canSubmit = true;
   } else {
     autoScroll();
     clock64ths++;
@@ -1048,36 +1023,6 @@ function checkAnswer() {
 function transform10(xml) {
   // The level 7/8/9 rest block is non-configurable whole-note duration.
   return xml.replace(/"music_rest_whole"/g, '"music_rest"');
-}
-
-/**
- * Send an image of the canvas to gallery.
- */
-function submitToGallery() {
-  const startCount = Music.startCount.get();
-  if (!canSubmit || startCount < 1) {
-    alert(BlocklyGames.getMsg('submitDisabled', false));
-    return;
-  }
-  // Encode the thumbnail.
-  const thumb = 'data:image/png;base64,' + [undefined,
-    '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'
-  ][startCount];
-  const thumbnail = BlocklyGames.getElementById('thumbnail');
-  const ctxThumb = thumbnail.getContext('2d');
-  ctxThumb.globalCompositeOperation = 'copy';
-  const image = new Image();
-  image.onload = function() {
-    ctxThumb.drawImage(image, 0, 0, 200, 200);
-  };
-  image.src = thumb;
-  BlocklyGames.getElementById('galleryThumb').value = thumb;
-
-  // Show the dialog.
-  BlocklyGallery.showGalleryForm();
 }
 
 class Thread {

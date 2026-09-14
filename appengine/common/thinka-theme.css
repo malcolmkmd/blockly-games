@@ -1,47 +1,103 @@
 /**
- * Thinka design tokens.
+ * Thinka design tokens — from live thinka.org.za (hero, parents, blocks, CTA).
  *
- * Offline-first visual system for Thinka.org.za classrooms.
- * No remote fonts or images — colours, radii, and a friendly system stack only.
+ * Offline-first: bundled Fredoka + Nunito, no CDN at runtime.
  *
- * Brand (from thinka.org.za, adapted for long play sessions):
- *   Orange energy  #FF5A1F
- *   Sky / blue     #60A5FA / #3B82F6
- *   Deep navy      #0A1628 / #0D1F3C  (headers and accents, not full-page dark)
- *   Warm cream     #FFF8F1            (workspace surfaces)
- *   Success green  #16A34A            (done / complete)
+ * Core
+ *   Orange CTAs / glow     #FF4500 / #FF5A1F
+ *   Page                   #030A03
+ *   Surfaces (nav, cards)  #0A140A
+ *   Panels / footer        #121F12
+ *   Text on dark           #F8FAFC / #FFFFFF
+ *   Muted meta             #94A3B8
+ *   Navy secondary         #031666
+ *
+ * Playful accents (hub tiles / block pops)
+ *   Yellow #FACC15  Blue #60A5FA  Green #4ADE80
+ *   Purple #C084FC  Pink #F472B6
  */
+@font-face {
+  font-family: "Thinka Fredoka";
+  src: url("fonts/fredoka-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Thinka Fredoka";
+  src: url("fonts/fredoka-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Thinka Nunito";
+  src: url("fonts/nunito-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Thinka Nunito";
+  src: url("fonts/nunito-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --thinka-orange: #FF5A1F;
-  --thinka-orange-deep: #E04E18;
-  --thinka-orange-soft: #FFE4D6;
+  --thinka-orange: #FF4500;
+  --thinka-orange-hot: #FF5A1F;
+  --thinka-orange-deep: #E03A00;
+  --thinka-orange-soft: rgba(255, 69, 0, 0.18);
+  --thinka-page: #030A03;
+  --thinka-surface: #0A140A;
+  --thinka-panel: #121F12;
+  --thinka-text: #F8FAFC;
+  --thinka-text-strong: #FFFFFF;
+  --thinka-muted: #94A3B8;
+  --thinka-navy-accent: #031666;
+  --thinka-yellow: #FACC15;
   --thinka-sky: #60A5FA;
-  --thinka-blue: #3B82F6;
-  --thinka-blue-deep: #2563EB;
-  --thinka-blue-soft: #DBEAFE;
-  --thinka-navy: #0A1628;
-  --thinka-navy-mid: #0D1F3C;
-  --thinka-navy-soft: #1E3A5F;
-  --thinka-cream: #FFF8F1;
-  --thinka-cream-warm: #FFF1E6;
-  --thinka-paper: #FFFFFF;
-  --thinka-ink: #1A2332;
-  --thinka-muted: #4B5C6B;
+  --thinka-mint: #4ADE80;
+  --thinka-purple: #C084FC;
+  --thinka-pink: #F472B6;
+  --thinka-error: #F87171;
+
+  /* Workspace (in-game) — stay light so Blockly canvases stay readable. */
+  --thinka-workspace: #F8FAFC;
+  --thinka-ink: #030A03;
   --thinka-line: #D7DEE7;
-  --thinka-success: #16A34A;
-  --thinka-success-deep: #15803D;
-  --thinka-success-soft: #DCFCE7;
-  --thinka-locked-bg: #E8EEF4;
-  --thinka-locked-ink: #334155;
-  --thinka-error: #B91C1C;
-  --thinka-radius: 18px;
-  --thinka-radius-sm: 12px;
+  --thinka-paper: #FFFFFF;
+
+  /* Aliases used by game CSS written in the first theme pass. */
+  --thinka-navy: var(--thinka-page);
+  --thinka-navy-mid: var(--thinka-surface);
+  --thinka-navy-soft: var(--thinka-panel);
+  --thinka-cream: var(--thinka-workspace);
+  --thinka-cream-warm: #EEF2F0;
+  --thinka-blue: var(--thinka-navy-accent);
+  --thinka-blue-deep: #02124d;
+  --thinka-blue-soft: #DBEAFE;
+  --thinka-success: var(--thinka-mint);
+  --thinka-success-deep: #22C55E;
+  --thinka-success-soft: rgba(74, 222, 128, 0.18);
+  --thinka-locked-bg: #1A2A1A;
+  --thinka-locked-ink: #E2E8F0;
+
+  --thinka-radius: 22px;
+  --thinka-radius-sm: 14px;
   --thinka-radius-pill: 999px;
-  --thinka-shadow: 0 10px 28px rgba(10, 22, 40, 0.12);
-  --thinka-shadow-hover: 0 14px 32px rgba(255, 90, 31, 0.2);
-  --thinka-font: system-ui, "Segoe UI", Ubuntu, "Avenir Next", "Trebuchet MS",
-      "Century Gothic", sans-serif;
+  --thinka-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  --thinka-shadow-hover: 0 0 28px rgba(255, 69, 0, 0.42);
+  --thinka-display: "Thinka Fredoka", "Gill Sans", "Trebuchet MS",
+      "Segoe UI", ui-rounded, sans-serif;
+  --thinka-font: "Thinka Nunito", "Segoe UI", Ubuntu, "Avenir Next",
+      "Trebuchet MS", sans-serif;
   --thinka-mono: "Cascadia Code", "Segoe UI Mono", "Ubuntu Mono", ui-monospace,
       monospace;
-  --thinka-focus: 0 0 0 3px var(--thinka-paper), 0 0 0 6px var(--thinka-orange);
+  --thinka-focus: 0 0 0 3px var(--thinka-page), 0 0 0 6px var(--thinka-orange);
 }

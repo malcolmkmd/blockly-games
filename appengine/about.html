@@ -8,27 +8,33 @@
   <style>
 body {
   margin: 0;
+  background: var(--thinka-page);
+  color: var(--thinka-text);
+  color-scheme: dark;
 }
 .thinka-about-hero {
-  background: linear-gradient(160deg, var(--thinka-navy) 0%, var(--thinka-navy-mid) 100%);
-  color: var(--thinka-paper);
+  background:
+    radial-gradient(circle at 90% 0%, rgba(255, 69, 0, 0.18), transparent 40%),
+    var(--thinka-page);
+  color: var(--thinka-text);
   padding: 2.2em 10% 2em;
-  border-bottom: 4px solid var(--thinka-orange);
+  border-bottom: 3px solid var(--thinka-orange);
 }
 .thinka-about-hero h1 {
   margin: 0 0 0.35em;
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
-  font-weight: 800;
+  font-family: var(--thinka-display);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
 }
 .thinka-about-hero h1 a {
-  color: var(--thinka-paper);
+  color: var(--thinka-text-strong);
 }
 .thinka-about-hero h1 a:hover {
-  color: #FFD4C2;
+  color: var(--thinka-orange-hot);
 }
 .thinka-about-hero p {
   margin: 0;
-  color: #D6E4FF;
+  color: var(--thinka-muted);
   max-width: 40em;
   font-size: 1.1rem;
 }
@@ -47,9 +53,9 @@ section {
   display: flex;
   align-items: center;
   gap: 1em;
-  background: var(--thinka-paper);
-  border: 2px solid var(--thinka-line);
-  border-radius: 18px;
+  background: var(--thinka-surface);
+  border: 1px solid rgba(248, 250, 252, 0.06);
+  border-radius: 22px;
   padding: 0.85em 1.1em;
   box-shadow: var(--thinka-shadow);
 }
@@ -58,26 +64,30 @@ section {
   width: 88px;
   height: 88px;
   border-radius: 16px;
-  background: var(--thinka-cream-warm);
+  background: var(--thinka-panel);
+}
+.thinka-about-item p {
+  margin: 0;
+  color: var(--thinka-text);
 }
 footer {
-  background: var(--thinka-navy);
-  color: #D6E4FF;
+  background: var(--thinka-panel);
+  color: var(--thinka-muted);
   font-size: 14px;
   padding: 28px 10% 24px;
 }
 footer a {
-  color: #FFD4C2;
+  color: var(--thinka-orange-hot);
   text-decoration: none;
 }
 footer a:hover {
-  color: var(--thinka-paper);
+  color: var(--thinka-text-strong);
 }
   </style>
 </head>
 <body>
 <header class="thinka-about-hero">
-  <h1><a id="back" href="index.html">Thinka Games</a> · About</h1>
+  <h1><a id="back" href="index.html">thinka.</a> About</h1>
   <p>An after-school coding club for South African kids — learn to code, build, and think like engineers. No experience needed.</p>
 </header>
 

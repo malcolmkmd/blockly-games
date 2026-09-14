@@ -6,7 +6,7 @@ This product is **offline-first**. After a build, the games run from a local fol
 
 The shared teacher password (default `thinka`, set in `appengine/src/thinka.config.js`) unlocks sequential level locks. Progress and unlocks stay in the browser’s `localStorage`.
 
-The UI uses a **Thinka visual theme** (orange / sky blue / navy / warm cream). Tokens live in `appengine/common/thinka-theme.css` and are imported by `common.css`. CSS is served as static files — you do not need `make games` after a colour-only change. Rebuild with `make games` after JavaScript or HTML-template (`appengine/**/src/*.js`) changes.
+The UI uses the **Thinka.org.za** visual system: green-black surfaces (`#030A03`), orange glow CTAs (`#FF4500`), and playful tile accents. The hub follows the marketing look; in-game Blockly workspaces stay light so canvases stay readable. Tokens live in `appengine/common/thinka-theme.css`. Fredoka and Nunito are bundled under `appengine/common/fonts/` (no CDN). CSS is static — rebuild with `make games` after JavaScript or HTML-template (`appengine/**/src/*.js`) changes.
 
 ## Requirements (build machine only)
 

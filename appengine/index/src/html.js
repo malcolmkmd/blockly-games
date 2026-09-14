@@ -24,20 +24,19 @@ Index.html.start = function(ij) {
   return `
 <div class="thinka-page">
   <header class="thinka-hero">
-    <select id="languageMenu"></select>
+    <div class="thinka-nav">
+      <a class="thinka-logo" href="index${ij.html ? '.html' : ''}?lang=${ij.lang}">thinka<span class="thinka-logo-dot">.</span></a>
+      <select id="languageMenu"></select>
+    </div>
     <div class="thinka-hero-inner">
-      <div class="thinka-brand">
-        <span class="thinka-brand-mark" aria-hidden="true">
-          <span class="thinka-brand-block thinka-brand-block--orange"></span>
-          <span class="thinka-brand-block thinka-brand-block--blue"></span>
-        </span>
-        <h1 class="thinka-brand-title">
-          <span class="thinka-brand-name">Thinka</span>
-          <span class="thinka-brand-games">Games</span>
-        </h1>
-      </div>
-      <p id="subtitle" class="thinka-hero-sub">${BlocklyGames.getMsg('Index.subTitle', true)}</p>
+      <h1 id="subtitle" class="thinka-hero-title">Code. Build. <em>Innovate.</em></h1>
+      <p class="thinka-hero-sub">Colourful block coding for the classroom — offline, no experience needed.</p>
       <a class="thinka-hero-about" href="about${ij.html ? '.html' : ''}?lang=${ij.lang}">${BlocklyGames.getMsg('Index.moreInfo', true)}</a>
+      <div class="thinka-hero-chips">
+        <span>Grade R–9</span>
+        <span>Offline classroom</span>
+        <span>Teacher unlock</span>
+      </div>
     </div>
   </header>
   <main class="thinka-grid" id="thinkaGames">

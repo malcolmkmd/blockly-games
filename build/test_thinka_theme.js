@@ -40,12 +40,19 @@ function walkCss(dir, acc) {
 
 test('thinka theme tokens exist', () => {
   const css = read('appengine/common/thinka-theme.css');
-  assert.match(css, /--thinka-orange:\s*#FF5A1F/i);
+  assert.match(css, /--thinka-orange:\s*#FF4500/i);
+  assert.match(css, /--thinka-orange-hot:\s*#FF5A1F/i);
+  assert.match(css, /--thinka-page:\s*#030A03/i);
+  assert.match(css, /--thinka-surface:\s*#0A140A/i);
+  assert.match(css, /--thinka-panel:\s*#121F12/i);
+  assert.match(css, /--thinka-navy-accent:\s*#031666/i);
+  assert.match(css, /--thinka-yellow:\s*#FACC15/i);
   assert.match(css, /--thinka-sky:\s*#60A5FA/i);
-  assert.match(css, /--thinka-blue:\s*#3B82F6/i);
-  assert.match(css, /--thinka-navy:\s*#0A1628/i);
-  assert.match(css, /--thinka-cream:\s*#FFF8F1/i);
-  assert.match(css, /--thinka-success:\s*#16A34A/i);
+  assert.match(css, /--thinka-mint:\s*#4ADE80/i);
+  assert.match(css, /--thinka-purple:\s*#C084FC/i);
+  assert.match(css, /--thinka-pink:\s*#F472B6/i);
+  assert.match(css, /Thinka Fredoka/);
+  assert.match(css, /fonts\/fredoka-700\.woff2/);
   assert.doesNotMatch(css, /fonts\.googleapis/);
 });
 
@@ -54,15 +61,23 @@ test('common.css imports tokens and drops Google red', () => {
   assert.match(css, /@import url\("thinka-theme\.css"\)/);
   assert.match(css, /button\.primary/);
   assert.match(css, /var\(--thinka-orange\)/);
-  assert.match(css, /var\(--thinka-blue\)/);
+  assert.match(css, /var\(--thinka-navy-accent\)/);
   assert.doesNotMatch(css, /#dd4b39/i);
   assert.doesNotMatch(css, /#4d90fe/i);
+});
+
+test('bundled fonts ship next to the theme', () => {
+  const dir = path.join(ROOT, 'appengine', 'common', 'fonts');
+  for (const name of ['fredoka-600.woff2', 'fredoka-700.woff2',
+                     'nunito-400.woff2', 'nunito-700.woff2']) {
+    assert.strictEqual(fs.existsSync(path.join(dir, name)), true, name);
+  }
 });
 
 test('hub markup is card-based and Thinka-named', () => {
   const html = read('appengine/index/src/html.js');
   assert.match(html, /thinka-card/);
-  assert.match(html, /Thinka/);
+  assert.match(html, /thinka/);
   assert.doesNotMatch(html, /title\.svg/);
   const index = read('appengine/index.html');
   assert.match(index, /Thinka Games/);

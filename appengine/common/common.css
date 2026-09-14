@@ -40,6 +40,27 @@ html[dir="RTL"] .farSide {
   background-color: #ddd;
   color: #000;
 }
+.level_locked {
+  opacity: 0.4;
+  cursor: pointer;
+}
+a.level_locked:hover,
+span.level_locked:hover {
+  background-color: #eee;
+  color: #666;
+  opacity: 0.7;
+}
+#teacherUnlockPassword {
+  font-size: large;
+  padding: 6px;
+  margin-left: 0.5em;
+  width: 12em;
+}
+#teacherUnlockError {
+  color: #c00;
+  min-height: 1.4em;
+  margin-top: 0.5em;
+}
 #containerCode {
   direction: ltr;
   background-color: #eee;

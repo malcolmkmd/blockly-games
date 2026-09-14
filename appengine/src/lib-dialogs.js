@@ -18,6 +18,7 @@ goog.require('Blockly.utils');
 goog.require('Blockly.utils.style');
 goog.require('BlocklyGames');
 goog.require('BlocklyInterface');
+goog.require('ThinkaConfig');
 
 
 /**
@@ -76,6 +77,11 @@ BlocklyDialogs.showDialog = function(content, origin, animate, modal, style,
                                      disposeFunc) {
   if (!content) {
     throw TypeError('Content not found: ' + content);
+  }
+  // Do not let help / abort / storage dialogs replace the password prompt.
+  if (BlocklyGames.awaitingTeacherUnlock &&
+      content.id !== 'dialogTeacherUnlock') {
+    return;
   }
   const buttons = content.getElementsByClassName('addHideHandler');
   var button;
@@ -428,6 +434,91 @@ BlocklyDialogs.abortKeyDown_ = function(e) {
   if (e.keyCode === 13 || e.keyCode === 32) {
     BlocklyInterface.indexPage();
   }
+};
+
+/**
+ * Prompt for the shared teacher password to unlock one locked level.
+ * Quoted name so lib-games.js can call it after ADVANCED compilation.
+ * @param {number} level Target level.
+ * @param {Element} origin Animation origin, or null.
+ * @param {function(boolean)} callback Called with true if unlocked.
+ */
+BlocklyDialogs['teacherUnlock'] = function(level, origin, callback) {
+  const content = BlocklyGames.getElementById('dialogTeacherUnlock');
+  const form = BlocklyGames.getElementById('teacherUnlockForm');
+  const input = BlocklyGames.getElementById('teacherUnlockPassword');
+  const error = BlocklyGames.getElementById('teacherUnlockError');
+  const cancel = BlocklyGames.getElementById('teacherUnlockCancel');
+  if (!content || !form || !input || !error || !cancel) {
+    callback(false);
+    return;
+  }
+
+  BlocklyGames.awaitingTeacherUnlock = true;
+  let unlocked = false;
+  let finished = false;
+
+  const finish = function(ok) {
+    if (finished) {
+      return;
+    }
+    finished = true;
+    BlocklyGames.awaitingTeacherUnlock = false;
+    form.onsubmit = null;
+    cancel.onclick = null;
+    input.oninput = null;
+    document.body.removeEventListener('keydown', onKey, true);
+    callback(ok);
+  };
+
+  const onKey = function(e) {
+    if (!BlocklyDialogs.isDialogVisible_) {
+      return;
+    }
+    if (e.keyCode === 27) {
+      BlocklyDialogs.hideDialog(true);
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
+
+  input.value = '';
+  error.textContent = '';
+
+  form.onsubmit = function(e) {
+    e.preventDefault();
+    if (ThinkaConfig.checkPassword(input.value)) {
+      BlocklyGames.saveTeacherUnlock(BlocklyGames.storageName, level);
+      unlocked = true;
+      BlocklyDialogs.hideDialog(true);
+      return;
+    }
+    error.textContent = 'That password is not correct. Try again.';
+    input.value = '';
+    input.focus();
+  };
+
+  cancel.onclick = function(e) {
+    e.preventDefault();
+    BlocklyDialogs.hideDialog(true);
+  };
+
+  input.oninput = function() {
+    error.textContent = '';
+  };
+
+  const style = {
+    width: '40%',
+    left: '30%',
+    top: '4em',
+  };
+  BlocklyDialogs.showDialog(content, origin, !!origin, true, style, function() {
+    finish(unlocked);
+  });
+  document.body.addEventListener('keydown', onKey, true);
+  setTimeout(function() {
+    input.focus();
+  }, 200);
 };
 
 // Export symbols that would otherwise be renamed by Closure compiler.

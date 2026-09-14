@@ -13,6 +13,7 @@
 goog.provide('BlocklyGames');
 
 goog.require('Blockly.Msg');
+goog.require('ThinkaConfig');
 
 
 /**
@@ -280,6 +281,9 @@ BlocklyGames.init = function(title) {
     }
   }
 
+  // Sequential locks + teacher password (no-op on pages without level links).
+  BlocklyGames.initLevelLocks_();
+
   // Fixes viewport for small screens.
   const viewport = document.querySelector('meta[name="viewport"]');
   if (viewport && screen.availWidth < 725) {
@@ -350,6 +354,206 @@ BlocklyGames.loadFromLocalStorage = function(name, level) {
     // Restarting Firefox fixes this, so it looks like a bug.
   }
   return xml;
+};
+
+/**
+ * True if a teacher already unlocked this level on this browser.
+ * @param {string} name Game storage name (maze, bird, ...).
+ * @param {number} level Level number.
+ * @returns {boolean} True if unlocked via the teacher password.
+ */
+BlocklyGames.hasTeacherUnlock = function(name, level) {
+  try {
+    return !!(window.localStorage &&
+        window.localStorage[ThinkaConfig.unlockKey(name, level)]);
+  } catch (e) {
+    return false;
+  }
+};
+
+/**
+ * Persist a teacher unlock so the level stays playable on this browser.
+ * Uses localStorage next to normal progress keys (see ThinkaConfig.unlockKey).
+ * @param {string} name Game storage name (maze, bird, ...).
+ * @param {number} level Level number.
+ */
+BlocklyGames.saveTeacherUnlock = function(name, level) {
+  if (!window.localStorage) {
+    return;
+  }
+  try {
+    window.localStorage[ThinkaConfig.unlockKey(name, level)] = '1';
+  } catch (e) {
+    // Ignore quota / SecurityError; the level is still playable this visit.
+  }
+};
+
+/**
+ * True if this level can be played without a new password prompt.
+ * @param {string} name Game storage name (maze, bird, ...).
+ * @param {number} level Level number.
+ * @returns {boolean} True if playable.
+ */
+BlocklyGames.isLevelPlayable = function(name, level) {
+  return ThinkaConfig.isLevelPlayable(
+      level,
+      function(lvl) {
+        return !!BlocklyGames.loadFromLocalStorage(name, lvl);
+      },
+      function(lvl) {
+        return BlocklyGames.hasTeacherUnlock(name, lvl);
+      });
+};
+
+/**
+ * Highest currently playable level (progress or teacher unlock).
+ * Used when canceling a locked-URL visit so the student is not left on
+ * a locked level.
+ * @param {string} name Game storage name (maze, bird, ...).
+ * @param {number} maxLevel Last level number.
+ * @returns {number} A playable level (at least 1).
+ */
+BlocklyGames.getHighestPlayableLevel = function(name, maxLevel) {
+  let highest = 1;
+  for (let i = 2; i <= maxLevel; i++) {
+    if (BlocklyGames.isLevelPlayable(name, i)) {
+      highest = i;
+    }
+  }
+  return highest;
+};
+
+/**
+ * Extra query params to keep when bouncing off a locked URL (e.g. Maze skin).
+ * @returns {string} Suffix starting with '&', or ''.
+ * @private
+ */
+BlocklyGames.levelUrlSuffix_ = function() {
+  const search = window.location.search.substring(1);
+  if (!search) {
+    return '';
+  }
+  let suffix = '';
+  for (const part of search.split('&')) {
+    if (!part || part.indexOf('lang=') === 0 || part.indexOf('level=') === 0) {
+      continue;
+    }
+    suffix += '&' + part;
+  }
+  return suffix;
+};
+
+/**
+ * True while a locked level is waiting on the teacher password.
+ * Other dialogs (help, abort) must not steal the password prompt.
+ * @type {boolean}
+ */
+BlocklyGames.awaitingTeacherUnlock = false;
+
+/**
+ * Style locked level dots and intercept clicks / direct URLs.
+ * @private
+ */
+BlocklyGames.initLevelLocks_ = function() {
+  if (!BlocklyGames.storageName) {
+    return;
+  }
+  if (!BlocklyGames.getElementById('level1')) {
+    return;
+  }
+
+  for (let i = 1; i <= BlocklyGames.MAX_LEVEL; i++) {
+    const link = BlocklyGames.getElementById('level' + i);
+    if (!link) {
+      continue;
+    }
+    if (BlocklyGames.isLevelPlayable(BlocklyGames.storageName, i)) {
+      continue;
+    }
+    link.classList.add('level_locked');
+    link.classList.remove('level_done');
+    if (link.tagName === 'A') {
+      link.addEventListener('click', BlocklyGames.handleLockedLevelClick_, true);
+      link.addEventListener('touchend', BlocklyGames.handleLockedLevelClick_,
+          true);
+    }
+  }
+
+  if (!BlocklyGames.isLevelPlayable(BlocklyGames.storageName,
+      BlocklyGames.LEVEL)) {
+    BlocklyGames.promptTeacherUnlock_(BlocklyGames.LEVEL, null, function(ok) {
+      if (ok) {
+        const current = BlocklyGames.getElementById('level' + BlocklyGames.LEVEL);
+        if (current) {
+          current.classList.remove('level_locked');
+        }
+        return;
+      }
+      const fallback = BlocklyGames.getHighestPlayableLevel(
+          BlocklyGames.storageName, BlocklyGames.MAX_LEVEL);
+      location = location.protocol + '//' + location.host + location.pathname +
+          '?lang=' + BlocklyGames.LANG + '&level=' + fallback +
+          BlocklyGames.levelUrlSuffix_();
+    });
+  }
+};
+
+/**
+ * Click/touch on a locked level dot: prompt instead of navigating.
+ * @param {!Event} e Click or touch event.
+ * @private
+ */
+BlocklyGames.handleLockedLevelClick_ = function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const link = e.currentTarget;
+  const match = link && link.id && link.id.match(/^level(\d+)$/);
+  if (!match) {
+    return;
+  }
+  const level = Number(match[1]);
+  // Re-check: the student may have just finished the previous level.
+  if (BlocklyGames.isLevelPlayable(BlocklyGames.storageName, level)) {
+    if (link.href) {
+      window.location = link.href;
+    }
+    return;
+  }
+  BlocklyGames.promptTeacherUnlock_(level, link, function(ok) {
+    if (ok && link.href) {
+      window.location = link.href;
+    }
+  });
+};
+
+/**
+ * Show the teacher-password dialog (or window.prompt as a fallback).
+ * @param {number} level Target level.
+ * @param {Element} origin Animation origin, or null.
+ * @param {function(boolean)} callback Called with true if unlocked.
+ * @private
+ */
+BlocklyGames.promptTeacherUnlock_ = function(level, origin, callback) {
+  const dialogs = window['BlocklyDialogs'];
+  if (dialogs && typeof dialogs['teacherUnlock'] === 'function' &&
+      BlocklyGames.getElementById('dialogTeacherUnlock')) {
+    dialogs['teacherUnlock'](level, origin, callback);
+    return;
+  }
+  // Fallback when dialog helpers are not in this page's build.
+  const entered = window.prompt(
+      'This level is locked. Enter the teacher password to play it.');
+  if (entered === null) {
+    callback(false);
+    return;
+  }
+  if (ThinkaConfig.checkPassword(entered)) {
+    BlocklyGames.saveTeacherUnlock(BlocklyGames.storageName, level);
+    callback(true);
+  } else {
+    alert('That password is not correct. Try again.');
+    BlocklyGames.promptTeacherUnlock_(level, origin, callback);
+  }
 };
 
 /**

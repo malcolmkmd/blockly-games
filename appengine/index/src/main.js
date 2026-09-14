@@ -14,6 +14,7 @@ goog.provide('Index');
 
 goog.require('BlocklyGames');
 goog.require('Index.html');
+goog.require('ThinkaConfig');
 
 /**
  * Array of application names.
@@ -124,6 +125,7 @@ function clearData() {
   for (let i = 0; i < APPS.length; i++) {
     for (let j = 1; j <= BlocklyGames.MAX_LEVEL; j++) {
       delete window.localStorage[APPS[i] + j];
+      delete window.localStorage[ThinkaConfig.unlockKey(APPS[i], j)];
     }
   }
   location.reload();

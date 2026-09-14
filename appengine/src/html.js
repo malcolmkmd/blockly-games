@@ -117,6 +117,30 @@ BlocklyGames.html.dialog = function() {
 <div id="dialogShadow" class="dialogAnimate"></div>
 <div id="dialogBorder"></div>
 <div id="dialog"></div>
+${BlocklyGames.html.teacherUnlockDialog_()}
+`;
+};
+
+/**
+ * Teacher password prompt for a locked level.
+ * @returns {string} HTML.
+ * @private
+ */
+BlocklyGames.html.teacherUnlockDialog_ = function() {
+  return `
+<div id="dialogTeacherUnlock" class="dialogHiddenContent">
+  <div id="teacherUnlockTitle" style="font-size: large; margin: 1em;">This level is locked</div>
+  <div style="margin: 1em;">Ask a teacher to type the password to play it.</div>
+  <form id="teacherUnlockForm" style="margin: 1em;">
+    <label for="teacherUnlockPassword">Password:</label>
+    <input type="password" id="teacherUnlockPassword" autocomplete="off" spellcheck="false">
+    <div id="teacherUnlockError"></div>
+    <div class="farSide" style="padding: 1ex 0 0">
+      <button type="button" id="teacherUnlockCancel">${BlocklyGames.esc(Blockly.Msg['DIALOG_CANCEL'])}</button>
+      <button type="submit" class="secondary" id="teacherUnlockOk">${BlocklyGames.esc(Blockly.Msg['DIALOG_OK'])}</button>
+    </div>
+  </form>
+</div>
 `;
 };
 

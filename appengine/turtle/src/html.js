@@ -70,64 +70,14 @@ ${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.turtle', true), '',
   </tr>
 </table>
 
-${(ij.level === 10 && !ij.html) ? Turtle.html.gallery_(ij.lang) : ''}
-
 ${Turtle.html.toolbox_(ij.level)}
 <div id="blockly"></div>
 
 ${BlocklyGames.html.dialog()}
 ${BlocklyGames.html.doneDialog()}
 ${BlocklyGames.html.abortDialog()}
-${BlocklyGames.html.storageDialog()}
 
-${Turtle.html.helpDialogs_(ij.level, ij.html)}
-`;
-};
-
-/**
- * Gallery view button and submission form.
- * @param {string} lang ISO language code.
- * @returns {string} HTML.
- * @private
- */
-Turtle.html.gallery_ = function(lang) {
-  return `
-<table style="padding-top: 1em; width: 400px;">
-  <tr>
-    <td style="text-align: center;">
-      <form action="/gallery" target="turtle-gallery">
-        <input type="hidden" name="app" value="turtle">
-        <input type="hidden" name="lang" value="${lang}">
-        <button type="submit" title="${BlocklyGames.getMsg('Turtle.galleryTooltip', true)}">
-          <img src="common/1x1.gif" class="gallery icon21"> ${BlocklyGames.getMsg('Turtle.galleryMsg', true)}
-        </button>
-      </form>
-    </td>
-    <td style="text-align: center;">
-      <button id="submitButton" title="${BlocklyGames.getMsg('Turtle.submitTooltip', true)}">
-        <img src="common/1x1.gif" class="camera icon21"> ${BlocklyGames.getMsg('Turtle.submitMsg', true)}
-      </button>
-    </td>
-  </tr>
-</table>
-<div id="galleryDialog" class="dialogHiddenContent">
-    <form id="galleryForm" action="/gallery-api/submit" method="post" onsubmit="return false">
-    <header>${BlocklyGames.getMsg('Turtle.submitTooltip', true)}</header>
-    <canvas id="thumbnail" width=200 height=200></canvas>
-    <input type="hidden" name="app" value="turtle">
-    <input id="galleryThumb" type="hidden" name="thumb">
-    <input id="galleryXml" type="hidden" name="xml">
-    <div>
-      ${BlocklyGames.getMsg('Games.submitTitle', true)}
-      <input id="galleryTitle" type="text" name="title" required>
-    </div>
-
-    <div class="farSide">
-      <button class="addHideHandler" type="button">${BlocklyGames.esc(Blockly.Msg['DIALOG_CANCEL'])}</button>
-      <button id="galleryOk" class="secondary" type="submit">${BlocklyGames.esc(Blockly.Msg['DIALOG_OK'])}</button>
-    </div>
-  </form>
-</div>
+${Turtle.html.helpDialogs_(ij.level)}
 `;
 };
 
@@ -417,11 +367,10 @@ ${colourCat}
 /**
  * Help dialogs for each level.
  * @param {number} level Level 1-10.
- * @param {boolean} isHtml True if served as raw HTML files.
  * @returns {string} HTML.
  * @private
  */
-Turtle.html.helpDialogs_ = function(level, isHtml) {
+Turtle.html.helpDialogs_ = function(level) {
   let content = '';
   switch (level) {
     case 1:
@@ -458,10 +407,6 @@ Turtle.html.helpDialogs_ = function(level, isHtml) {
       break;
     case 10:
       content = BlocklyGames.getMsg('Turtle.helpText10', true);
-      if (!isHtml) {
-        content += '<br><br>' +
-            BlocklyGames.getMsg('Turtle.helpText10Reddit', true);
-      }
       break;
   }
 

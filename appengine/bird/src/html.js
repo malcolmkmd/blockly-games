@@ -51,7 +51,6 @@ ${Bird.html.toolbox_(ij.level)}
 ${BlocklyGames.html.dialog()}
 ${BlocklyGames.html.doneDialog()}
 ${BlocklyGames.html.abortDialog()}
-${BlocklyGames.html.storageDialog()}
 
 ${Bird.html.helpDialogs_()}
 `;

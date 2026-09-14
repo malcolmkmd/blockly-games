@@ -78,7 +78,7 @@ BlocklyDialogs.showDialog = function(content, origin, animate, modal, style,
   if (!content) {
     throw TypeError('Content not found: ' + content);
   }
-  // Do not let help / abort / storage dialogs replace the password prompt.
+  // Do not let help / abort dialogs replace the password prompt.
   if (BlocklyGames.awaitingTeacherUnlock &&
       content.id !== 'dialogTeacherUnlock') {
     return;
@@ -330,32 +330,6 @@ BlocklyDialogs.getBBox = function(element) {
     box.width = element.offsetWidth;
   }
   return box;
-};
-
-/**
- * Display a storage-related modal dialog.
- * @param {?Element} origin Source of dialog opening animation.
- * @param {string} message Text to alert.
- */
-BlocklyDialogs.storageAlert = function(origin, message) {
-  const container = BlocklyGames.getElementById('containerStorage');
-  container.textContent = '';
-  const lines = message.split('\n');
-  for (const line of lines) {
-    const p = document.createElement('p');
-    p.appendChild(document.createTextNode(line));
-    container.appendChild(p);
-  }
-
-  const content = BlocklyGames.getElementById('dialogStorage');
-  const style = {
-    width: '50%',
-    left: '25%',
-    top: '5em',
-  };
-  BlocklyDialogs.showDialog(content, origin, true, true, style,
-      BlocklyDialogs.stopDialogKeyDown);
-  BlocklyDialogs.startDialogKeyDown();
 };
 
 /**

@@ -2,7 +2,9 @@
 # Definitions
 ##############################
 
-REQUIRED_BINS = svn wget java python
+# appengine/ is the static web root (legacy folder name from Blockly Games).
+# There is no App Engine backend. Runtime is offline-first HTML/JS/CSS.
+REQUIRED_BINS = svn wget java python3
 
 ##############################
 # Rules
@@ -11,43 +13,44 @@ REQUIRED_BINS = svn wget java python
 all: deps games
 
 index: common
-	python build/compress.py index
+	python3 build/compress.py index
 
 puzzle: common
-	python build/compress.py puzzle
+	python3 build/compress.py puzzle
 
 maze: common
-	python build/compress.py maze
+	python3 build/compress.py maze
 
 bird: common
-	python build/compress.py bird
+	python3 build/compress.py bird
 
 turtle: common
-	python build/compress.py turtle
+	python3 build/compress.py turtle
 
 movie: common
-	python build/compress.py movie
+	python3 build/compress.py movie
 
 music: common
-	python build/compress.py music
+	python3 build/compress.py music
 
 pond-tutor: common
-	python build/compress.py pond/tutor
+	python3 build/compress.py pond/tutor
 
 pond-duck: common
-	python build/compress.py pond/duck
+	python3 build/compress.py pond/duck
 
-gallery: common
-	python build/compress.py gallery
-
-games: index puzzle maze bird turtle movie music pond-tutor pond-duck gallery
+games: index puzzle maze bird turtle movie music pond-tutor pond-duck
 
 common:
 	@echo "Converting messages.js to JSON for Translatewiki."
-	python build/messages_to_json.py
+	python3 build/messages_to_json.py
 	@echo "Converting JSON from Translatewiki to message files."
-	python build/json_to_js.py
+	python3 build/json_to_js.py
 	@echo
+
+test:
+	node build/test_teacher_unlock.js
+	node build/test_offline_first.js
 
 deps:
 	$(foreach bin,$(REQUIRED_BINS),\
@@ -76,6 +79,8 @@ deps:
 	  --js appengine/third-party/JS-Interpreter/interpreter.js\
 	  --js_output_file appengine/third-party/JS-Interpreter/compressed.js
 
+# Package a trimmed static tree that runs from a folder or ZIP with no backend.
+# Requires a prior `make games` so compressed.js bundles exist.
 offline: clean-offline
 	mkdir offline
 	cp -R appengine offline/blockly-games
@@ -109,16 +114,18 @@ offline: clean-offline
 	rm -rf offline/blockly-games/third-party/JS-Interpreter/{*,.gitignore}
 	mv offline/compressed.js offline/blockly-games/third-party/JS-Interpreter/
 
-	echo '<html><head><meta http-equiv=refresh content="0; url=blockly-games/index.html"/></head></html>' > offline/blockly-games.html
+	echo '<html><head><meta http-equiv=refresh content="0; url=blockly-games/index.html"/></head></html>' > offline/thinka.html
+	cp offline/thinka.html offline/blockly-games.html
+	cp build/offline-readme.txt offline/README.txt
 	find offline -name '.DS_Store' -delete
 
 	cd offline; \
-	zip -r9 blockly-games.zip blockly-games/ blockly-games.html
+	zip -r9 thinka-blockly-games.zip blockly-games/ thinka.html blockly-games.html README.txt
 
 clean: clean-games clean-offline clean-deps
 
 clean-games:
-	rm -rf appengine/{.,index,puzzle,maze,bird,turtle,movie,music,pond,pond/tutor,pond/duck,gallery}/generated
+	rm -rf appengine/{.,index,puzzle,maze,bird,turtle,movie,music,pond,pond/tutor,pond/duck}/generated
 
 clean-offline:
 	rm -rf offline/
@@ -128,4 +135,4 @@ clean-deps:
 	rm -rf build/third-party-downloads
 
 # Prevent non-traditional rules from exiting with no changes.
-.PHONY: deps
+.PHONY: deps games test offline

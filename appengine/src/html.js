@@ -21,22 +21,14 @@ goog.require('BlocklyGames');
  * @param {!Object} ij Injected options.
  * @param {string} appName Name of application.
  * @param {string} levelLinkSuffix Any extra parameters for links.
- * @param {boolean} hasLinkButton Whether the page has a link button.
+ * @param {boolean} _hasLinkButton Unused. Share-by-link needed cloud storage
+ *     and is not available offline.
  * @param {boolean} hasHelpButton Whether the page has a help button.
  * @param {string} farLeftHtml Additional content to add to farLeft toolbar.
  * @returns {string} HTML.
  */
 BlocklyGames.html.headerBar = function(ij, appName, levelLinkSuffix,
-    hasLinkButton, hasHelpButton, farLeftHtml) {
-  let linkButton = '';
-  if (hasLinkButton) {
-    linkButton = `
-&nbsp;
-<button id="linkButton" title="${BlocklyGames.getMsg('Games.linkTooltip', true)}">
-  <img src="common/1x1.gif" class="link icon21">
-</button>
-`;
-  }
+    _hasLinkButton, hasHelpButton, farLeftHtml) {
   let helpButton = '';
   if (hasHelpButton) {
     helpButton = `
@@ -58,7 +50,6 @@ BlocklyGames.html.headerBar = function(ij, appName, levelLinkSuffix,
     </td>
     <td id="header_cta" class="farSide">
       <select id="languageMenu"></select>
-      ${linkButton}
       ${helpButton}
       ${farLeftHtml}
     </td>
@@ -175,19 +166,6 @@ BlocklyGames.html.abortDialog = function() {
     <button class="addHideHandler">${BlocklyGames.esc(Blockly.Msg['DIALOG_CANCEL'])}</button>
     <button id="abortOk" class="secondary">${BlocklyGames.esc(Blockly.Msg['DIALOG_OK'])}</button>
   </div>
-</div>
-`;
-};
-
-/**
- * Storage dialog.
- * @returns {string} HTML.
- */
-BlocklyGames.html.storageDialog = function() {
-  return `
-<div id="dialogStorage" class="dialogHiddenContent">
-  <div id="containerStorage"></div>
-  ${BlocklyGames.html.ok()}
 </div>
 `;
 };

@@ -140,51 +140,18 @@ BlocklyGames.LANGUAGES_ = window['BlocklyGamesLanguages'];
 BlocklyGames.IS_RTL = BlocklyGames.LANGUAGE_RTL_.includes(BlocklyGames.LANG);
 
 /**
- * Is the site being served as raw HTML files, as opposed to on App Engine.
+ * Always serve as raw HTML files (Thinka offline-first).
+ * Routes use .html suffixes and relative paths. No App Engine rewrite
+ * rules, backend, or runtime network are required.
  * @type boolean
  */
-BlocklyGames.IS_HTML = /\.html$/.test(window.location.pathname);
+BlocklyGames.IS_HTML = true;
 
 /**
  * 'document.getElementById' can't be compressed by the compiler,
  * so centralize all such calls here.  Saves 1-2 KB per game.
  */
 BlocklyGames.getElementById = document.getElementById.bind(document);
-
-/**
- * Report client-side errors back to the server.
- * @param {!ErrorEvent} event Error event.
- * @private
- */
-BlocklyGames.errorReporter_ = function(event) {
-  try {
-    //if (Math.random() > 0.5) return;
-    // 3rd party script errors (likely plugins) have no useful info.
-    if (!event.lineno && !event.colno) return;
-    // Rate-limit the reports to once every 10 seconds.
-    const now = Date.now();
-    if (BlocklyGames.errorReporter_.lastHit_ + 10 * 1000 > now) return;
-    BlocklyGames.errorReporter_.lastHit_ = now;
-    const req = new XMLHttpRequest();
-    // Try to use the experimental 'event.error.stack',
-    // otherwise, use standard properties.
-    const report = (event.error && event.error.stack) ||
-        `${event.message} ${event.filename} ${event.lineno}:${event.colno}`;
-    const params = "error=" + encodeURIComponent(report) +
-        '&amp;url=' + encodeURIComponent(window.location);
-    req.open("POST", "/errorReporter");
-    req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    req.send(params);
-    console.log('Error reported.');
-  } catch(e) {
-    // Error in error reporter.  Do NOT recursively call the error reporter.
-    console.log(event.error);
-  }
-};
-BlocklyGames.errorReporter_.lastHit_ = 0;
-if (!BlocklyGames.IS_HTML) {
-  window.addEventListener('error', BlocklyGames.errorReporter_);
-}
 
 /**
  * Extracts a parameter from the URL.
@@ -289,11 +256,6 @@ BlocklyGames.init = function(title) {
   if (viewport && screen.availWidth < 725) {
     viewport.setAttribute('content',
         'width=725, initial-scale=.35, user-scalable=no');
-  }
-
-  // Lazy-load Google Analytics.
-  if (!BlocklyGames.IS_HTML) {
-    setTimeout(BlocklyGames.importAnalytics3_, 1);
   }
 };
 
@@ -619,28 +581,3 @@ BlocklyGames.esc = function(text) {
       .replace(/'/g, '&#39;');
 };
 
-/**
- * Load Google Analytics 3 (UA).
- * Delete this on July 1, 2023.
- * @private
- */
-BlocklyGames.importAnalytics3_ = function() {
-  const gaName = 'GoogleAnalyticsFunction';
-  window['GoogleAnalyticsObject'] = gaName;
-  /**
-   * Load command onto Google Analytics queue.
-   * @param {...string} var_args Commands.
-   */
-  const gaObject = function(var_args) {
-    (gaObject['q'] = gaObject['q'] || []).push(arguments);
-  };
-  window[gaName] = gaObject;
-  gaObject['l'] = 1 * new Date();
-  const script = document.createElement('script');
-  script.async = 1;
-  script.src = '//www.google-analytics.com/analytics.js';
-  document.head.appendChild(script);
-
-  gaObject('create', 'UA-50448074-1', 'auto');
-  gaObject('send', 'pageview');
-};

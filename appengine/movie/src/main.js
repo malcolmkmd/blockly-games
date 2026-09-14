@@ -24,7 +24,6 @@ goog.require('Blockly.VerticalFlyout');
 goog.require('Blockly.ZoomControls');
 goog.require('BlocklyCode');
 goog.require('BlocklyDialogs');
-goog.require('BlocklyGallery');
 goog.require('BlocklyGames');
 goog.require('BlocklyInterface');
 goog.require('Movie.Blocks');
@@ -108,10 +107,6 @@ function init() {
            {'controls': true, 'wheel': true} : null});
   // Prevent collisions with user-defined functions or variables.
   Blockly.JavaScript.addReservedWords('circle,rect,line,penColour,time');
-
-  if (BlocklyGames.getElementById('submitButton')) {
-    BlocklyGames.bindClick('submitButton', submitToGallery);
-  }
 
   const defaultXml = '<xml></xml>';
   BlocklyInterface.loadBlocks(defaultXml, true);
@@ -581,37 +576,6 @@ function checkAnswers() {
       BlocklyCode.congratulations();
     }
   }
-}
-
-/**
- * Send an image of the canvas to gallery.
- */
-function submitToGallery() {
-  const blockCount = BlocklyInterface.workspace.getAllBlocks(false).length;
-  const code = BlocklyCode.getJsCode();
-  if (blockCount < 4 || !code.includes('time()')) {
-    alert(BlocklyGames.getMsg('submitDisabled', false));
-    return;
-  }
-  // Draw and copy the user layer.
-  const interpreter = new Interpreter(code, initInterpreter);
-  const backupFrameNumber = frameNumber;
-  try {
-    frameNumber = Math.round(FRAMES / 2);
-    drawFrame_(interpreter);
-  } finally {
-    frameNumber = backupFrameNumber;
-  }
-  // Encode the thumbnail.
-  const thumbnail = BlocklyGames.getElementById('thumbnail');
-  const ctxThumb = thumbnail.getContext('2d');
-  ctxThumb.globalCompositeOperation = 'copy';
-  ctxThumb.drawImage(ctxScratch.canvas, 0, 0, 200, 200);
-  const thumbData = thumbnail.toDataURL('image/png');
-  BlocklyGames.getElementById('galleryThumb').value = thumbData;
-
-  // Show the dialog.
-  BlocklyGallery.showGalleryForm();
 }
 
 /**

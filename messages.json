@@ -1,7 +1,7 @@
 {
   "Games.name": {
     "desc": "The project name.",
-    "msg": "Blockly Games"
+    "msg": "Thinka"
   },
   "Games.puzzle": {
     "desc": "title - Specifies that this is Blockly's '''Puzzle''' game.  Use the word for a jigsaw puzzle.\n{{Identical|Puzzle}}",
@@ -160,8 +160,8 @@
     "msg": "Delete all your solutions?"
   },
   "Index.subTitle": {
-    "desc": "Brief description of Blockly Games.",
-    "msg": "Games for tomorrow's programmers."
+    "desc": "Brief description of Thinka Games.",
+    "msg": "Code. Build. Innovate."
   },
   "Index.moreInfo": {
     "desc": "Link to a description of Blockly Games, intended for parents and teachers.",

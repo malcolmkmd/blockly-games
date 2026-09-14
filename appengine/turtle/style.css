@@ -11,7 +11,9 @@ html[dir="RTL"] button.primary {
   bottom: 10px;
 }
 #display {
-  border: 1px solid #ccc;
+  border: 2px solid var(--thinka-line);
+  border-radius: var(--thinka-radius-sm);
+  background: var(--thinka-paper);
 }
 #downloadImageLink {
   display: none;
@@ -23,16 +25,16 @@ html[dir="RTL"] button.primary {
 
 /* Slider. */
 .sliderTrack {
-  stroke: #aaa;
+  stroke: var(--thinka-sky);
   stroke-width: 6px;
   stroke-linecap: round;
 }
 .sliderKnob {
-  fill: #ddd;
-  stroke: #bbc;
+  fill: var(--thinka-orange);
+  stroke: var(--thinka-orange-deep);
   stroke-width: 1px;
   stroke-linejoin: round;
 }
 .sliderKnob:hover {
-  fill: #eee;
+  fill: var(--thinka-orange-deep);
 }

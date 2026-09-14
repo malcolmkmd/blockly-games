@@ -8,7 +8,8 @@
   position: fixed !important;
   height: auto !important;
   bottom: 10px;
-  border: 1px solid #ddd;
+  border: 2px solid var(--thinka-line);
+  border-radius: var(--thinka-radius-sm);
 }
 
 #visualization {
@@ -16,8 +17,10 @@
 }
 
 #display {
-  border: 1px solid #ddd;
+  border: 2px solid var(--thinka-line);
+  border-radius: var(--thinka-radius-sm);
   vertical-align: bottom;
+  background: var(--thinka-paper);
 }
 
 #avatarStatTable {
@@ -58,11 +61,11 @@
 /* Documentation frame. */
 #dialogDocs {
   visibility: hidden;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: var(--thinka-paper);
+  border: 2px solid var(--thinka-navy-soft);
   position: absolute;
-  border-radius: 8px;
-  box-shadow: 5px 5px 5px #888;
+  border-radius: var(--thinka-radius);
+  box-shadow: var(--thinka-shadow);
   padding: 15px 0 5px;
   top: 55px;
   left: 5px;

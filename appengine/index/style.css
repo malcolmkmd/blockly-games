@@ -1,39 +1,145 @@
-html, body {
-  height: 100%;
+html,
+body {
+  min-height: 100%;
   width: 100%;
   padding: 0;
   margin: 0;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--thinka-cream);
+}
+
+.thinka-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.thinka-hero {
+  position: relative;
+  background:
+    radial-gradient(circle at 85% 120%, rgba(255, 90, 31, 0.28), transparent 42%),
+    radial-gradient(circle at 8% -20%, rgba(96, 165, 250, 0.28), transparent 36%),
+    linear-gradient(160deg, var(--thinka-navy) 0%, var(--thinka-navy-mid) 62%, #123056 100%);
+  color: var(--thinka-paper);
+  padding: 2.2em 8% 2.6em;
+  text-align: center;
   overflow: hidden;
+}
+
+.thinka-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 28px;
+  background: var(--thinka-cream);
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
 }
 
 #languageMenu {
   position: absolute;
-  top: 0;
+  top: 1em;
+  z-index: 2;
 }
 
 html[dir="LTR"] #languageMenu {
-  right: 1em;
+  right: 1.2em;
 }
 
 html[dir="RTL"] #languageMenu {
-  left: 1em;
+  left: 1.2em;
 }
 
-#header {
-  position: absolute;
-  top: 1em;
-  left: 20%;
-  right: 20%;
-  width: 60%;
-  text-align: center;
+.thinka-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 44em;
+  margin: 0 auto;
 }
 
-#banner {
-  padding: 1em;
+.thinka-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85em;
+  margin-bottom: 0.4em;
 }
 
-#subtitle {
-  font-style: italic;
+.thinka-brand-mark {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.thinka-brand-block {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18);
+}
+
+.thinka-brand-block--orange {
+  background: var(--thinka-orange);
+  transform: rotate(-8deg);
+}
+
+.thinka-brand-block--blue {
+  background: var(--thinka-sky);
+  transform: rotate(10deg) translateY(6px);
+}
+
+.thinka-brand-title {
+  margin: 0;
+  line-height: 0.95;
+  text-align: start;
+}
+
+.thinka-brand-name,
+.thinka-brand-games {
+  display: block;
+}
+
+.thinka-brand-name {
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--thinka-paper);
+}
+
+.thinka-brand-games {
+  font-size: clamp(1.1rem, 3vw, 1.45rem);
+  font-weight: 700;
+  color: var(--thinka-orange);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.thinka-hero-sub {
+  margin: 0.85em 0 0.7em;
+  font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+  color: #D6E4FF;
+}
+
+.thinka-hero-about {
+  display: inline-block;
+  color: var(--thinka-paper);
+  text-decoration: none;
+  font-weight: 700;
+  padding: 0.45em 1em;
+  border-radius: var(--thinka-radius-pill);
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.28);
+}
+
+.thinka-hero-about:focus,
+.thinka-hero-about:hover {
+  color: var(--thinka-navy);
+  background: var(--thinka-paper);
 }
 
 a {
@@ -41,148 +147,174 @@ a {
   text-decoration: none;
 }
 
-#clearDataPara {
+.thinka-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1.15em;
+  width: min(1100px, calc(100% - 2.4em));
+  margin: 0.2em auto 1.5em;
+  padding: 0 0 1em;
+}
+
+.thinka-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--thinka-paper);
+  border: 2px solid var(--thinka-line);
+  border-radius: 22px;
+  padding: 1.15em 1em 1.05em;
+  box-shadow: var(--thinka-shadow);
+  color: var(--thinka-ink);
+  position: relative;
+  overflow: hidden;
+  animation: thinka-card-in 0.45s ease both;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.thinka-card:nth-child(1) { animation-delay: 0.02s; }
+.thinka-card:nth-child(2) { animation-delay: 0.07s; }
+.thinka-card:nth-child(3) { animation-delay: 0.12s; }
+.thinka-card:nth-child(4) { animation-delay: 0.17s; }
+.thinka-card:nth-child(5) { animation-delay: 0.22s; }
+.thinka-card:nth-child(6) { animation-delay: 0.27s; }
+.thinka-card:nth-child(7) { animation-delay: 0.32s; }
+.thinka-card:nth-child(8) { animation-delay: 0.37s; }
+
+@keyframes thinka-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.thinka-card-accent {
   position: absolute;
-  bottom: 0;
-  margin: 1em;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: var(--thinka-orange);
+}
+
+.thinka-card--puzzle .thinka-card-accent { background: var(--thinka-orange); }
+.thinka-card--maze .thinka-card-accent { background: var(--thinka-blue); }
+.thinka-card--bird .thinka-card-accent { background: var(--thinka-sky); }
+.thinka-card--turtle .thinka-card-accent { background: var(--thinka-success); }
+.thinka-card--movie .thinka-card-accent { background: var(--thinka-orange-deep); }
+.thinka-card--music .thinka-card-accent { background: var(--thinka-blue-deep); }
+.thinka-card--pond-tutor .thinka-card-accent { background: var(--thinka-navy-soft); }
+.thinka-card--pond-duck .thinka-card-accent { background: var(--thinka-orange); }
+
+.thinka-card-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0.7em 0 0.45em;
+  border-radius: 22px;
+  background: var(--thinka-cream-warm);
+  box-shadow: inset 0 0 0 3px rgba(10, 22, 40, 0.04);
+}
+
+.thinka-card-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--thinka-navy);
+  margin-bottom: 0.2em;
+}
+
+.thinka-card-blurb {
+  font-size: 0.92rem;
+  color: var(--thinka-muted);
+  min-height: 2.6em;
+  margin-bottom: 0.7em;
+}
+
+.thinka-card-progress {
+  width: 100%;
+  margin-top: auto;
+}
+
+.thinka-card-progress-track {
+  display: block;
+  height: 10px;
+  border-radius: var(--thinka-radius-pill);
+  background: var(--thinka-cream-warm);
+  overflow: hidden;
+  border: 1px solid var(--thinka-line);
+}
+
+.thinka-card-progress-bar {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--thinka-blue), var(--thinka-sky));
+  transition: width 0.7s ease;
+}
+
+.thinka-card-progress-bar.is-complete {
+  background: linear-gradient(90deg, var(--thinka-success-deep), var(--thinka-success));
+}
+
+.thinka-card-progress-label {
+  display: block;
+  margin-top: 0.4em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--thinka-navy-soft);
+}
+
+.thinka-card:focus,
+.thinka-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--thinka-orange);
+  box-shadow: var(--thinka-shadow-hover);
+  color: var(--thinka-ink);
+}
+
+.thinka-card:focus-visible {
+  outline: 3px solid var(--thinka-orange);
+  outline-offset: 3px;
+}
+
+.thinka-card--done {
+  border-color: #86EFAC;
+}
+
+.thinka-card--done .thinka-card-name::after {
+  content: " ✓";
+  color: var(--thinka-success);
+}
+
+.thinka-reset {
+  margin: 0 1.2em 1.4em;
+  color: var(--thinka-muted);
 }
 
 #clearData {
-  padding: 0 4px;
+  padding: 8px 16px;
   margin: 5px 10px;
   font-size: medium;
 }
 
-#path {
-  stroke: #ccc;
-  stroke-width: 1;
-  stroke-linecap: round;
-  fill: none;
-  stroke-dasharray: 180;
-  stroke-dashoffset: 180;
-  animation: dash .7s linear forwards;
-}
-
-@keyframes dash {
-  to {
-    stroke-dashoffset: 0;
+@media (max-width: 640px) {
+  .thinka-hero {
+    padding: 3.4em 1.1em 2.2em;
   }
-}
 
-.iconBack {
-  fill: #fff;
-}
-
-.iconBorder {
-  stroke: #aaa;
-  stroke-width: 5;
-  fill: rgba(0, 0, 0, .1);
-}
-
-a:focus > .iconBorder,
-a:hover > .iconBorder {
-  fill: rgba(255, 255, 255, .1);
-}
-
-a:focus > text,
-a:hover > text {
-  fill: #666;
-}
-
-.icon {
-  animation: pop .5s cubic-bezier(.5,.5,.5,1.5) forwards;
-  visibility: hidden;
-}
-
-.icon text {
-  text-anchor: middle;
-  font-size: 18pt;
-}
-
-#icon-puzzle {
-  animation-delay: .0s;
-}
-
-#icon-maze {
-  animation-delay: .1s;
-}
-
-#icon-bird {
-  animation-delay: .2s;
-}
-
-#icon-turtle {
-  animation-delay: .3s;
-}
-
-#icon-movie {
-  animation-delay: .4s;
-}
-
-#icon-music {
-  animation-delay: .5s;
-}
-
-#icon-pond-tutor {
-  animation-delay: .6s;
-}
-
-#icon-pond-duck {
-  animation-delay: .7s;
-}
-
-#back-puzzle {
-  animation-delay: .3s;
-}
-
-#back-maze {
-  animation-delay: .4s;
-}
-
-#back-bird {
-  animation-delay: .5s;
-}
-
-#back-turtle {
-  animation-delay: .6s;
-}
-
-#back-movie {
-  animation-delay: .7s;
-}
-
-#back-music {
-  animation-delay: .8s;
-}
-
-#back-pond-tutor {
-  animation-delay: .9s;
-}
-
-#back-pond-duck {
-  animation-delay: 1.0s;
-}
-
-@keyframes pop {
-  from {
-    transform: translate(150px, 50px) scale(0);
+  .thinka-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    width: calc(100% - 1.4em);
+    gap: 0.85em;
   }
-  to {
-    transform: translate(0, 0) scale(1);
-    visibility: visible;
+
+  .thinka-card-icon {
+    width: 80px;
+    height: 80px;
   }
-}
-
-.gaugeBack {
-  stroke: #aaa;
-  stroke-width: 6;
-  fill: none;
-  animation: pop .1s linear forwards;
-  visibility: hidden;
-}
-
-.gaugeFront {
-  stroke: #0b0;
-  stroke-width: 8;
-  fill: none;
 }

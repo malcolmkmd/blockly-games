@@ -1,74 +1,268 @@
+@import url("thinka-theme.css");
+
+html {
+  color-scheme: light;
+}
+
 body {
-  background-color: #fff;
-  font-family: sans-serif;
+  background-color: var(--thinka-cream);
+  background-image:
+    radial-gradient(circle at 12% -10%, rgba(255, 90, 31, 0.1), transparent 42%),
+    radial-gradient(circle at 100% 8%, rgba(96, 165, 250, 0.14), transparent 38%);
+  background-attachment: fixed;
+  color: var(--thinka-ink);
+  font-family: var(--thinka-font);
   margin-top: 0;
 }
+
 h1 {
-  font-weight: normal;
+  font-weight: 700;
   font-size: 130%;
+  color: inherit;
 }
+
 h1 a {
   text-decoration: none;
 }
+
+a {
+  color: var(--thinka-blue-deep);
+}
+
 a:focus,
 a:hover {
-  color: #f00;
+  color: var(--thinka-orange-deep);
 }
+
+a:focus-visible {
+  outline: 3px solid var(--thinka-orange);
+  outline-offset: 3px;
+}
+
 .farSide {
   text-align: right;
 }
-#header_cta>* {
+
+#header_cta > * {
   vertical-align: middle;
 }
+
 html[dir="RTL"] .farSide {
   text-align: left;
 }
-.level_number {
-  border: solid 1px #ddd;
-  border-radius: 20px;
-  padding: 6px 12px;
-  color: #888;
+
+/* Game header strip — navy, not grey chrome. */
+.thinka-header {
+  background: linear-gradient(135deg, var(--thinka-navy) 0%, var(--thinka-navy-mid) 100%);
+  color: var(--thinka-paper);
+  border-bottom: 4px solid var(--thinka-orange);
+  box-shadow: var(--thinka-shadow);
+  margin: 0 0 12px;
+  padding: 8px 14px 10px;
 }
-.level_dot {
-  border: solid 1px #ddd;
-	border-radius: 50%;
-	width: 15px;
-	height: 15px;
+
+.thinka-header h1 {
+  margin: 0.35em 0;
+  color: var(--thinka-paper);
+}
+
+.thinka-header a {
+  color: var(--thinka-paper);
+}
+
+.thinka-header a:focus,
+.thinka-header a:hover {
+  color: #FFD4C2;
+}
+
+.thinka-header #title {
+  letter-spacing: 0.01em;
+}
+
+.thinka-header-sep {
   display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 0.55em;
+  background: var(--thinka-orange);
+  border-radius: 3px;
+  vertical-align: middle;
 }
-.level_done, .level_dot:hover, .level_number:hover {
-  background-color: #ddd;
-  color: #000;
+
+.thinka-app-name {
+  color: #D6E4FF;
+  font-weight: 700;
 }
-.level_locked {
-  opacity: 0.4;
+
+/* Level progress: numbered current/last, dots for the rest. */
+.thinka-levels {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-inline-start: 0.6em;
+  vertical-align: middle;
+}
+
+.level_number,
+.level_dot {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  background-color: rgba(255, 255, 255, 0.12);
+  color: var(--thinka-paper);
+  text-decoration: none;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.level_number {
+  min-width: 2em;
+  border-radius: var(--thinka-radius-pill);
+  padding: 4px 11px;
+  font-weight: 700;
+}
+
+.level_dot {
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+}
+
+.level_number.level_done,
+.level_dot.level_done {
+  background-color: var(--thinka-success);
+  border-color: #BBF7D0;
+  color: var(--thinka-paper);
+}
+
+/* Current level is rendered as a numbered badge. */
+.thinka-header .level_number {
+  background-color: var(--thinka-orange);
+  border-color: #FFD4C2;
+  box-shadow: 0 0 0 3px rgba(255, 90, 31, 0.25);
+}
+
+.thinka-header .level_number.level_done {
+  background-color: var(--thinka-orange);
+}
+
+.level_done:hover,
+.level_dot:hover,
+.level_number:hover {
+  background-color: var(--thinka-sky);
+  border-color: var(--thinka-paper);
+  color: var(--thinka-navy);
+  transform: translateY(-1px);
+}
+
+.level_locked,
+.thinka-header .level_locked,
+.thinka-header .level_number.level_locked,
+.thinka-header .level_dot.level_locked {
+  background-color: var(--thinka-locked-bg) !important;
+  border-style: dashed !important;
+  border-color: #7C8A9A !important;
+  color: var(--thinka-locked-ink) !important;
+  opacity: 1;
   cursor: pointer;
+  box-shadow: none;
 }
+
 a.level_locked:hover,
 span.level_locked:hover {
-  background-color: #eee;
-  color: #666;
-  opacity: 0.7;
+  background-color: #F8FAFC !important;
+  color: var(--thinka-navy) !important;
+  opacity: 1;
+  transform: none;
 }
+
 #teacherUnlockPassword {
   font-size: large;
-  padding: 6px;
-  margin-left: 0.5em;
+  padding: 8px 10px;
+  margin-inline-start: 0.5em;
   width: 12em;
+  border: 2px solid var(--thinka-line);
+  border-radius: var(--thinka-radius-sm);
+  background: var(--thinka-paper);
+  color: var(--thinka-ink);
 }
+
+#teacherUnlockPassword:focus {
+  outline: none;
+  border-color: var(--thinka-orange);
+  box-shadow: 0 0 0 3px var(--thinka-orange-soft);
+}
+
 #teacherUnlockError {
-  color: #c00;
+  color: var(--thinka-error);
   min-height: 1.4em;
   margin-top: 0.5em;
+  font-weight: 600;
 }
+
+.thinka-unlock-badge {
+  width: 52px;
+  height: 52px;
+  margin: 0.4em auto 0;
+  border-radius: 16px;
+  background: var(--thinka-orange-soft);
+  box-shadow: inset 0 -3px 0 rgba(255, 90, 31, 0.18);
+  position: relative;
+}
+
+.thinka-unlock-badge::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 16px;
+  height: 14px;
+  margin-left: -8px;
+  border: 3px solid var(--thinka-navy);
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.thinka-unlock-badge::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  width: 24px;
+  height: 20px;
+  margin-left: -12px;
+  background: var(--thinka-navy);
+  border-radius: 6px;
+}
+
+.thinka-unlock-title {
+  font-size: large;
+  font-weight: 800;
+  margin: 0.8em 1em 0.3em;
+  color: var(--thinka-navy);
+  text-align: center;
+}
+
+.thinka-unlock-copy {
+  margin: 0 1em 0.6em;
+  text-align: center;
+  color: var(--thinka-muted);
+}
+
 #containerCode {
   direction: ltr;
-  background-color: #eee;
-  padding: 5px;
+  background-color: var(--thinka-navy-mid);
+  color: #E8F0FF;
+  padding: 12px 14px;
   margin: 0 3ex;
   font-size: large;
+  font-family: var(--thinka-mono);
   overflow: auto;
   max-height: 200px;
+  border-radius: var(--thinka-radius-sm);
+  border: 2px solid var(--thinka-navy-soft);
 }
 
 img[src$="help.png"] {
@@ -81,7 +275,24 @@ html[dir="RTL"] .mirrorImg {
 }
 
 #languageMenu {
-  margin: 16px 0;
+  margin: 8px 0;
+  padding: 6px 10px;
+  border: 2px solid var(--thinka-line);
+  border-radius: var(--thinka-radius-pill);
+  background: var(--thinka-paper);
+  color: var(--thinka-navy);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.thinka-header #languageMenu {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+#languageMenu:focus {
+  outline: none;
+  box-shadow: var(--thinka-focus);
 }
 
 xml {
@@ -91,61 +302,91 @@ xml {
 /* Buttons */
 button {
   margin: 5px;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
+  padding: 10px 16px;
+  border-radius: var(--thinka-radius-sm);
+  border: 2px solid var(--thinka-line);
   font-size: large;
-  background-color: #eee;
-  color: #000;
+  font-family: inherit;
+  font-weight: 700;
+  background-color: var(--thinka-paper);
+  color: var(--thinka-navy);
+  cursor: pointer;
+  box-shadow: 0 2px 0 rgba(10, 22, 40, 0.08);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
 }
+
 button.primary {
-  border: 1px solid #dd4b39;
-  background-color: #dd4b39;
-  color: #fff;
+  border: 2px solid var(--thinka-orange-deep);
+  background-color: var(--thinka-orange);
+  color: var(--thinka-paper);
+  box-shadow: 0 3px 0 var(--thinka-orange-deep);
 }
+
 button.secondary {
-  border: 1px solid #4d90fe;
-  background-color: #4d90fe;
-  color: #fff;
+  border: 2px solid var(--thinka-blue-deep);
+  background-color: var(--thinka-blue);
+  color: var(--thinka-paper);
+  box-shadow: 0 3px 0 var(--thinka-blue-deep);
 }
-button.primary>img,
-button.secondary>img {
+
+button.primary > img,
+button.secondary > img {
   opacity: 1;
 }
-button>img {
-  opacity: .6;
+
+button > img {
+  opacity: 0.7;
   vertical-align: text-bottom;
 }
-button:hover:not(:disabled)>img {
+
+button:hover:not(:disabled) > img {
   opacity: 1;
 }
+
 button:active:not(:disabled) {
-  border: 1px solid #888 !important;
+  border-color: var(--thinka-navy) !important;
+  transform: translateY(1px);
+  box-shadow: none;
 }
+
 button:hover:not(:disabled) {
-  box-shadow: 2px 2px 5px #888;
+  box-shadow: var(--thinka-shadow-hover);
+  transform: translateY(-1px);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: var(--thinka-focus);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* Dialogs */
 #dialog {
   visibility: hidden;
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #ccc;
+  background-color: var(--thinka-paper);
+  color: var(--thinka-ink);
+  border: 2px solid var(--thinka-navy-soft);
   position: absolute;
-  border-radius: 8px;
-  box-shadow: 5px 5px 5px #888;
-  padding: 10px;
+  border-radius: var(--thinka-radius);
+  box-shadow: var(--thinka-shadow);
+  padding: 12px 14px 16px;
 }
+
 #dialogBorder {
   visibility: hidden;
   position: absolute;
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #000;
-  border-radius: 6px;
-  box-shadow: 5px 5px 5px #888;
+  background-color: var(--thinka-orange-soft);
+  color: var(--thinka-ink);
+  border: 2px solid var(--thinka-orange);
+  border-radius: 14px;
+  box-shadow: var(--thinka-shadow);
 }
+
 #dialogShadow {
   visibility: hidden;
   position: fixed;
@@ -153,14 +394,16 @@ button:hover:not(:disabled) {
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: #000;
-  opacity: .3
+  background-color: var(--thinka-navy);
+  opacity: 0.45;
 }
+
 .dialogAnimate {
   transition-property: width height left top opacity;
-  transition-duration: .2s;
+  transition-duration: 0.2s;
   transition-timing-function: linear;
 }
+
 .dialogHiddenContent {
   visibility: hidden;
   position: absolute;
@@ -168,24 +411,29 @@ button:hover:not(:disabled) {
   left: 0;
   z-index: -1;
 }
+
 #dialogHeader {
-  height: 25px;
-  margin: -10px -10px 15px;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  background-color: #ddd;
+  height: 28px;
+  margin: -12px -14px 16px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  background: linear-gradient(90deg, var(--thinka-navy) 0%, var(--thinka-navy-mid) 70%, var(--thinka-orange) 100%);
   cursor: move;
 }
+
 #dialog button {
   min-width: 4em;
 }
+
 .readonly .blocklyMainBackground {
   stroke: none;
 }
-#galleryForm>header {
+
+#galleryForm > header {
   font-size: larger;
 }
-#galleryForm>* {
+
+#galleryForm > * {
   margin-top: 1em;
   margin-left: 1em;
   margin-right: 1em;
@@ -197,21 +445,27 @@ button:hover:not(:disabled) {
   width: 21px;
   background-image: url(icons.png);
 }
+
 .link {
   background-position: 0 0;
 }
+
 .camera {
   background-position: -21px 0;
 }
+
 .stop {
   background-position: -42px 0;
 }
+
 .run {
   background-position: -63px 0;
 }
+
 .gallery {
   background-position: -63px -21px;
 }
+
 .close {
   background-position: -42px -42px;
 }

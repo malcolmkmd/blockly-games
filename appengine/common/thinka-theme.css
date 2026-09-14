@@ -1,0 +1,47 @@
+/**
+ * Thinka design tokens.
+ *
+ * Offline-first visual system for Thinka.org.za classrooms.
+ * No remote fonts or images — colours, radii, and a friendly system stack only.
+ *
+ * Brand (from thinka.org.za, adapted for long play sessions):
+ *   Orange energy  #FF5A1F
+ *   Sky / blue     #60A5FA / #3B82F6
+ *   Deep navy      #0A1628 / #0D1F3C  (headers and accents, not full-page dark)
+ *   Warm cream     #FFF8F1            (workspace surfaces)
+ *   Success green  #16A34A            (done / complete)
+ */
+:root {
+  --thinka-orange: #FF5A1F;
+  --thinka-orange-deep: #E04E18;
+  --thinka-orange-soft: #FFE4D6;
+  --thinka-sky: #60A5FA;
+  --thinka-blue: #3B82F6;
+  --thinka-blue-deep: #2563EB;
+  --thinka-blue-soft: #DBEAFE;
+  --thinka-navy: #0A1628;
+  --thinka-navy-mid: #0D1F3C;
+  --thinka-navy-soft: #1E3A5F;
+  --thinka-cream: #FFF8F1;
+  --thinka-cream-warm: #FFF1E6;
+  --thinka-paper: #FFFFFF;
+  --thinka-ink: #1A2332;
+  --thinka-muted: #4B5C6B;
+  --thinka-line: #D7DEE7;
+  --thinka-success: #16A34A;
+  --thinka-success-deep: #15803D;
+  --thinka-success-soft: #DCFCE7;
+  --thinka-locked-bg: #E8EEF4;
+  --thinka-locked-ink: #334155;
+  --thinka-error: #B91C1C;
+  --thinka-radius: 18px;
+  --thinka-radius-sm: 12px;
+  --thinka-radius-pill: 999px;
+  --thinka-shadow: 0 10px 28px rgba(10, 22, 40, 0.12);
+  --thinka-shadow-hover: 0 14px 32px rgba(255, 90, 31, 0.2);
+  --thinka-font: system-ui, "Segoe UI", Ubuntu, "Avenir Next", "Trebuchet MS",
+      "Century Gothic", sans-serif;
+  --thinka-mono: "Cascadia Code", "Segoe UI Mono", "Ubuntu Mono", ui-monospace,
+      monospace;
+  --thinka-focus: 0 0 0 3px var(--thinka-paper), 0 0 0 6px var(--thinka-orange);
+}

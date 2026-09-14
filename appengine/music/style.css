@@ -19,9 +19,11 @@ html[dir="RTL"] button.primary {
 
 #staveBox {
   position: absolute;
-  border: 1px solid #ccc;
+  border: 2px solid var(--thinka-line);
+  border-radius: var(--thinka-radius-sm);
   height: 400px;
   width: 400px;
+  background: var(--thinka-paper);
 }
 
 .stave {
@@ -96,7 +98,8 @@ html[dir="RTL"] button.primary {
 
 #notePicker {
   background-image: url(notes.png);
-  border: 1px solid #ccc;
+  border: 2px solid var(--thinka-line);
+  border-radius: var(--thinka-radius-sm);
   height: 109px;
   width: 46px;
 }
@@ -123,16 +126,16 @@ html[dir="RTL"] .sampleNote {
 
 /* Slider. */
 .sliderTrack {
-  stroke: #aaa;
+  stroke: var(--thinka-sky);
   stroke-width: 6px;
   stroke-linecap: round;
 }
 .sliderKnob {
-  fill: #ddd;
-  stroke: #bbc;
+  fill: var(--thinka-orange);
+  stroke: var(--thinka-orange-deep);
   stroke-width: 1px;
   stroke-linejoin: round;
 }
 .sliderKnob:hover {
-  fill: #eee;
+  fill: var(--thinka-orange-deep);
 }

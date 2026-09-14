@@ -66,9 +66,11 @@ pre, code {
 .zippy-header-collapsed,
 .zippy-header-expanded {
   outline: 0;
-  background-color: #eee;
+  background-color: var(--thinka-cream-warm);
+  color: var(--thinka-navy);
   padding: 10px;
   border-radius: 20px;
+  border: 2px solid var(--thinka-line);
 }
 
 .zippy-header-collapsed>img,

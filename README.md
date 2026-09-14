@@ -10,7 +10,7 @@ The shared teacher password (default `thinka`, set in `appengine/src/thinka.conf
 
 `make deps` downloads libraries. You need:
 
-- `make`, `python3`, `java`, `wget`, `svn`, `zip`, `node` (for unit tests)
+- `make`, `python3`, `java`, `wget`, `git`, `zip`, `node` (for unit tests)
 
 Runtime play needs only a web browser.
 

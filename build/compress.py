@@ -130,7 +130,7 @@ def language(gameName, lang):
 
 
 def generate_uncompressed(gameName):
-  cmd = ['third-party/closurebuilder/closurebuilder.py',
+  cmd = ['python3', 'third-party/closurebuilder/closurebuilder.py',
       '--root=appengine/third-party/',
       '--root=appengine/generated/',
       '--root=appengine/src/',

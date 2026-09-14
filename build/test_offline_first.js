@@ -100,6 +100,9 @@ test('Makefile games target no longer builds gallery', () => {
   const gamesLine = mk.match(/^games: (.+)$/m)[1];
   assert.doesNotMatch(gamesLine, /\bgallery\b/);
   assert.match(mk, /^offline:/m);
+  assert.match(mk, /git clone/);
+  assert.match(mk, /SHELL := \/bin\/bash/);
+  assert.doesNotMatch(mk, /\bsvn\b/);
 });
 
 test('teacher config still ships for offline unlock', () => {

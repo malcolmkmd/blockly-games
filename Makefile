@@ -4,7 +4,8 @@
 
 # appengine/ is the static web root (legacy folder name from Blockly Games).
 # There is no App Engine backend. Runtime is offline-first HTML/JS/CSS.
-REQUIRED_BINS = svn wget java python3
+SHELL := /bin/bash
+REQUIRED_BINS = git wget java python3
 
 ##############################
 # Rules
@@ -62,15 +63,27 @@ deps:
 	mkdir -p appengine/third-party
 	wget -N https://unpkg.com/@babel/standalone@7.14.8/babel.min.js
 	mv babel.min.js appengine/third-party/
-	@# GitHub doesn't support git archive, so download files using svn.
-	svn export --force https://github.com/ajaxorg/ace-builds/trunk/src-min-noconflict/ appengine/third-party/ace
-	mkdir -p appengine/third-party/blockly
-	svn export --force https://github.com/NeilFraser/blockly-for-BG/trunk/ appengine/third-party/blockly
-	svn export --force https://github.com/CreateJS/SoundJS/trunk/lib/ appengine/third-party/SoundJS
+	@# Build-time clones only. Runtime uses the copied local files.
+	rm -rf build/third-party-downloads/ace-builds
+	git clone --depth 1 --filter=blob:none --sparse https://github.com/ajaxorg/ace-builds.git build/third-party-downloads/ace-builds
+	git -C build/third-party-downloads/ace-builds sparse-checkout set src-min-noconflict
+	rm -rf appengine/third-party/ace
+	cp -R build/third-party-downloads/ace-builds/src-min-noconflict appengine/third-party/ace
+
+	rm -rf appengine/third-party/blockly
+	git clone --depth 1 https://github.com/NeilFraser/blockly-for-BG.git appengine/third-party/blockly
+
+	rm -rf build/third-party-downloads/SoundJS
+	git clone --depth 1 --filter=blob:none --sparse https://github.com/CreateJS/SoundJS.git build/third-party-downloads/SoundJS
+	git -C build/third-party-downloads/SoundJS sparse-checkout set lib
+	rm -rf appengine/third-party/SoundJS
+	cp -R build/third-party-downloads/SoundJS/lib appengine/third-party/SoundJS
+
 	cp third-party/base.js appengine/third-party/
 	cp -R third-party/soundfonts appengine/third-party/
 
-	svn export --force https://github.com/NeilFraser/JS-Interpreter/trunk/ appengine/third-party/JS-Interpreter
+	rm -rf appengine/third-party/JS-Interpreter
+	git clone --depth 1 https://github.com/NeilFraser/JS-Interpreter.git appengine/third-party/JS-Interpreter
 	@# Compile JS-Interpreter using SIMPLE_OPTIMIZATIONS because the Music game needs to mess with the stack.
 	java -jar build/third-party-downloads/closure-compiler.jar\
 	  --language_out ECMASCRIPT5\

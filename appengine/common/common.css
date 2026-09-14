@@ -1,74 +1,268 @@
+@import url("thinka-theme.css");
+
+html {
+  color-scheme: light;
+}
+
 body {
-  background-color: #fff;
-  font-family: sans-serif;
+  background-color: var(--thinka-workspace);
+  color: var(--thinka-ink);
+  font-family: var(--thinka-font);
   margin-top: 0;
 }
+
 h1 {
-  font-weight: normal;
+  font-family: var(--thinka-display);
+  font-weight: 700;
   font-size: 130%;
+  color: inherit;
 }
+
 h1 a {
   text-decoration: none;
 }
+
+a {
+  color: var(--thinka-orange);
+}
+
 a:focus,
 a:hover {
-  color: #f00;
+  color: var(--thinka-orange-hot);
 }
+
+a:focus-visible {
+  outline: 3px solid var(--thinka-orange);
+  outline-offset: 3px;
+}
+
 .farSide {
   text-align: right;
 }
-#header_cta>* {
+
+#header_cta > * {
   vertical-align: middle;
 }
+
 html[dir="RTL"] .farSide {
   text-align: left;
 }
-.level_number {
-  border: solid 1px #ddd;
-  border-radius: 20px;
-  padding: 6px 12px;
-  color: #888;
+
+/* Game header — dark green-black strip, light workspace below. */
+.thinka-header {
+  background: var(--thinka-page);
+  color: var(--thinka-text);
+  border-bottom: 3px solid var(--thinka-orange);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  margin: 0 0 12px;
+  padding: 8px 16px 10px;
 }
-.level_dot {
-  border: solid 1px #ddd;
-	border-radius: 50%;
-	width: 15px;
-	height: 15px;
+
+.thinka-header h1 {
+  margin: 0.35em 0;
+  color: var(--thinka-text-strong);
+}
+
+.thinka-header a {
+  color: var(--thinka-text-strong);
+}
+
+.thinka-header a:focus,
+.thinka-header a:hover {
+  color: var(--thinka-orange-hot);
+}
+
+.thinka-header #title {
+  letter-spacing: -0.02em;
+}
+
+.thinka-header-sep {
   display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin: 0 0.55em;
+  background: var(--thinka-orange);
+  border-radius: 50%;
+  vertical-align: middle;
+  box-shadow: 0 0 10px var(--thinka-orange);
 }
-.level_done, .level_dot:hover, .level_number:hover {
-  background-color: #ddd;
-  color: #000;
+
+.thinka-app-name {
+  color: var(--thinka-muted);
+  font-weight: 700;
 }
-.level_locked {
-  opacity: 0.4;
+
+/* Level progress */
+.thinka-levels {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-inline-start: 0.6em;
+  vertical-align: middle;
+}
+
+.level_number,
+.level_dot {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(248, 250, 252, 0.28);
+  background-color: var(--thinka-panel);
+  color: var(--thinka-text);
+  text-decoration: none;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.level_number {
+  min-width: 2em;
+  border-radius: var(--thinka-radius-pill);
+  padding: 4px 11px;
+  font-weight: 700;
+}
+
+.level_dot {
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+}
+
+.level_number.level_done,
+.level_dot.level_done {
+  background-color: var(--thinka-mint);
+  border-color: #BBF7D0;
+  color: var(--thinka-page);
+}
+
+.thinka-header .level_number {
+  background-color: var(--thinka-orange);
+  border-color: #FFB199;
+  color: var(--thinka-text-strong);
+  box-shadow: 0 0 0 3px rgba(255, 69, 0, 0.28);
+}
+
+.thinka-header .level_number.level_done {
+  background-color: var(--thinka-orange);
+  color: var(--thinka-text-strong);
+}
+
+.level_done:hover,
+.level_dot:hover,
+.level_number:hover {
+  background-color: var(--thinka-sky);
+  border-color: var(--thinka-text-strong);
+  color: var(--thinka-page);
+  transform: translateY(-1px);
+}
+
+.level_locked,
+.thinka-header .level_locked,
+.thinka-header .level_number.level_locked,
+.thinka-header .level_dot.level_locked {
+  background-color: var(--thinka-locked-bg) !important;
+  border-style: dashed !important;
+  border-color: var(--thinka-muted) !important;
+  color: var(--thinka-locked-ink) !important;
+  opacity: 1;
   cursor: pointer;
+  box-shadow: none;
 }
+
 a.level_locked:hover,
 span.level_locked:hover {
-  background-color: #eee;
-  color: #666;
-  opacity: 0.7;
+  background-color: var(--thinka-panel) !important;
+  color: var(--thinka-text-strong) !important;
+  opacity: 1;
+  transform: none;
 }
+
 #teacherUnlockPassword {
   font-size: large;
-  padding: 6px;
-  margin-left: 0.5em;
+  padding: 8px 10px;
+  margin-inline-start: 0.5em;
   width: 12em;
+  border: 2px solid rgba(248, 250, 252, 0.16);
+  border-radius: var(--thinka-radius-pill);
+  background: var(--thinka-panel);
+  color: var(--thinka-text-strong);
 }
+
+#teacherUnlockPassword:focus {
+  outline: none;
+  border-color: var(--thinka-orange);
+  box-shadow: 0 0 0 3px var(--thinka-orange-soft);
+}
+
 #teacherUnlockError {
-  color: #c00;
+  color: var(--thinka-error);
   min-height: 1.4em;
   margin-top: 0.5em;
+  font-weight: 700;
 }
+
+.thinka-unlock-badge {
+  width: 52px;
+  height: 52px;
+  margin: 0.4em auto 0;
+  border-radius: 50%;
+  background: var(--thinka-orange);
+  box-shadow: 0 0 18px rgba(255, 69, 0, 0.45);
+  position: relative;
+}
+
+.thinka-unlock-badge::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  width: 14px;
+  height: 12px;
+  margin-left: -7px;
+  border: 3px solid var(--thinka-text-strong);
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.thinka-unlock-badge::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 21px;
+  width: 22px;
+  height: 18px;
+  margin-left: -11px;
+  background: var(--thinka-text-strong);
+  border-radius: 6px;
+}
+
+.thinka-unlock-title {
+  font-family: var(--thinka-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0.8em 1em 0.3em;
+  color: var(--thinka-text-strong);
+  text-align: center;
+}
+
+.thinka-unlock-copy {
+  margin: 0 1em 0.6em;
+  text-align: center;
+  color: var(--thinka-muted);
+}
+
 #containerCode {
   direction: ltr;
-  background-color: #eee;
-  padding: 5px;
+  background-color: var(--thinka-page);
+  color: var(--thinka-text);
+  padding: 12px 14px;
   margin: 0 3ex;
   font-size: large;
+  font-family: var(--thinka-mono);
   overflow: auto;
   max-height: 200px;
+  border-radius: var(--thinka-radius-sm);
+  border: 2px solid var(--thinka-panel);
 }
 
 img[src$="help.png"] {
@@ -81,71 +275,122 @@ html[dir="RTL"] .mirrorImg {
 }
 
 #languageMenu {
-  margin: 16px 0;
+  margin: 8px 0;
+  padding: 8px 14px;
+  border: 1px solid rgba(248, 250, 252, 0.14);
+  border-radius: var(--thinka-radius-pill);
+  background: var(--thinka-surface);
+  color: var(--thinka-text-strong);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.thinka-header #languageMenu {
+  background: var(--thinka-surface);
+  border-color: rgba(248, 250, 252, 0.14);
+  color: var(--thinka-text-strong);
+}
+
+#languageMenu:focus {
+  outline: none;
+  box-shadow: var(--thinka-focus);
 }
 
 xml {
   display: none;
 }
 
-/* Buttons */
+/* Buttons — orange glow pills like thinka.org.za CTAs. */
 button {
   margin: 5px;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: var(--thinka-radius-pill);
+  border: 1px solid var(--thinka-line);
   font-size: large;
-  background-color: #eee;
-  color: #000;
-}
-button.primary {
-  border: 1px solid #dd4b39;
-  background-color: #dd4b39;
-  color: #fff;
-}
-button.secondary {
-  border: 1px solid #4d90fe;
-  background-color: #4d90fe;
-  color: #fff;
-}
-button.primary>img,
-button.secondary>img {
-  opacity: 1;
-}
-button>img {
-  opacity: .6;
-  vertical-align: text-bottom;
-}
-button:hover:not(:disabled)>img {
-  opacity: 1;
-}
-button:active:not(:disabled) {
-  border: 1px solid #888 !important;
-}
-button:hover:not(:disabled) {
-  box-shadow: 2px 2px 5px #888;
+  font-family: var(--thinka-display);
+  font-weight: 600;
+  background-color: var(--thinka-paper);
+  color: var(--thinka-ink);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
 }
 
-/* Dialogs */
+button.primary {
+  border: 0;
+  background-color: var(--thinka-orange);
+  color: var(--thinka-text-strong);
+  box-shadow: 0 0 22px rgba(255, 69, 0, 0.4);
+}
+
+button.secondary {
+  border: 0;
+  background-color: var(--thinka-navy-accent);
+  color: var(--thinka-text-strong);
+}
+
+button.primary > img,
+button.secondary > img {
+  opacity: 1;
+}
+
+button > img {
+  opacity: 0.7;
+  vertical-align: text-bottom;
+}
+
+button:hover:not(:disabled) > img {
+  opacity: 1;
+}
+
+button:active:not(:disabled) {
+  border-color: transparent !important;
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+button:hover:not(:disabled) {
+  box-shadow: var(--thinka-shadow-hover);
+  transform: translateY(-1px);
+}
+
+button.primary:hover:not(:disabled) {
+  background-color: var(--thinka-orange-hot);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: var(--thinka-focus);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Dialogs — dark marketing cards, high-contrast type. */
 #dialog {
   visibility: hidden;
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #ccc;
+  background-color: var(--thinka-surface);
+  color: var(--thinka-text);
+  border: 1px solid rgba(248, 250, 252, 0.08);
   position: absolute;
-  border-radius: 8px;
-  box-shadow: 5px 5px 5px #888;
-  padding: 10px;
+  border-radius: var(--thinka-radius);
+  box-shadow: var(--thinka-shadow);
+  padding: 12px 14px 16px;
 }
+
 #dialogBorder {
   visibility: hidden;
   position: absolute;
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #000;
-  border-radius: 6px;
-  box-shadow: 5px 5px 5px #888;
+  background-color: var(--thinka-panel);
+  color: var(--thinka-text);
+  border: 2px solid var(--thinka-orange);
+  border-radius: 18px;
+  box-shadow: var(--thinka-shadow-hover);
 }
+
 #dialogShadow {
   visibility: hidden;
   position: fixed;
@@ -154,13 +399,15 @@ button:hover:not(:disabled) {
   height: 100%;
   width: 100%;
   background-color: #000;
-  opacity: .3
+  opacity: 0.55;
 }
+
 .dialogAnimate {
   transition-property: width height left top opacity;
-  transition-duration: .2s;
+  transition-duration: 0.2s;
   transition-timing-function: linear;
 }
+
 .dialogHiddenContent {
   visibility: hidden;
   position: absolute;
@@ -168,24 +415,29 @@ button:hover:not(:disabled) {
   left: 0;
   z-index: -1;
 }
+
 #dialogHeader {
-  height: 25px;
-  margin: -10px -10px 15px;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  background-color: #ddd;
+  height: 28px;
+  margin: -12px -14px 16px;
+  border-top-left-radius: 21px;
+  border-top-right-radius: 21px;
+  background: linear-gradient(90deg, var(--thinka-page) 0%, var(--thinka-surface) 60%, var(--thinka-orange) 100%);
   cursor: move;
 }
+
 #dialog button {
   min-width: 4em;
 }
+
 .readonly .blocklyMainBackground {
   stroke: none;
 }
-#galleryForm>header {
+
+#galleryForm > header {
   font-size: larger;
 }
-#galleryForm>* {
+
+#galleryForm > * {
   margin-top: 1em;
   margin-left: 1em;
   margin-right: 1em;
@@ -197,21 +449,27 @@ button:hover:not(:disabled) {
   width: 21px;
   background-image: url(icons.png);
 }
+
 .link {
   background-position: 0 0;
 }
+
 .camera {
   background-position: -21px 0;
 }
+
 .stop {
   background-position: -42px 0;
 }
+
 .run {
   background-position: -63px 0;
 }
+
 .gallery {
   background-position: -63px -21px;
 }
+
 .close {
   background-position: -42px -42px;
 }

@@ -52,6 +52,7 @@ common:
 test:
 	node build/test_teacher_unlock.js
 	node build/test_offline_first.js
+	node build/test_thinka_theme.js
 
 deps:
 	$(foreach bin,$(REQUIRED_BINS),\

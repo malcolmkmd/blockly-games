@@ -6,6 +6,8 @@ This product is **offline-first**. After a build, the games run from a local fol
 
 The shared teacher password (default `thinka`, set in `appengine/src/thinka.config.js`) unlocks sequential level locks. Progress and unlocks stay in the browser’s `localStorage`.
 
+The UI uses the **Thinka.org.za** visual system: green-black surfaces (`#030A03`), orange glow CTAs (`#FF4500`), and playful tile accents. The hub follows the marketing look; in-game Blockly workspaces stay light so canvases stay readable. Tokens live in `appengine/common/thinka-theme.css`. Fredoka and Nunito are bundled under `appengine/common/fonts/` (no CDN). CSS is static — rebuild with `make games` after JavaScript or HTML-template (`appengine/**/src/*.js`) changes.
+
 ## Requirements (build machine only)
 
 `make deps` downloads libraries. You need:
@@ -19,7 +21,7 @@ Runtime play needs only a web browser.
 ```bash
 make deps      # download Blockly, Ace, SoundJS, JS-Interpreter, Closure Compiler
 make games     # compile each game into appengine/<game>/generated/compressed.js
-make test      # teacher-unlock rules + offline-first guardrails
+make test      # teacher-unlock rules + offline-first + theme guardrails
 make offline   # write offline/thinka-blockly-games.zip
 ```
 
@@ -69,4 +71,4 @@ Edit `ThinkaConfig.TEACHER_PASSWORD` in `appengine/src/thinka.config.js`, then `
 
 ## License
 
-Apache-2.0. Upstream Blockly Games is Copyright Google LLC. Thinka classroom additions (teacher unlock, offline-first packaging) follow the same license header style.
+Apache-2.0. Upstream Blockly Games is Copyright Google LLC. Thinka classroom additions (teacher unlock, offline-first packaging, visual theme) follow the same license header style.

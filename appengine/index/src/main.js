@@ -31,6 +31,7 @@ function init() {
     {lang: BlocklyGames.LANG,
      html: BlocklyGames.IS_HTML,
      rtl: BlocklyGames.IS_RTL});
+  document.body.classList.add('thinka-hub');
 
   BlocklyGames.init('');
 
@@ -57,62 +58,24 @@ function init() {
   for (let i = 0; i < levelsDone.length; i++) {
     const app = APPS[i];
     const denominator = (i === 0) ? 1 : BlocklyGames.MAX_LEVEL;
-    const angle = levelsDone[i] / denominator * 270;
-    if (angle) {
-      setTimeout(animateGauge, 1500, app, 0, angle);
-    } else {
-      // Remove gauge if zero, since IE renders a stub.
-      const path = BlocklyGames.getElementById('gauge-' + app);
-      path.parentNode.removeChild(path);
+    const done = levelsDone[i];
+    const bar = BlocklyGames.getElementById('progress-' + app);
+    const label = BlocklyGames.getElementById('progress-label-' + app);
+    const card = BlocklyGames.getElementById('card-' + app);
+    const pct = denominator ? (done / denominator) * 100 : 0;
+    if (bar) {
+      bar.style.width = pct + '%';
+      if (done >= denominator && done > 0) {
+        bar.classList.add('is-complete');
+        if (card) {
+          card.classList.add('thinka-card--done');
+        }
+      }
+    }
+    if (label) {
+      label.textContent = done + ' / ' + denominator;
     }
   }
-}
-
-/**
- * Animate a gauge from zero to a target value.
- * @param {string} app Name of application.
- * @param {number} cur Current angle of gauge in degrees.
- * @param {number} max Final angle of gauge in degrees.
- */
-function animateGauge(app, cur, max) {
-  const step = 4;
-  cur += step;
-  drawGauge(app, Math.min(cur, max));
-  if (cur < max) {
-    setTimeout(animateGauge, 10, app, cur, max);
-  }
-}
-
-/**
- * Draw the gauge for an app.
- * @param {string} app Name of application.
- * @param {number} angle Angle of gauge in degrees.
- */
-function drawGauge(app, angle) {
-  const xOffset = 150;
-  const yOffset = 60;
-  const radius = 52.75;
-  const theta0 = toRadians(angle - 45);
-  const x = xOffset - Math.cos(theta0) * radius;
-  const y = yOffset - Math.sin(theta0) * radius;
-  const flag = angle > 180 ? 1 : 0;
-  // The starting point is at angle zero.
-  const theta1 = toRadians(0 - 45);
-  const mx = xOffset - Math.cos(theta1) * radius;
-  const my = yOffset - Math.sin(theta1) * radius;
-  const path = BlocklyGames.getElementById('gauge-' + app);
-  path.setAttribute('d',
-      ['M', mx, my, 'A', radius, radius, 0, flag, 1, x, y].join(' '));
-}
-
-/**
- * Converts degrees to radians.
- * Copied from Closure's goog.math.toRadians.
- * @param {number} angleDegrees Angle in degrees.
- * @return {number} Angle in radians.
- */
-function toRadians(angleDegrees) {
-  return angleDegrees * Math.PI / 180;
 }
 
 /**

@@ -203,6 +203,7 @@ BlocklyGames.LEVEL =
  * @param {string} title Text for the page title.
  */
 BlocklyGames.init = function(title) {
+  document.body.classList.add('thinka-app');
   document.title = BlocklyGames.getMsg('Games.name', false) +
       (title && ' : ') + title;
 

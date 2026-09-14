@@ -4,7 +4,7 @@
 		"locale": "en",
 		"messagedocumentation": "qqq"
 	},
-	"Games.name": "Blockly Games",
+	"Games.name": "Thinka",
 	"Games.puzzle": "Puzzle",
 	"Games.maze": "Maze",
 	"Games.bird": "Bird",
@@ -44,7 +44,7 @@
 	"Games.congratulations": "Congratulations!",
 	"Games.helpAbort": "This level is extremely difficult. Would you like to skip it and go onto the next game? You can always come back later.",
 	"Index.clear": "Delete all your solutions?",
-	"Index.subTitle": "Games for tomorrow's programmers.",
+	"Index.subTitle": "Code. Build. Innovate.",
 	"Index.moreInfo": "Info for educators...",
 	"Index.startOver": "Want to start over?",
 	"Index.clearData": "Clear data",

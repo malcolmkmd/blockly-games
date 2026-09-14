@@ -7,12 +7,15 @@ body {
   bottom: 25px;
   height: 15px;
   width: 100px;
-  border: 1px solid #ddd;
+  border: 2px solid var(--thinka-line);
+  border-radius: var(--thinka-radius-pill);
+  overflow: hidden;
+  background: var(--thinka-cream-warm);
 }
 #graphValue {
   height: 15px;
   width: 0;
-  background-color: #0d0;
+  background-color: var(--thinka-success);
   transition-property: width;
   transition-duration: 1s;
 }

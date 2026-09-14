@@ -21,7 +21,7 @@ html[dir="RTL"] #capacityBubble {
   color: #fff;
   padding: 5px 1em;
   border-radius: 15px;
-  background-color: rgba(64,64,64,.7);
+  background-color: rgba(10, 22, 40, 0.82);
   font-size: large;
 }
 .capacityNumber {
@@ -44,8 +44,8 @@ html[dir="RTL"] #pegSpin {
 
 .helpMenuFake {
   border-radius: 4px;
-  background-color: #bfcdde;
-  color: #000;
+  background-color: var(--thinka-blue-soft);
+  color: var(--thinka-navy);
   padding: 0 1ex;
   cursor: default;
 }
@@ -87,7 +87,7 @@ html[dir="RTL"] button.primary {
   position: relative;
 }
 #pegmanButton:active {
-  border: 1px solid #ddd !important;
+  border: 2px solid var(--thinka-navy) !important;
 }
 #pegmanButton>img {
   margin-left: -0.5ex;
@@ -110,17 +110,17 @@ html[dir="RTL"] #pegmanButton>span {
   margin-right: -15px;
 }
 #pegmanMenu {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px #888;
+  border: 2px solid var(--thinka-line);
+  border-radius: var(--thinka-radius-sm);
+  box-shadow: var(--thinka-shadow);
   display: none;
   position: absolute;
 }
 #pegmanMenu>div {
-  background-color: #fff;
+  background-color: var(--thinka-paper);
 }
 #pegmanMenu>div:hover {
-  background-color: #57e;
+  background-color: var(--thinka-blue-soft);
 }
 #pegmanMenu>div>img {
   height: 38px;

@@ -40,7 +40,7 @@ BlocklyGames.html.headerBar = function(ij, appName, levelLinkSuffix,
     farLeftHtml = ' &nbsp; ' + farLeftHtml;
   }
   return `
-<table width="100%">
+<table class="thinka-header" width="100%">
   <tr>
     <td>
       <h1>
@@ -59,7 +59,7 @@ BlocklyGames.html.headerBar = function(ij, appName, levelLinkSuffix,
 };
 
 /**
- * Print the title span (Blockly Games : AppName).
+ * Print the title span (Thinka : AppName).
  * @param {!Object} ij Injected options.
  * @param {string} appName Name of application.
  * @returns {string} HTML.
@@ -68,7 +68,7 @@ BlocklyGames.html.headerBar = function(ij, appName, levelLinkSuffix,
 BlocklyGames.html.titleSpan_ = function(ij, appName) {
   return `
 <span id="title">
-  <a href="${ij.html ? 'index.html' : './'}?lang=${ij.lang}">${BlocklyGames.getMsg('Games.name', true)}</a> : ${appName}
+  <a href="${ij.html ? 'index.html' : './'}?lang=${ij.lang}">${BlocklyGames.getMsg('Games.name', true)}</a><span class="thinka-header-sep" aria-hidden="true"></span><span class="thinka-app-name">${appName}</span>
 </span>
 `;
 };
@@ -81,7 +81,7 @@ BlocklyGames.html.titleSpan_ = function(ij, appName) {
  * @private
  */
 BlocklyGames.html.levelLinks_ = function(ij, suffix) {
-  let html = ' &nbsp ';
+  let html = '<nav class="thinka-levels" aria-label="Levels">';
   for (let i = 1; i <= ij.maxLevel; i++) {
     let url = `?lang=${ij.lang}&level=${i}`;
     if (suffix) {
@@ -96,6 +96,7 @@ BlocklyGames.html.levelLinks_ = function(ij, suffix) {
       html += `<a class="level_dot" id="level${i}" href="${url}"></a>`;
     }
   }
+  html += '</nav>';
   return html;
 };
 
@@ -119,16 +120,17 @@ ${BlocklyGames.html.teacherUnlockDialog_()}
  */
 BlocklyGames.html.teacherUnlockDialog_ = function() {
   return `
-<div id="dialogTeacherUnlock" class="dialogHiddenContent">
-  <div id="teacherUnlockTitle" style="font-size: large; margin: 1em;">This level is locked</div>
-  <div style="margin: 1em;">Ask a teacher to type the password to play it.</div>
+<div id="dialogTeacherUnlock" class="dialogHiddenContent thinka-unlock">
+  <div class="thinka-unlock-badge" aria-hidden="true"></div>
+  <div id="teacherUnlockTitle" class="thinka-unlock-title">This level is locked</div>
+  <div class="thinka-unlock-copy">Ask a teacher to type the password to play it.</div>
   <form id="teacherUnlockForm" style="margin: 1em;">
     <label for="teacherUnlockPassword">Password:</label>
     <input type="password" id="teacherUnlockPassword" autocomplete="off" spellcheck="false">
     <div id="teacherUnlockError"></div>
     <div class="farSide" style="padding: 1ex 0 0">
       <button type="button" id="teacherUnlockCancel">${BlocklyGames.esc(Blockly.Msg['DIALOG_CANCEL'])}</button>
-      <button type="submit" class="secondary" id="teacherUnlockOk">${BlocklyGames.esc(Blockly.Msg['DIALOG_OK'])}</button>
+      <button type="submit" class="primary" id="teacherUnlockOk">${BlocklyGames.esc(Blockly.Msg['DIALOG_OK'])}</button>
     </div>
   </form>
 </div>
@@ -148,7 +150,7 @@ BlocklyGames.html.doneDialog = function() {
   <div id="dialogDoneText" style="font-size: large; margin: 1em;"></div>
   <div id="dialogDoneButtons" class="farSide" style="padding: 1ex 3ex 0">
     <button class="addHideHandler">${BlocklyGames.esc(Blockly.Msg['DIALOG_CANCEL'])}</button>
-    <button id="doneOk" class="secondary">${BlocklyGames.esc(Blockly.Msg['DIALOG_OK'])}</button>
+    <button id="doneOk" class="primary">${BlocklyGames.esc(Blockly.Msg['DIALOG_OK'])}</button>
   </div>
 </div>
 `;

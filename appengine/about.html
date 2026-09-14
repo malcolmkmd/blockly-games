@@ -33,28 +33,32 @@ body {
   font-size: 1.1rem;
 }
 section {
-  padding: 1.4em 10% 2em;
+  padding: 1.4em 6% 2em;
+  max-width: 52em;
+  margin: 0 auto;
 }
-.thinka-about-grid {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 1em;
+.thinka-about-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin: 1.2em 0;
 }
-.thinka-about-grid td {
-  padding: 0 1em;
-  vertical-align: middle;
-}
-.thinka-about-grid img {
-  border-radius: 18px;
-  background: var(--thinka-cream-warm);
-  box-shadow: var(--thinka-shadow);
-}
-.thinka-about-grid p {
-  margin: 0;
+.thinka-about-item {
+  display: flex;
+  align-items: center;
+  gap: 1em;
   background: var(--thinka-paper);
   border: 2px solid var(--thinka-line);
+  border-radius: 18px;
+  padding: 0.85em 1.1em;
+  box-shadow: var(--thinka-shadow);
+}
+.thinka-about-item img {
+  flex: 0 0 88px;
+  width: 88px;
+  height: 88px;
   border-radius: 16px;
-  padding: 1em 1.1em;
+  background: var(--thinka-cream-warm);
 }
 footer {
   background: var(--thinka-navy);
@@ -80,83 +84,40 @@ footer a:hover {
 <section>
 <p>Thinka Games is Thinka’s classroom fork of Blockly Games. It teaches programming with colourful blocks, then steps toward real JavaScript. The pack is <strong>offline-first</strong>: after a build it runs from a folder or ZIP, with no gallery, analytics, or cloud save.</p>
 
-<table class="thinka-about-grid">
-  <tr>
-    <td>
-      <img src="index/puzzle.png" height=100 width=100 alt="">
-    </td>
-    <td>
-<p>Puzzle is a quick introduction to Blockly's shapes and how the pieces snap together.</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      <img src="index/maze.png" height=100 width=100 alt="">
-    </td>
-    <td>
-<p>Maze is an introduction to loops and conditionals. It starts simply, but
-every level is more challenging than the last.</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      <img src="index/bird.png" height=100 width=100 alt="">
-    </td>
-    <td>
-<p>Bird is a deep-dive into conditionals. Control-flow is explored with
-increasingly complex conditions.</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      <img src="index/turtle.png" height=100 width=100 alt="">
-    </td>
-    <td>
-<p>Turtle is a deep-dive into loops. Use nested loops to paint a picture.</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      <img src="index/movie.png" height=100 width=100 alt="">
-    </td>
-    <td>
-<p>Movie is an introduction to mathematical equations. Use math to animate a movie.</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      <img src="index/music.png" height=100 width=100 alt="">
-    </td>
-    <td>
-<p>Music is an introduction to functions. Use functions to compose music.</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      <img src="index/pond-tutor.png" height=100 width=100 alt="">
-    </td>
-    <td>
-<p>Pond Tutor introduces text-based programming. Levels switch back and forth
-between blocks and actual JavaScript in a text editor.</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      <img src="index/pond-duck.png" height=100 width=100 alt="">
-    </td>
-    <td>
-<p>Pond is an open-ended contest to program the smartest duck.
-Use either blocks or JavaScript.</p>
-    </td>
-  </tr>
-</table>
+<div class="thinka-about-list">
+  <article class="thinka-about-item">
+    <img src="index/puzzle.png" height=88 width=88 alt="">
+    <p>Puzzle is a quick introduction to Blockly's shapes and how the pieces snap together.</p>
+  </article>
+  <article class="thinka-about-item">
+    <img src="index/maze.png" height=88 width=88 alt="">
+    <p>Maze is an introduction to loops and conditionals. It starts simply, but every level is more challenging than the last.</p>
+  </article>
+  <article class="thinka-about-item">
+    <img src="index/bird.png" height=88 width=88 alt="">
+    <p>Bird is a deep-dive into conditionals. Control-flow is explored with increasingly complex conditions.</p>
+  </article>
+  <article class="thinka-about-item">
+    <img src="index/turtle.png" height=88 width=88 alt="">
+    <p>Turtle is a deep-dive into loops. Use nested loops to paint a picture.</p>
+  </article>
+  <article class="thinka-about-item">
+    <img src="index/movie.png" height=88 width=88 alt="">
+    <p>Movie is an introduction to mathematical equations. Use math to animate a movie.</p>
+  </article>
+  <article class="thinka-about-item">
+    <img src="index/music.png" height=88 width=88 alt="">
+    <p>Music is an introduction to functions. Use functions to compose music.</p>
+  </article>
+  <article class="thinka-about-item">
+    <img src="index/pond-tutor.png" height=88 width=88 alt="">
+    <p>Pond Tutor introduces text-based programming. Levels switch back and forth between blocks and actual JavaScript in a text editor.</p>
+  </article>
+  <article class="thinka-about-item">
+    <img src="index/pond-duck.png" height=88 width=88 alt="">
+    <p>Pond is an open-ended contest to program the smartest duck. Use either blocks or JavaScript.</p>
+  </article>
+</div>
 
 <p>Levels unlock as you go. Teachers can type the shared classroom password to open a locked level. Progress stays in this browser’s local storage.</p>
 

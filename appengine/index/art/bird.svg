@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" aria-hidden="true">
+  <defs>
+    <radialGradient id="birdGlow" cx="50%" cy="40%" r="62%">
+      <stop offset="0%" stop-color="#60A5FA" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="240" height="240" rx="52" fill="#08141F"/>
+  <rect width="240" height="240" rx="52" fill="url(#birdGlow)"/>
+  <ellipse cx="70" cy="72" rx="28" ry="12" fill="#93C5FD" opacity=".55"/>
+  <ellipse cx="176" cy="188" rx="34" ry="12" fill="#93C5FD" opacity=".35"/>
+  <path d="M48 128 C78 88 118 96 132 114 C150 88 198 96 204 128 C176 118 150 128 132 142 C110 168 72 160 48 128Z" fill="#60A5FA"/>
+  <path d="M132 114 C150 88 198 96 204 128 C176 118 150 128 132 142Z" fill="#93C5FD"/>
+  <circle cx="86" cy="118" r="6" fill="#031666"/>
+  <path d="M48 128 L28 120 L48 136Z" fill="#FACC15"/>
+</svg>

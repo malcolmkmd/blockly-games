@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" aria-hidden="true">
+  <defs>
+    <radialGradient id="tutorGlow" cx="50%" cy="40%" r="62%">
+      <stop offset="0%" stop-color="#60A5FA" stop-opacity=".28"/>
+      <stop offset="70%" stop-color="#FF5A1F" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#031666" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="240" height="240" rx="52" fill="#071018"/>
+  <rect width="240" height="240" rx="52" fill="url(#tutorGlow)"/>
+  <ellipse cx="120" cy="176" rx="78" ry="18" fill="#031666"/>
+  <ellipse cx="120" cy="176" rx="58" ry="10" fill="#1D4ED8" opacity=".55"/>
+  <path d="M150 92 C178 92 186 122 150 128 C186 132 168 164 128 150 C118 176 78 168 84 136 C52 136 58 96 92 104 C96 72 128 70 150 92Z" fill="#FF5A1F"/>
+  <circle cx="148" cy="108" r="6" fill="#071018"/>
+  <path d="M168 114 L192 108 L168 124Z" fill="#FACC15"/>
+</svg>

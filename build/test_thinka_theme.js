@@ -74,13 +74,39 @@ test('bundled fonts ship next to the theme', () => {
   }
 });
 
-test('hub markup is card-based and Thinka-named', () => {
+test('hub markup is a game menu with featured play path', () => {
   const html = read('appengine/index/src/html.js');
   assert.match(html, /thinka-card/);
-  assert.match(html, /thinka/);
+  assert.match(html, /thinka-featured/);
+  assert.match(html, /thinkaPlayNow/);
+  assert.match(html, /index\/art\/maze\.svg/);
+  assert.match(html, /id="card-\$\{app\}"/);
+  assert.match(html, /appLink_\(ij, 'puzzle'/);
+  assert.match(html, /appLink_\(ij, 'maze'/);
+  assert.match(html, /appLink_\(ij, 'bird'/);
+  assert.match(html, /appLink_\(ij, 'turtle'/);
+  assert.match(html, /appLink_\(ij, 'movie'/);
+  assert.match(html, /appLink_\(ij, 'music'/);
+  assert.match(html, /appLink_\(ij, 'pond-tutor'/);
+  assert.match(html, /appLink_\(ij, 'pond-duck'/);
+  assert.match(html, /thinka-stars/);
   assert.doesNotMatch(html, /title\.svg/);
+  assert.doesNotMatch(html, /thinka-hero-title/);
   const index = read('appengine/index.html');
   assert.match(index, /Thinka Games/);
+});
+
+test('hub ships local illustrated art for every game', () => {
+  const dir = path.join(ROOT, 'appengine', 'index', 'art');
+  for (const name of ['puzzle.svg', 'maze.svg', 'bird.svg', 'turtle.svg',
+                     'movie.svg', 'music.svg', 'pond-tutor.svg',
+                     'pond-duck.svg']) {
+    const full = path.join(dir, name);
+    assert.strictEqual(fs.existsSync(full), true, name);
+    const svg = fs.readFileSync(full, 'utf8');
+    assert.match(svg, /<svg/);
+    assert.doesNotMatch(svg, /fonts\.googleapis/);
+  }
 });
 
 test('runtime CSS/HTML do not require a CDN', () => {

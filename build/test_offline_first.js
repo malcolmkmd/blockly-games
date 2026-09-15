@@ -44,6 +44,15 @@ function read(rel) {
   return fs.readFileSync(path.join(ROOT, rel), 'utf8');
 }
 
+test('index hub does not depend on compiled compressed.js', () => {
+  const index = read('appengine/index.html');
+  assert.doesNotMatch(index, /boot\.js/);
+  assert.doesNotMatch(index, /compressed\.js/);
+  assert.match(index, /index\/hub\.js/);
+  assert.strictEqual(fs.existsSync(path.join(ROOT, 'appengine/index.html')), true);
+  assert.strictEqual(fs.existsSync(path.join(ROOT, 'appengine/index/hub.js')), true);
+});
+
 test('IS_HTML is hardcoded true', () => {
   const src = read('appengine/src/lib-games.js');
   assert.match(src, /BlocklyGames\.IS_HTML\s*=\s*true/);

@@ -74,26 +74,42 @@ test('bundled fonts ship next to the theme', () => {
   }
 });
 
-test('hub markup is a game menu with featured play path', () => {
+test('repo-root index redirects into the static hub', () => {
+  const root = read('index.html');
+  assert.match(root, /appengine\/index\.html/);
+  assert.match(root, /location\.replace\('appengine\/index\.html'\)/);
+  assert.match(root, /#030A03/);
+  assert.doesNotMatch(root, /id="path"/);
+});
+
+test('hub markup is a static game menu with featured play path', () => {
   const html = read('appengine/index/src/html.js');
   assert.match(html, /thinka-card/);
   assert.match(html, /thinka-featured/);
   assert.match(html, /thinkaPlayNow/);
   assert.match(html, /index\/art\/maze\.svg/);
-  assert.match(html, /id="card-\$\{app\}"/);
-  assert.match(html, /appLink_\(ij, 'puzzle'/);
-  assert.match(html, /appLink_\(ij, 'maze'/);
-  assert.match(html, /appLink_\(ij, 'bird'/);
-  assert.match(html, /appLink_\(ij, 'turtle'/);
-  assert.match(html, /appLink_\(ij, 'movie'/);
-  assert.match(html, /appLink_\(ij, 'music'/);
-  assert.match(html, /appLink_\(ij, 'pond-tutor'/);
-  assert.match(html, /appLink_\(ij, 'pond-duck'/);
   assert.match(html, /thinka-stars/);
   assert.doesNotMatch(html, /title\.svg/);
-  assert.doesNotMatch(html, /thinka-hero-title/);
   const index = read('appengine/index.html');
   assert.match(index, /Thinka Games/);
+  assert.match(index, /thinka-card--maze/);
+  assert.match(index, /thinkaFeatured/);
+  assert.match(index, /index\/art\/maze\.svg/);
+  assert.match(index, /index\/hub\.js/);
+  assert.doesNotMatch(index, /boot\.js/);
+  assert.doesNotMatch(index, /compressed\.js/);
+  assert.doesNotMatch(index, /id="path"/);
+});
+
+test('hub HTML is standalone and never loads compressed.js', () => {
+  const boot = read('appengine/common/boot.js');
+  assert.match(boot, /appName === 'index'/);
+  assert.match(boot, /index\/hub\.js/);
+  const hub = read('appengine/index/hub.js');
+  assert.match(hub, /progress-' \+ app/);
+  assert.match(hub, /detectLanguage/);
+  assert.match(hub, /decorateFeatured/);
+  assert.doesNotMatch(hub, /gauge-/);
 });
 
 test('hub ships local illustrated art for every game', () => {

@@ -6,7 +6,20 @@ This product is **offline-first**. After a build, the games run from a local fol
 
 The shared teacher password (default `thinka`, set in `appengine/src/thinka.config.js`) unlocks sequential level locks. Progress and unlocks stay in the browser’s `localStorage`.
 
-The UI uses the **Thinka.org.za** visual system: green-black surfaces (`#030A03`), orange glow CTAs (`#FF4500`), and playful tile accents. The hub follows the marketing look; in-game Blockly workspaces stay light so canvases stay readable. Tokens live in `appengine/common/thinka-theme.css`. Fredoka and Nunito are bundled under `appengine/common/fonts/` (no CDN). CSS is static — rebuild with `make games` after JavaScript or HTML-template (`appengine/**/src/*.js`) changes.
+The UI uses the **Thinka.org.za** visual system: green-black surfaces (`#030A03`), orange glow CTAs (`#FF4500`), and playful tile accents. The hub is **static HTML** (`appengine/index.html` + `index/hub.js`) so it looks right without `make games`. In-game Blockly workspaces stay light. Tokens live in `appengine/common/thinka-theme.css`. Fredoka and Nunito are bundled under `appengine/common/fonts/` (no CDN). Rebuild with `make games` after changing a **game** template (`appengine/{maze,bird,...}/src/*.js`).
+
+Serve the hub at `http://127.0.0.1:8088/` (same page as `http://[::]:8088/`):
+
+```bash
+python3 serve.py --port 8088
+```
+
+That serves `appengine/` with no-cache headers so a leftover `index/generated/compressed.js` cannot paint the old Blockly path. This also works:
+
+```bash
+cd appengine
+python3 -m http.server 8088
+```
 
 ## Requirements (build machine only)
 

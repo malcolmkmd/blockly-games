@@ -15,6 +15,7 @@ goog.provide('Maze.html');
 goog.require('BlocklyGames');
 goog.require('BlocklyGames.html');
 goog.require('BlocklyInterface');
+goog.require('Maze.Explain');
 
 
 /**
@@ -27,6 +28,8 @@ Maze.html.start = function(ij) {
 ${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.maze', true),
     BlocklyInterface.nextLevelParam, true, false,
     '<button id="pegmanButton"><img src="common/1x1.gif"><span id="pegmanButtonArrow"></span></button>')}
+
+${Maze.html.breadcrumb_(ij)}
 
 <div id="visualization">
   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="svgMaze" width="400px" height="400px">
@@ -55,7 +58,7 @@ ${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.maze', true),
   </tr>
 </table>
 
-${Maze.html.toolbox_(ij.level)}
+${Maze.html.toolbox_(ij.toolbox)}
 <div id="blockly"></div>
 
 <div id="pegmanMenu"></div>
@@ -65,33 +68,101 @@ ${BlocklyGames.html.doneDialog()}
 ${BlocklyGames.html.abortDialog()}
 
 ${Maze.html.helpDialogs_()}
+${Maze.Explain.shell()}
 `;
 };
 
 /**
- * Toolboxes for each level.
- * @param {number} level Level 1-10.
+ * Where a "type:value" toolbox entry's value belongs.  Anything not listed
+ * pins the block's DIR dropdown, which is what the maze blocks use.
+ * @private
+ */
+Maze.html.PINNED_FIELD_ = {
+  'maze_repeat': 'TIMES',
+};
+
+/**
+ * Child XML that core Blockly blocks need to arrive usable, mostly shadow
+ * number inputs so a fresh block is not full of empty sockets.
+ * @private
+ */
+Maze.html.SHADOWS_ = {
+  'controls_repeat_ext':
+      '<value name="TIMES"><shadow type="math_number">' +
+      '<field name="NUM">4</field></shadow></value>',
+  'math_arithmetic':
+      '<value name="A"><shadow type="math_number">' +
+      '<field name="NUM">1</field></shadow></value>' +
+      '<value name="B"><shadow type="math_number">' +
+      '<field name="NUM">1</field></shadow></value>',
+  'logic_compare':
+      '<value name="A"><shadow type="math_number">' +
+      '<field name="NUM">0</field></shadow></value>' +
+      '<value name="B"><shadow type="math_number">' +
+      '<field name="NUM">0</field></shadow></value>',
+  'variables_set':
+      '<value name="VALUE"><shadow type="math_number">' +
+      '<field name="NUM">0</field></shadow></value>',
+};
+
+/**
+ * The toolbox for one level.
+ * @param {!Array<string>} types Block types the level offers.  An entry of the
+ *     form 'type:value' pins that block's dropdown (or number field), e.g.
+ *     'maze_if:isPathLeft' offers only the left-hand variant.
  * @returns {string} HTML.
  * @private
  */
-Maze.html.toolbox_ = function(level) {
-  let xml = `
-<block type="maze_moveForward"></block>
-<block type="maze_turn"><field name="DIR">turnLeft</field></block>
-<block type="maze_turn"><field name="DIR">turnRight</field></block>
-`;
-  if (level > 2) {
-    xml += '<block type="maze_forever"></block>\n';
-    if (level === 6) {
-      xml += '<block type="maze_if"><field name="DIR">isPathLeft</field></block>\n';
-    } else if (level > 6) {
-      xml += '<block type="maze_if"></block>\n';
-      if (level > 8) {
-        xml += '<block type="maze_ifElse"></block>\n';
-      }
-    }
+Maze.html.toolbox_ = function(types) {
+  let xml = '';
+  for (const entry of types) {
+    xml += Maze.html.toolboxBlock_(entry);
   }
   return `<xml id="toolbox" xmlns="https://developers.google.com/blockly/xml">${xml}</xml>`;
+};
+
+/**
+ * One entry in a level's toolbox.
+ * @param {string} entry A block type, optionally 'type:value'.
+ * @returns {string} HTML.
+ * @private
+ */
+Maze.html.toolboxBlock_ = function(entry) {
+  const separator = entry.indexOf(':');
+  const type = separator === -1 ? entry : entry.substring(0, separator);
+  const value = separator === -1 ? null : entry.substring(separator + 1);
+
+  if (type === 'maze_turn' && value === null) {
+    // Turning is easier to grasp when both directions are already on offer.
+    return '<block type="maze_turn"><field name="DIR">turnLeft</field></block>\n' +
+        '<block type="maze_turn"><field name="DIR">turnRight</field></block>\n';
+  }
+
+  let inner = Maze.html.SHADOWS_[type] || '';
+  if (value !== null) {
+    const field = Maze.html.PINNED_FIELD_[type] || 'DIR';
+    inner = `<field name="${field}">${value}</field>` + inner;
+  }
+  return `<block type="${type}">${inner}</block>\n`;
+};
+
+/**
+ * Where in the curriculum this level sits, with a way back to the picker.
+ * @param {!Object} ij Injected options.
+ * @returns {string} HTML.
+ * @private
+ */
+Maze.html.breadcrumb_ = function(ij) {
+  const again = ij.hasExplainer ? `
+  <button type="button" id="explainAgain" class="mazeExplainOpen"
+      title="${BlocklyGames.getMsg('Maze.explainAgain', true)}">?</button>` : '';
+  return `
+<div id="mazeBreadcrumb">
+  <a href="${ij.html ? 'maze.html' : 'maze'}?lang=${ij.lang}">${BlocklyGames.getMsg('Maze.allStages', true)}</a>
+  &rsaquo; <a href="${ij.html ? 'maze.html' : 'maze'}?lang=${ij.lang}&amp;stage=${ij.stage}">${BlocklyGames.esc(ij.stageName)}</a>
+  &rsaquo; ${BlocklyGames.esc(ij.unitName)}${again}
+</div>
+`;
 };
 
 /**
@@ -141,6 +212,33 @@ Maze.html.toolbox_ = function(level) {
     <img src="maze/help_up.png">
   </td><td>
     ${BlocklyGames.getMsg('Maze.helpRepeat', true)}
+  </td><td>
+    <img src="common/help.png">
+  </td></tr></table>
+</div>
+<div id="dialogHelpRepeatCount" class="dialogHiddenContent">
+  <table><tr><td>
+    <img src="maze/help_up.png">
+  </td><td>
+    ${BlocklyGames.getMsg('Maze.helpRepeatCount', true)}
+  </td><td>
+    <img src="common/help.png">
+  </td></tr></table>
+</div>
+<div id="dialogHelpNestedLoops" class="dialogHiddenContent">
+  <table><tr><td>
+    <img src="maze/help_up.png">
+  </td><td>
+    ${BlocklyGames.getMsg('Maze.helpNestedLoops', true)}
+  </td><td>
+    <img src="common/help.png">
+  </td></tr></table>
+</div>
+<div id="dialogHelpCollect" class="dialogHiddenContent">
+  <table><tr><td>
+    <img src="maze/help_up.png">
+  </td><td>
+    ${BlocklyGames.getMsg('Maze.helpCollect', true)}
   </td><td>
     <img src="common/help.png">
   </td></tr></table>

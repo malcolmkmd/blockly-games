@@ -35,6 +35,8 @@ html[dir="RTL"] #capacityBubble {
   height: 50px;
   width: 49px;
   background-position: -343px 0;
+  background-size: 1029px 52px;
+  background-repeat: no-repeat;
   margin-top: 10px;
   position: absolute;
 }
@@ -62,6 +64,136 @@ img[src$="help_down.png"] {
 
 #svgMaze {
   overflow: hidden;
+  border-radius: 8px;
+}
+
+/* Gems the player has to walk over. */
+.mazeCollectible {
+  fill: url(#mazeGemGrad);
+  stroke: #b45a00;
+  stroke-width: 1.25;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+
+#mazeBreadcrumb {
+  color: #666;
+  margin: -0.5em 0 0.5em;
+}
+
+/* Stage and topic picker */
+#mazeSelect {
+  max-width: 55em;
+}
+#mazeSelectIntro {
+  color: #666;
+}
+#mazeSelectBack {
+  margin-bottom: 0.5em;
+}
+#mazeStageList {
+  display: grid;
+  gap: 0.8em;
+  grid-template-columns: repeat(auto-fill, minmax(14em, 1fr));
+}
+.mazeStageCard {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  color: inherit;
+  display: block;
+  padding: 0.8em;
+  text-decoration: none;
+}
+a.mazeStageCard:hover {
+  background-color: #f5f5f5;
+  border-color: #ddd;
+}
+.mazeStageCardEmpty {
+  background-color: #fafafa;
+}
+.mazeStageCardName {
+  font-size: 120%;
+}
+.mazeStageCardTheme {
+  color: #666;
+}
+.mazeStageCardTopics,
+.mazeStageCardProgress {
+  color: #888;
+  font-size: 90%;
+}
+.mazeStageCardBar {
+  background-color: #eee;
+  border-radius: 3px;
+  height: 6px;
+  margin-top: 0.5em;
+  overflow: hidden;
+}
+.mazeStageCardBar>span {
+  background-color: #fc3;
+  display: block;
+  height: 100%;
+}
+.mazeStage {
+  margin-bottom: 1.5em;
+}
+.mazeStageName {
+  border-bottom: 1px solid #ddd;
+  font-size: 120%;
+  font-weight: normal;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.3em;
+}
+.mazeStageTheme {
+  color: #888;
+  font-size: 80%;
+  margin-left: 0.5em;
+}
+.mazeUnit {
+  align-items: center;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin-bottom: 0.5em;
+  padding: 0.7em 1em;
+}
+.mazeUnitText {
+  flex: 1 1 16em;
+}
+.mazeUnitName {
+  font-size: 110%;
+}
+.mazeUnitDescription,
+.mazeUnitProgress {
+  color: #888;
+  font-size: 90%;
+}
+.mazeUnitLevels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+}
+a.mazeLevel {
+  border: solid 1px #ddd;
+  border-radius: 20px;
+  color: #888;
+  padding: 6px 12px;
+  text-decoration: none;
+}
+a.mazeLevel:hover {
+  background-color: #ddd;
+  color: #000;
+}
+.mazeUnitLocked,
+.mazeUnitEmpty {
+  background-color: #fafafa;
+}
+.mazeUnitLocked .mazeUnitLevels {
+  opacity: 0.4;
+}
+.mazeUnitUnlock {
+  flex: 0 0 auto;
 }
 
 /* 'Look' icon */
@@ -95,6 +227,8 @@ html[dir="RTL"] button.primary {
   height: 38px;
   width: 49px;
   background-position: -980px 0;
+  background-size: 1029px 52px;
+  background-repeat: no-repeat;
   opacity: .8;
 }
 html[dir="RTL"] #pegmanButton>img {
@@ -126,4 +260,182 @@ html[dir="RTL"] #pegmanButton>span {
   height: 38px;
   width: 49px;
   background-position: -980px 0;
+  background-size: 1029px 52px;
+  background-repeat: no-repeat;
+}
+
+/* Topic picture-book */
+#dialog:has(#dialogExplain) {
+  max-width: calc(100vw - 2em);
+}
+.mazeExplainSkip {
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: #888;
+  float: right;
+  font-size: 90%;
+  min-width: 0;
+  padding: 0 0.4em;
+}
+.mazeExplainSkip:hover {
+  background: none;
+  box-shadow: none;
+  color: #444;
+}
+.mazeExplainTitle {
+  font-size: 120%;
+  padding: 0 0.2em 0.4em;
+}
+.mazeExplainBody {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  padding: 0.4em 0.2em 1em;
+}
+.mazeExplainTalk {
+  align-items: flex-start;
+  display: flex;
+  flex: 1 1 14em;
+  gap: 0.6em;
+}
+.mazeExplainPegman {
+  background: url(pegman.png) -980px 0 / 1029px 52px no-repeat;
+  flex: 0 0 49px;
+  height: 52px;
+  width: 49px;
+}
+.mazeExplainBubble {
+  background: #fff8e1;
+  border: 1px solid #f0d78c;
+  border-radius: 12px;
+  flex: 1;
+  font-size: 110%;
+  line-height: 1.35;
+  margin: 0;
+  padding: 0.7em 0.9em;
+}
+.mazeExplainDoodle {
+  align-items: center;
+  display: flex;
+  flex: 0 1 12em;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+.mazeExplainMaze {
+  display: block;
+}
+.mazeExplainNav {
+  align-items: center;
+  display: flex;
+  gap: 0.6em;
+  justify-content: space-between;
+}
+.mazeExplainDots {
+  display: flex;
+  gap: 0.4em;
+}
+.mazeExplainDot {
+  background: #ddd;
+  border: none;
+  border-radius: 50%;
+  box-shadow: none;
+  height: 10px;
+  min-width: 0;
+  padding: 0;
+  width: 10px;
+}
+.mazeExplainDotOn {
+  background: #f9a825;
+}
+.mazeFakeBlock,
+.mazeFakeC {
+  border-radius: 6px;
+  color: #fff;
+  font: bold 13px sans-serif;
+  margin: 3px 0;
+  padding: 6px 10px;
+  width: 11em;
+}
+.mazeFakeC {
+  padding: 6px;
+}
+.mazeFakeHat {
+  padding: 2px 4px 6px;
+}
+.mazeFakeMouth {
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 6px;
+  margin: 0 0 4px 12px;
+  min-height: 1.6em;
+  padding: 4px;
+}
+.mazeFakeMove {
+  background: #a55b80;
+}
+.mazeFakeLoop {
+  background: #5ba55b;
+}
+.mazeFakeLogic {
+  background: #5b80a5;
+}
+.mazeFakeNumber {
+  background: #fff;
+  border-radius: 3px;
+  color: #333;
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0 4px;
+  text-align: center;
+}
+.mazeFakeFlag {
+  background: #c62828;
+  display: inline-block;
+  height: 10px;
+  margin-left: 2px;
+  width: 8px;
+}
+.mazeFakeWrong {
+  border: 2px solid #c62828;
+  border-radius: 8px;
+  padding: 4px;
+}
+.mazeFakeRun {
+  background: #5ba55b;
+  border-radius: 8px;
+  color: #fff;
+  font: bold 15px sans-serif;
+  padding: 8px 16px;
+}
+.mazeExplainAgain {
+  font-size: 90%;
+  margin-top: 0.3em;
+}
+.mazeExplainOpen {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  box-shadow: none;
+  color: #666;
+  font-size: 90%;
+  height: 1.6em;
+  line-height: 1.4;
+  margin-left: 0.4em;
+  min-width: 0;
+  padding: 0;
+  vertical-align: middle;
+  width: 1.6em;
+}
+.mazeExplainOpen:hover {
+  background: #f5f5f5;
+  box-shadow: none;
+}
+html[dir="RTL"] .mazeExplainSkip {
+  float: left;
+}
+html[dir="RTL"] .mazeExplainOpen {
+  margin-left: 0;
+  margin-right: 0.4em;
 }

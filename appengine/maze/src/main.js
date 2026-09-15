@@ -27,13 +27,13 @@ goog.require('BlocklyDialogs');
 goog.require('BlocklyGames');
 goog.require('BlocklyInterface');
 goog.require('Maze.Blocks');
+goog.require('Maze.Explain');
 goog.require('Maze.html');
+goog.require('Maze.Levels');
+goog.require('Maze.Select');
 
 
 BlocklyGames.storageName = 'maze';
-
-const MAX_BLOCKS =
-    [Infinity, Infinity, 2, 5, 5, 5, 5, 10, 7, 10][BlocklyGames.LEVEL - 1];
 
 // Crash type constants.
 const CRASH_STOP = 1;
@@ -41,8 +41,8 @@ const CRASH_SPIN = 2;
 const CRASH_FALL = 3;
 
 const SKINS = [
-  // sprite: A 1029x51 set of 21 avatar images.
-  // tiles: A 250x200 set of 20 map images.
+  // sprite: 4x sheet of 21 avatar frames (logical 49x52, shown at 1029x52).
+  // tiles: 4x sheet of 20 map tiles (logical 50x50, shown at 250x200).
   // background: An optional 400x450 background image, or false.
   // look: Colour of sonar-like look icon.
   // winSound: List of sounds (in various formats) to play when the player wins.
@@ -82,117 +82,29 @@ const SKIN_ID =
     BlocklyGames.getIntegerParamFromUrl('skin', 0, SKINS.length - 1);
 const SKIN = SKINS[SKIN_ID];
 
-/**
- * The types of squares in the maze, which is represented
- * as a 2D array of SquareType values.
- * @enum {number}
- */
-const SquareType = {
-  WALL: 0,
-  OPEN: 1,
-  START: 2,
-  FINISH: 3,
-};
+const SquareType = Maze.Levels.SquareType;
+const DirectionType = Maze.Levels.DirectionType;
 
-// The maze square constants defined above are inlined here
-// for ease of reading and writing the static mazes.
-const map = [
-// Level 1.
- [[0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 2, 1, 3, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0]],
-// Level 2.
- [[0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 1, 3, 0, 0, 0],
-  [0, 0, 2, 1, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0]],
-// Level 3.
- [[0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 2, 1, 1, 1, 1, 3, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0]],
-// Level 4.
 /**
- * Note, the path continues past the start and the goal in both directions.
- * This is intentionally done so users see the maze is about getting from
- * the start to the goal and not necessarily about moving over every part of
- * the maze, 'mowing the lawn' as Neil calls it.
+ * Lowest and highest stage in the curriculum.
  */
- [[0, 0, 0, 0, 0, 0, 0, 1],
-  [0, 0, 0, 0, 0, 0, 1, 1],
-  [0, 0, 0, 0, 0, 3, 1, 0],
-  [0, 0, 0, 0, 1, 1, 0, 0],
-  [0, 0, 0, 1, 1, 0, 0, 0],
-  [0, 0, 1, 1, 0, 0, 0, 0],
-  [0, 2, 1, 0, 0, 0, 0, 0],
-  [1, 1, 0, 0, 0, 0, 0, 0]],
-// Level 5.
- [[0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 3, 0, 0],
-  [0, 0, 0, 0, 0, 1, 0, 0],
-  [0, 0, 0, 0, 0, 1, 0, 0],
-  [0, 0, 0, 0, 0, 1, 0, 0],
-  [0, 0, 0, 0, 0, 1, 0, 0],
-  [0, 0, 0, 2, 1, 1, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0]],
-// Level 6.
- [[0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 1, 1, 1, 1, 1, 0, 0],
-  [0, 1, 0, 0, 0, 1, 0, 0],
-  [0, 1, 1, 3, 0, 1, 0, 0],
-  [0, 0, 0, 0, 0, 1, 0, 0],
-  [0, 2, 1, 1, 1, 1, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0]],
-// Level 7.
- [[0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 1, 1, 0],
-  [0, 2, 1, 1, 1, 1, 0, 0],
-  [0, 0, 0, 0, 0, 1, 1, 0],
-  [0, 1, 1, 3, 0, 1, 0, 0],
-  [0, 1, 0, 1, 0, 1, 0, 0],
-  [0, 1, 1, 1, 1, 1, 1, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0]],
-// Level 8.
- [[0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 1, 1, 1, 1, 0, 0, 0],
-  [0, 1, 0, 0, 1, 1, 0, 0],
-  [0, 1, 1, 1, 0, 1, 0, 0],
-  [0, 0, 0, 1, 0, 1, 0, 0],
-  [0, 2, 1, 1, 0, 3, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0]],
-// Level 9.
- [[0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 1, 1, 1, 1, 1, 0, 0],
-  [0, 0, 1, 0, 0, 0, 0, 0],
-  [3, 1, 1, 1, 1, 1, 1, 0],
-  [0, 1, 0, 1, 0, 1, 1, 0],
-  [1, 1, 1, 1, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 2, 1, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0]],
-// Level 10.
- [[0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 1, 1, 0, 3, 0, 1, 0],
-  [0, 1, 1, 0, 1, 1, 1, 0],
-  [0, 1, 0, 1, 0, 1, 0, 0],
-  [0, 1, 1, 1, 1, 1, 1, 0],
-  [0, 0, 0, 1, 0, 0, 1, 0],
-  [0, 2, 1, 1, 1, 0, 1, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0]],
-][BlocklyGames.LEVEL - 1];
+const MIN_STAGE = 1;
+const MAX_STAGE = 9;
+
+/**
+ * The stage, unit and level records this page is playing.  Populated by
+ * configureLevel_ before anything else runs, since the map's dimensions and
+ * the block limit all come from the level record.
+ */
+let stage_;
+let unit_;
+let level_;
+
+/**
+ * The maze map: a 2D array of SquareType.
+ * @type {!Array<!Array<number>>}
+ */
+let map;
 
 /**
  * Measure maze dimensions and set sizes.
@@ -200,27 +112,14 @@ const map = [
  * COLS: Number of tiles across.
  * SQUARE_SIZE: Pixel height and width of each maze square (i.e. tile).
  */
-const ROWS = map.length;
-const COLS = map[0].length;
+let ROWS;
+let COLS;
 const SQUARE_SIZE = 50;
 const PEGMAN_HEIGHT = 52;
 const PEGMAN_WIDTH = 49;
 
-const MAZE_WIDTH = SQUARE_SIZE * COLS;
-const MAZE_HEIGHT = SQUARE_SIZE * ROWS;
-const PATH_WIDTH = SQUARE_SIZE / 3;
-
-/**
- * Constants for cardinal directions.  Subsequent code assumes these are
- * in the range 0..3 and that opposites have an absolute difference of 2.
- * @enum {number}
- */
-const DirectionType = {
-  NORTH: 0,
-  EAST: 1,
-  SOUTH: 2,
-  WEST: 3,
-};
+let MAZE_WIDTH;
+let MAZE_HEIGHT;
 
 /**
  * Outcomes of running the user program.
@@ -250,7 +149,8 @@ let startDirection = DirectionType.EAST;
 const pidList = [];
 
 // Map each possible shape to a sprite.
-// Input: Binary string representing Centre/North/West/South/East squares.
+// Input: Centre, North, x+1 (East), South, x-1 (West).  The original
+// comments said West/East; the values have always been east then west.
 // Output: [x, y] coordinates of each tile's sprite in tiles.png.
 const tile_SHAPES = {
   '10010': [4, 0],  // Dead ends
@@ -287,10 +187,72 @@ let pegmanY;
 let pegmanD;
 
 /**
+ * Every collectible square on the map, as "x,y" keys.
+ * @type !Array<string>
+ */
+const collectibles = [];
+
+/**
+ * Collectibles gathered during the current run, as "x,y" keys.
+ * @type !Set<string>
+ */
+const collected = new Set();
+
+/**
  * Log of Pegman's moves.  Recorded during execution, played back for animation.
- * @type !Array<!Array<string>>
+ * @type !Array<!Array<?>>
  */
 const log = [];
+
+/**
+ * Resolve the stage, unit and level from the URL, then derive everything that
+ * depends on them: the storage name (which drives progress and locks), the
+ * number of levels in this unit, and the map's dimensions.
+ * @returns {boolean} True if a playable level was found.
+ * @private
+ */
+function configureLevel_() {
+  stage_ = BlocklyGames.getIntegerParamFromUrl('stage', MIN_STAGE, MAX_STAGE);
+  const unitId = BlocklyGames.getStringParamFromUrl('unit', '');
+  unit_ = Maze.Levels.getUnit(stage_, unitId);
+  if (!unit_ || !unit_.levels.length) {
+    // The URL named a unit that does not exist, or one with no content yet.
+    // Fall back to the first unit of the stage that has levels.
+    unit_ = Maze.Levels.firstPlayableUnit(stage_);
+  }
+  if (!unit_) {
+    return false;
+  }
+
+  // Progress for level 3 of stage 2's repeat unit lands in
+  // `maze_g2_repeat3`, so the shared progress, sequential-lock and teacher
+  // unlock helpers all work per unit without knowing about stages.
+  BlocklyGames.storageName = Maze.Levels.storageName(stage_, unit_.id);
+  BlocklyGames.setMaxLevel(unit_.levels.length);
+
+  level_ = Maze.Levels.resolve(stage_, unit_.id, BlocklyGames.LEVEL);
+  map = level_.map;
+  ROWS = map.length;
+  COLS = map[0].length;
+  MAZE_WIDTH = SQUARE_SIZE * COLS;
+  MAZE_HEIGHT = SQUARE_SIZE * ROWS;
+  startDirection = level_.startDirection === undefined ?
+      DirectionType.EAST : level_.startDirection;
+
+  collectibles.length = 0;
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      if (map[y][x] === SquareType.START) {
+        start_ = {x, y};
+      } else if (map[y][x] === SquareType.FINISH) {
+        finish_ = {x, y};
+      } else if (map[y][x] === SquareType.COLLECTIBLE) {
+        collectibles.push(x + ',' + y);
+      }
+    }
+  }
+  return true;
+}
 
 /**
  * Create and layout all the nodes for the path, scenery, Pegman, and goal.
@@ -323,7 +285,7 @@ function drawMap() {
   // Draw the tiles making up the maze map.
 
   // Return a value of '0' if the specified square is wall or out of bounds,
-  // '1' otherwise (empty, start, finish).
+  // '1' otherwise (empty, start, finish, collectible).
   const normalize = function(x, y) {
     if (x < 0 || x >= COLS || y < 0 || y >= ROWS) {
       return '0';
@@ -338,9 +300,9 @@ function drawMap() {
       // Compute the tile shape.
       let tileShape = normalize(x, y) +
           normalize(x, y - 1) +  // North.
-          normalize(x + 1, y) +  // West.
+          normalize(x + 1, y) +  // East.
           normalize(x, y + 1) +  // South.
-          normalize(x - 1, y);   // East.
+          normalize(x - 1, y);   // West.
 
       // Draw the tile.
       if (!tile_SHAPES[tileShape]) {
@@ -378,6 +340,8 @@ function drawMap() {
     }
   }
 
+  drawCollectibles_(svg);
+
   // Add finish marker.
   const finishMarker = Blockly.utils.dom.createSvgElement('image', {
       'id': 'finish',
@@ -409,13 +373,98 @@ function drawMap() {
 }
 
 /**
+ * Draw a gem on every collectible square.  Drawn as SVG rather than an image
+ * so the maze needs no extra artwork.
+ * @param {!Element} svg The maze's SVG element.
+ * @private
+ */
+function drawCollectibles_(svg) {
+  const defs = Blockly.utils.dom.createSvgElement('defs', {
+      'id': 'mazeArtDefs'
+    }, svg);
+  const grad = Blockly.utils.dom.createSvgElement('linearGradient', {
+      'id': 'mazeGemGrad',
+      'x1': '0%',
+      'y1': '0%',
+      'x2': '0%',
+      'y2': '100%',
+    }, defs);
+  Blockly.utils.dom.createSvgElement('stop', {
+      'offset': '0%',
+      'stop-color': '#ffe66a',
+    }, grad);
+  Blockly.utils.dom.createSvgElement('stop', {
+      'offset': '45%',
+      'stop-color': '#ffb400',
+    }, grad);
+  Blockly.utils.dom.createSvgElement('stop', {
+      'offset': '100%',
+      'stop-color': '#e07000',
+    }, grad);
+
+  const radius = SQUARE_SIZE / 5;
+  for (const key of collectibles) {
+    const [x, y] = key.split(',').map(Number);
+    const cx = (x + 0.5) * SQUARE_SIZE;
+    const cy = (y + 0.5) * SQUARE_SIZE;
+    Blockly.utils.dom.createSvgElement('polygon', {
+        'id': collectibleId_(x, y),
+        'class': 'mazeCollectible',
+        'points': [
+          `${cx},${cy - radius}`,
+          `${cx + radius},${cy}`,
+          `${cx},${cy + radius}`,
+          `${cx - radius},${cy}`,
+        ].join(' '),
+      }, svg);
+  }
+}
+
+/**
+ * DOM id of a collectible's gem.
+ * @param {number} x Horizontal grid position.
+ * @param {number} y Vertical grid position.
+ * @returns {string} Element id.
+ * @private
+ */
+function collectibleId_(x, y) {
+  return `collectible_${x}_${y}`;
+}
+
+/**
+ * Attach the delayed callouts this level uses.  Wait a few seconds so the
+ * student can look at the maze before a bubble appears.
+ * @private
+ */
+function startHints_() {
+  if (level_.hints && level_.hints.length) {
+    setTimeout(function() {
+      BlocklyInterface.workspace.addChangeListener(levelHelp);
+      levelHelp();
+    }, 5000);
+  }
+}
+
+/**
  * Initialize Blockly and the maze.  Called on page load.
  */
 function init() {
+  if (Maze.Select.isRequested()) {
+    Maze.Select.init();
+    return;
+  }
+  if (!configureLevel_()) {
+    // This stage has no content yet.  Send the student back to the picker.
+    location = Maze.Select.url();
+    return;
+  }
+
   Maze.Blocks.init();
 
-  // Add skin parameter when moving to next level.
-  BlocklyInterface.nextLevelParam = '&skin=' + SKIN_ID;
+  // Keep the stage, unit and skin when moving between levels.
+  BlocklyInterface.nextLevelParam =
+      `stage=${stage_}&unit=${encodeURIComponent(unit_.id)}&skin=${SKIN_ID}`;
+  BlocklyInterface.nextLevel = nextLevel;
 
   // Render the HTML.
   document.body.innerHTML = Maze.html.start(
@@ -423,9 +472,16 @@ function init() {
        level: BlocklyGames.LEVEL,
        maxLevel: BlocklyGames.MAX_LEVEL,
        skin: SKIN_ID,
+       stage: stage_,
+       stageName: Maze.Levels.getStage(stage_).name,
+       unitId: unit_.id,
+       unitName: unit_.name,
+       hasExplainer: Maze.Explain.has(unit_),
+       toolbox: level_.toolbox,
        html: BlocklyGames.IS_HTML});
 
   BlocklyInterface.init(BlocklyGames.getMsg('Games.maze', false));
+  decorateLevelLinks_();
 
   // Setup the Pegman menu.
   const pegmanImg = document.querySelector('#pegmanButton>img');
@@ -471,38 +527,30 @@ function init() {
   window.addEventListener('resize', onresize);
   onresize(null);
 
-  // Scale the workspace so level 1 = 1.3, and level 10 = 1.0.
-  const scale = 1 + (1 - (BlocklyGames.LEVEL / BlocklyGames.MAX_LEVEL)) / 3;
+  // Scale the workspace by stage, so stage 1 = 1.33 and stage 9 = 1.0.
+  const scale =
+      1 + (1 - (stage_ - MIN_STAGE) / (MAX_STAGE - MIN_STAGE)) / 3;
   BlocklyInterface.injectBlockly(
-      {'maxBlocks': MAX_BLOCKS,
+      {'maxBlocks': maxBlocks_(),
        'rtl': rtl,
        'trashcan': true,
        'zoom': {'startScale': scale}});
   BlocklyInterface.workspace.getAudioManager().load(SKIN.winSound, 'win');
   BlocklyInterface.workspace.getAudioManager().load(SKIN.crashSound, 'fail');
-  // Not really needed, there are no user-defined functions or variables.
+  // Levels from stage 6 on let students name their own functions and
+  // variables, so every name the maze API occupies has to be reserved.
   Blockly.JavaScript.addReservedWords('moveForward,moveBackward,' +
-      'turnRight,turnLeft,isPathForward,isPathRight,isPathBackward,isPathLeft');
+      'turnRight,turnLeft,isPathForward,isPathRight,isPathBackward,' +
+      'isPathLeft,notDone');
 
   drawMap();
 
-  const defaultXml =
+  const defaultXml = level_.startXml ||
       '<xml>' +
-        '<block movable="' + (BlocklyGames.LEVEL !== 1) + '" ' +
+        '<block movable="' + !level_.lockFirstBlock + '" ' +
         'type="maze_moveForward" x="70" y="70"></block>' +
       '</xml>';
   BlocklyInterface.loadBlocks(defaultXml, false);
-
-  // Locate the start and finish squares.
-  for (let y = 0; y < ROWS; y++) {
-    for (let x = 0; x < COLS; x++) {
-      if (map[y][x] === SquareType.START) {
-        start_ = {x, y};
-      } else if (map[y][x] === SquareType.FINISH) {
-        finish_ = {x, y};
-      }
-    }
-  }
 
   reset(true);
   BlocklyInterface.workspace.addChangeListener(updateCapacity);
@@ -512,17 +560,32 @@ function init() {
   BlocklyGames.bindClick('runButton', runButtonClick);
   BlocklyGames.bindClick('resetButton', resetButtonClick);
 
-  if (BlocklyGames.LEVEL === 1) {
+  if (level_.lockFirstBlock) {
     // Make connecting blocks easier for beginners.
     Blockly.SNAP_RADIUS *= 2;
     Blockly.CONNECTING_SNAP_RADIUS = Blockly.SNAP_RADIUS;
   }
-  if (BlocklyGames.LEVEL === 10) {
+
+  const again = BlocklyGames.getElementById('explainAgain');
+  if (again) {
+    BlocklyGames.bindClick(again, function(e) {
+      e.preventDefault();
+      Maze.Explain.show(stage_, unit_, again);
+    });
+  }
+
+  if (Maze.Explain.has(unit_)) {
+    // A topic explainer replaces any one-off intro dialog so two modals
+    // do not stack.  Hints wait until the book has been closed (or skipped).
+    if (!Maze.Explain.maybeAutoShow(stage_, unit_, startHints_)) {
+      startHints_();
+    }
+  } else if (level_.introDialogId) {
     if (!BlocklyGames.loadFromLocalStorage(BlocklyGames.storageName,
                                            BlocklyGames.LEVEL)) {
-      // Level 10 gets an introductory modal dialog.
+      // Some levels explain their strategy up front.
       // Skip the dialog if the user has already won.
-      const content = BlocklyGames.getElementById('dialogHelpWallFollow');
+      const content = BlocklyGames.getElementById(level_.introDialogId);
       const style = {
         'width': '30%',
         'left': '35%',
@@ -534,12 +597,7 @@ function init() {
       setTimeout(BlocklyDialogs.abortOffer, 5 * 60 * 1000);
     }
   } else {
-    // All other levels get interactive help.  But wait 5 seconds for the
-    // user to think a bit before they are told what to do.
-    setTimeout(function() {
-      BlocklyInterface.workspace.addChangeListener(levelHelp);
-      levelHelp();
-    }, 5000);
+    startHints_();
   }
 
   // Add the spinning Pegman icon to the done dialog.
@@ -558,10 +616,67 @@ function init() {
 }
 
 /**
+ * Block limit for this level.
+ * @returns {number} Maximum blocks, or Infinity if unlimited.
+ * @private
+ */
+function maxBlocks_() {
+  return level_.maxBlocks === undefined ? Infinity : level_.maxBlocks;
+}
+
+/**
+ * Mark up the level dots in the header with the stars earned on each level.
+ * @private
+ */
+function decorateLevelLinks_() {
+  for (let i = 1; i <= BlocklyGames.MAX_LEVEL; i++) {
+    const link = BlocklyGames.getElementById('level' + i);
+    const stars = BlocklyGames.loadStars(BlocklyGames.storageName, i);
+    if (link && stars) {
+      link.classList.add('level_stars' + stars);
+      link.title = starsMsg_(stars);
+    }
+  }
+}
+
+/**
+ * Human-readable summary of a star score.
+ * @param {number} stars Stars from 1 to 3.
+ * @returns {string} Message text.
+ * @private
+ */
+function starsMsg_(stars) {
+  const name = stars === 1 ? 'Maze.stars1' :
+      (stars === 2 ? 'Maze.stars2' : 'Maze.stars3');
+  return BlocklyGames.getMsg(name, false);
+}
+
+/**
+ * Go to the next level or topic.  Overrides BlocklyInterface.nextLevel so
+ * that finishing the last level of a topic rolls into the next topic rather
+ * than dropping the student back on the index page, and so that finishing a
+ * whole stage hands them back to that stage's topic list.
+ */
+function nextLevel() {
+  const next = Maze.Levels.next(stage_, unit_.id, BlocklyGames.LEVEL);
+  if (!next) {
+    location = Maze.Select.stageUrl(stage_);
+    return;
+  }
+  location = location.protocol + '//' + location.host + location.pathname +
+      `?lang=${BlocklyGames.LANG}&stage=${next.stage}` +
+      `&unit=${encodeURIComponent(next.unitId)}&level=${next.level}` +
+      `&skin=${SKIN_ID}`;
+}
+
+/**
  * When the workspace changes, update the help as needed.
  * @param {Blockly.Events.Abstract=} opt_event Custom data for event.
  */
 function levelHelp(opt_event) {
+  if (!level_.hints || !level_.hints.length) {
+    return;
+  }
   if (opt_event && opt_event.isUiEvent) {
     // Just a change to highlighting or somesuch.
     return;
@@ -579,162 +694,156 @@ function levelHelp(opt_event) {
       Blockly.Xml.workspaceToDom(BlocklyInterface.workspace));
   const toolbar =
       BlocklyInterface.workspace.getFlyout().getWorkspace().getTopBlocks(true);
-  let content = null;
-  let origin = null;
-  let style = null;
-  if (BlocklyGames.LEVEL === 1) {
-    if (BlocklyInterface.workspace.getAllBlocks(false).length < 2) {
-      content = BlocklyGames.getElementById('dialogHelpStack');
-      style = {'width': '370px', 'top': '130px'};
-      style[rtl ? 'right' : 'left'] = '215px';
-      origin = toolbar[0].getSvgRoot();
-    } else {
-      const topBlocks = BlocklyInterface.workspace.getTopBlocks(true);
-      if (topBlocks.length > 1) {
-        const xml = [
-            '<xml>',
-              '<block type="maze_moveForward" x="10" y="10">',
-                '<next>',
-                  '<block type="maze_moveForward"></block>',
-                '</next>',
-              '</block>',
-            '</xml>'];
-        BlocklyInterface.injectReadonly('sampleOneTopBlock', xml);
-        content = BlocklyGames.getElementById('dialogHelpOneTopBlock');
-        style = {'width': '360px', 'top': '120px'};
-        style[rtl ? 'right' : 'left'] = '225px';
-        origin = topBlocks[0].getSvgRoot();
-      } else if (result === ResultType.UNSET) {
-        // Show run help dialog.
-        content = BlocklyGames.getElementById('dialogHelpRun');
-        style = {'width': '360px', 'top': '410px'};
-        style[rtl ? 'right' : 'left'] = '400px';
-        origin = BlocklyGames.getElementById('runButton');
-      }
-    }
-  } else if (BlocklyGames.LEVEL === 2) {
-    if (result !== ResultType.UNSET &&
-        BlocklyGames.getElementById('runButton').style.display === 'none') {
-      content = BlocklyGames.getElementById('dialogHelpReset');
-      style = {'width': '360px', 'top': '410px'};
-      style[rtl ? 'right' : 'left'] = '400px';
-      origin = BlocklyGames.getElementById('resetButton');
-    }
-  } else if (BlocklyGames.LEVEL === 3) {
-    if (!userBlocks.includes('maze_forever')) {
-      if (!BlocklyInterface.workspace.remainingCapacity()) {
-        content = BlocklyGames.getElementById('dialogHelpCapacity');
-        style = {'width': '430px', 'top': '310px'};
-        style[rtl ? 'right' : 'left'] = '50px';
-        origin = BlocklyGames.getElementById('capacityBubble');
-      } else {
-        content = BlocklyGames.getElementById('dialogHelpRepeat');
-        style = {'width': '360px', 'top': '360px'};
-        style[rtl ? 'right' : 'left'] = '425px';
-        origin = toolbar[3].getSvgRoot();
-      }
-    }
-  } else if (BlocklyGames.LEVEL === 4) {
-    if (!BlocklyInterface.workspace.remainingCapacity() &&
-        (!userBlocks.includes('maze_forever') ||
-         BlocklyInterface.workspace.getTopBlocks(false).length > 1)) {
-      content = BlocklyGames.getElementById('dialogHelpCapacity');
-      style = {'width': '430px', 'top': '310px'};
-      style[rtl ? 'right' : 'left'] = '50px';
-      origin = BlocklyGames.getElementById('capacityBubble');
-    } else {
-      let showHelp = true;
-      // Only show help if there is not a loop with two nested blocks.
-      const loopBlocks =
-          BlocklyInterface.workspace.getBlocksByType('maze_forever', false);
-      for (let loopBlock of loopBlocks) {
-        let block = loopBlock.getInputTargetBlock('DO');
-        let i = 0;
-        while (block) {
-          i++
-          block = block.getNextBlock();
-        }
-        if (i > 1) {
-          showHelp = false;
-          break;
-        }
-      }
-      if (showHelp) {
-        content = BlocklyGames.getElementById('dialogHelpRepeatMany');
-        style = {'width': '360px', 'top': '360px'};
-        style[rtl ? 'right' : 'left'] = '425px';
-        origin = toolbar[3].getSvgRoot();
-      }
-    }
-  } else if (BlocklyGames.LEVEL === 5) {
-    if (SKIN_ID === 0 && !showPegmanMenu.activatedOnce) {
-      content = BlocklyGames.getElementById('dialogHelpSkins');
-      style = {'width': '360px', 'top': '60px'};
-      style[rtl ? 'left' : 'right'] = '20px';
-      origin = BlocklyGames.getElementById('pegmanButton');
-    }
-  } else if (BlocklyGames.LEVEL === 6) {
-    if (!userBlocks.includes('maze_if')) {
-      content = BlocklyGames.getElementById('dialogHelpIf');
-      style = {'width': '360px', 'top': '430px'};
-      style[rtl ? 'right' : 'left'] = '425px';
-      origin = toolbar[4].getSvgRoot();
-    }
-  } else if (BlocklyGames.LEVEL === 7) {
-    if (!levelHelp.initialized7_) {
-      // Create fake dropdown.
-      const span = document.createElement('span');
-      span.className = 'helpMenuFake';
-      // Safe from HTML injection due to createTextNode below.
-      const options =
-          [BlocklyGames.getMsg('Maze.pathAhead', false),
-           BlocklyGames.getMsg('Maze.pathLeft', false),
-           BlocklyGames.getMsg('Maze.pathRight', false)];
-      const prefix = Blockly.utils.string.commonWordPrefix(options);
-      const suffix = Blockly.utils.string.commonWordSuffix(options);
-      let option;
-      if (suffix) {
-        option = options[0].slice(prefix, -suffix);
-      } else {
-        option = options[0].substring(prefix);
-      }
-      // Add dropdown arrow: "option ▾" (LTR) or "▾ אופציה" (RTL)
-      span.textContent = option + ' ' + Blockly.FieldDropdown.ARROW_CHAR;
-      // Inject fake dropdown into message.
-      const container = BlocklyGames.getElementById('helpMenuText');
-      const msg = container.textContent;
-      container.textContent = '';
-      const parts = msg.split(/%\d/);
-      for (let i = 0; i < parts.length; i++) {
-        container.appendChild(document.createTextNode(parts[i]));
-        if (i !== parts.length - 1) {
-          container.appendChild(span.cloneNode(true));
-        }
-      }
-      levelHelp.initialized7_ = true;
-    }
-    // The hint says to change from 'ahead', but keep the hint visible
-    // until the user chooses 'right'.
-    if (!userBlocks.includes('isPathRight')) {
-      content = BlocklyGames.getElementById('dialogHelpMenu');
-      style = {'width': '360px', 'top': '430px'};
-      style[rtl ? 'right' : 'left'] = '425px';
-      origin = toolbar[4].getSvgRoot();
-    }
-  } else if (BlocklyGames.LEVEL === 9) {
-    if (!userBlocks.includes('maze_ifElse')) {
-      content = BlocklyGames.getElementById('dialogHelpIfElse');
-      style = {'width': '360px', 'top': '305px'};
-      style[rtl ? 'right' : 'left'] = '425px';
-      origin = toolbar[5].getSvgRoot();
+
+  let hint = null;
+  for (const candidate of level_.hints) {
+    if (hintApplies_(candidate, userBlocks)) {
+      hint = candidate;
+      break;
     }
   }
-  if (content) {
-    if (content.parentNode !== BlocklyGames.getElementById('dialog')) {
-      BlocklyDialogs.showDialog(content, origin, true, false, style, null);
-    }
-  } else {
+  if (!hint) {
     BlocklyDialogs.hideDialog(false);
+    return;
+  }
+
+  prepareHint_(hint);
+  const content = BlocklyGames.getElementById(hint.dialogId);
+  const style = {};
+  if (hint.style.width) {
+    style['width'] = hint.style.width;
+  }
+  if (hint.style.top) {
+    style['top'] = hint.style.top;
+  }
+  if (hint.style.side) {
+    style[rtl ? 'right' : 'left'] = hint.style.side;
+  }
+  if (hint.style.farSide) {
+    style[rtl ? 'left' : 'right'] = hint.style.farSide;
+  }
+
+  let origin = null;
+  if (hint.origin) {
+    origin = BlocklyGames.getElementById(hint.origin);
+  } else if (hint.kind === 'oneTopBlock') {
+    const topBlocks = BlocklyInterface.workspace.getTopBlocks(true);
+    origin = topBlocks.length ? topBlocks[0].getSvgRoot() : null;
+  } else if (hint.toolbarIndex !== undefined && toolbar[hint.toolbarIndex]) {
+    origin = toolbar[hint.toolbarIndex].getSvgRoot();
+  }
+
+  if (content.parentNode !== BlocklyGames.getElementById('dialog')) {
+    BlocklyDialogs.showDialog(content, origin, true, false, style, null);
+  }
+}
+
+/**
+ * Whether a hint is worth showing right now.
+ * @param {!Object} hint Hint spec from the level record.
+ * @param {string} userBlocks The workspace serialized as XML text.
+ * @returns {boolean} True if the hint applies.
+ * @private
+ */
+function hintApplies_(hint, userBlocks) {
+  switch (hint.kind) {
+    case 'stack':
+      return BlocklyInterface.workspace.getAllBlocks(false).length < 2;
+    case 'oneTopBlock':
+      return BlocklyInterface.workspace.getTopBlocks(true).length > 1;
+    case 'run':
+      return result === ResultType.UNSET;
+    case 'reset':
+      return result !== ResultType.UNSET &&
+          BlocklyGames.getElementById('runButton').style.display === 'none';
+    case 'capacity':
+      return !BlocklyInterface.workspace.remainingCapacity();
+    case 'skins':
+      return SKIN_ID === 0 && !showPegmanMenu.activatedOnce;
+    case 'missingBlock':
+      return !userBlocks.includes(hint.blockType);
+    case 'missingField':
+      // The hint says to change the dropdown, so keep it up until the wanted
+      // option is actually chosen.
+      return !userBlocks.includes(hint.value);
+    case 'nestedBlocks':
+      return !hasNestedBlocks_(hint.blockType, hint.minCount);
+  }
+  return false;
+}
+
+/**
+ * True if any block of the given type wraps at least minCount blocks.
+ * @param {string} blockType Block type to inspect.
+ * @param {number} minCount Required number of nested blocks.
+ * @returns {boolean} True if one such block exists.
+ * @private
+ */
+function hasNestedBlocks_(blockType, minCount) {
+  const blocks = BlocklyInterface.workspace.getBlocksByType(blockType, false);
+  for (const outer of blocks) {
+    let block = outer.getInputTargetBlock('DO');
+    let i = 0;
+    while (block) {
+      i++;
+      block = block.getNextBlock();
+    }
+    if (i >= minCount) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * One-time setup some hints need before they can be shown.
+ * @param {!Object} hint Hint spec from the level record.
+ * @private
+ */
+function prepareHint_(hint) {
+  if (hint.kind === 'oneTopBlock' && !prepareHint_.sampleReady) {
+    const xml = [
+        '<xml>',
+          '<block type="maze_moveForward" x="10" y="10">',
+            '<next>',
+              '<block type="maze_moveForward"></block>',
+            '</next>',
+          '</block>',
+        '</xml>'];
+    BlocklyInterface.injectReadonly('sampleOneTopBlock', xml);
+    prepareHint_.sampleReady = true;
+  }
+  if (hint.kind === 'missingField' && !prepareHint_.menuReady) {
+    // Create fake dropdown.
+    const span = document.createElement('span');
+    span.className = 'helpMenuFake';
+    // Safe from HTML injection due to createTextNode below.
+    const options =
+        [BlocklyGames.getMsg('Maze.pathAhead', false),
+         BlocklyGames.getMsg('Maze.pathLeft', false),
+         BlocklyGames.getMsg('Maze.pathRight', false)];
+    const prefix = Blockly.utils.string.commonWordPrefix(options);
+    const suffix = Blockly.utils.string.commonWordSuffix(options);
+    let option;
+    if (suffix) {
+      option = options[0].slice(prefix, -suffix);
+    } else {
+      option = options[0].substring(prefix);
+    }
+    // Add dropdown arrow: "option ▾" (LTR) or "▾ אופציה" (RTL)
+    span.textContent = option + ' ' + Blockly.FieldDropdown.ARROW_CHAR;
+    // Inject fake dropdown into message.
+    const container = BlocklyGames.getElementById('helpMenuText');
+    const msg = container.textContent;
+    container.textContent = '';
+    const parts = msg.split(/%\d/);
+    for (let i = 0; i < parts.length; i++) {
+      container.appendChild(document.createTextNode(parts[i]));
+      if (i !== parts.length - 1) {
+        container.appendChild(span.cloneNode(true));
+      }
+    }
+    prepareHint_.menuReady = true;
   }
 }
 
@@ -745,8 +854,9 @@ function levelHelp(opt_event) {
 function changePegman(newSkin) {
   BlocklyInterface.saveToSessionStorage();
   location = location.protocol + '//' + location.host + location.pathname +
-      '?lang=' + BlocklyGames.LANG + '&level=' + BlocklyGames.LEVEL +
-      '&skin=' + newSkin;
+      `?lang=${BlocklyGames.LANG}&stage=${stage_}` +
+      `&unit=${encodeURIComponent(unit_.id)}&level=${BlocklyGames.LEVEL}` +
+      `&skin=${newSkin}`;
 }
 
 let pegmanMenuMouse_;
@@ -811,6 +921,16 @@ function reset(first) {
   pegmanX = start_.x;
   pegmanY = start_.y;
 
+  // Put every gem back on the map.
+  collected.clear();
+  for (const key of collectibles) {
+    const [x, y] = key.split(',');
+    const gem = BlocklyGames.getElementById(collectibleId_(x, y));
+    if (gem) {
+      gem.style.display = 'inline';
+    }
+  }
+
   if (first) {
     // Opening animation.
     pegmanD = startDirection + 1;
@@ -853,8 +973,8 @@ function runButtonClick(e) {
     return;
   }
   BlocklyDialogs.hideDialog(false);
-  // Only allow a single top block on level 1.
-  if (BlocklyGames.LEVEL === 1 &&
+  // Only allow a single top block on the very first level.
+  if (level_.lockFirstBlock &&
       BlocklyInterface.workspace.getTopBlocks(false).length > 1 &&
       result !== ResultType.SUCCESS &&
       !BlocklyGames.loadFromLocalStorage(BlocklyGames.storageName,
@@ -1034,9 +1154,11 @@ function execute() {
   }
 
   // Fast animation if execution is successful.  Slow otherwise.
+  let stars = 0;
   if (result === ResultType.SUCCESS) {
     stepSpeed = 100;
-    log.push(['finish', null]);
+    stars = scoreStars_();
+    log.push(['finish', null, stars]);
   } else {
     stepSpeed = 150;
   }
@@ -1045,6 +1167,30 @@ function execute() {
   // Reset the maze and animate the transcript.
   reset(false);
   pidList.push(setTimeout(animate, 100));
+}
+
+/**
+ * Rate the solution just completed.
+ *
+ * One star for solving it at all, a second for staying within the level's
+ * target block count, and a third for picking up every gem.  Levels with no
+ * gems award the third star automatically, so a tidy solution is always worth
+ * three stars.
+ * @returns {number} Stars from 1 to 3.
+ * @private
+ */
+function scoreStars_() {
+  let stars = 1;
+  const blocksUsed = BlocklyInterface.workspace.getAllBlocks(false).length;
+  const target = level_.targetBlocks === undefined ?
+      Infinity : level_.targetBlocks;
+  if (blocksUsed <= target) {
+    stars++;
+  }
+  if (collected.size >= collectibles.length) {
+    stars++;
+  }
+  return stars;
 }
 
 /**
@@ -1080,6 +1226,15 @@ function animate() {
                [pegmanX - 1, pegmanY, pegmanD * 4]);
       pegmanX--;
       break;
+    case 'collect':
+      // Picking a gem up is part of the step onto it rather than an action of
+      // its own, so take the gem away as that step lands and carry straight on
+      // instead of spending an animation frame here.
+      pidList.push(setTimeout(function() {
+        hideCollectible_(action[2], action[3]);
+      }, stepSpeed * 3));
+      animate();
+      return;
     case 'look_north':
       scheduleLook(DirectionType.NORTH);
       break;
@@ -1111,10 +1266,51 @@ function animate() {
     case 'finish':
       scheduleFinish(true);
       BlocklyInterface.saveToLocalStorage();
-      setTimeout(BlocklyCode.congratulations, 1000);
+      BlocklyGames.saveStars(BlocklyGames.storageName, BlocklyGames.LEVEL,
+          action[2]);
+      setTimeout(function() {
+        showStars_(action[2]);
+        BlocklyCode.congratulations();
+      }, 1000);
   }
 
   pidList.push(setTimeout(animate, stepSpeed * 5));
+}
+
+/**
+ * Take a gem off the map.
+ * @param {number} x Horizontal grid position.
+ * @param {number} y Vertical grid position.
+ * @private
+ */
+function hideCollectible_(x, y) {
+  const gem = BlocklyGames.getElementById(collectibleId_(x, y));
+  if (gem) {
+    gem.style.display = 'none';
+  }
+}
+
+/**
+ * Draw the earned stars into the congratulations dialog.
+ * @param {number} stars Stars from 1 to 3.
+ * @private
+ */
+function showStars_(stars) {
+  const container = BlocklyGames.getElementById('dialogStars');
+  if (!container) {
+    return;
+  }
+  container.textContent = '';
+  for (let i = 1; i <= 3; i++) {
+    const star = document.createElement('span');
+    star.className = i <= stars ? 'mazeStar mazeStarOn' : 'mazeStar';
+    star.textContent = '\u2605';
+    container.appendChild(star);
+  }
+  const caption = document.createElement('div');
+  caption.className = 'mazeStarCaption';
+  caption.textContent = starsMsg_(stars);
+  container.appendChild(caption);
 }
 
 /**
@@ -1411,6 +1607,14 @@ function move(direction, id) {
       break;
   }
   log.push([command, id]);
+
+  // Stepping onto a gem picks it up.
+  const key = pegmanX + ',' + pegmanY;
+  if (map[pegmanY][pegmanX] === SquareType.COLLECTIBLE &&
+      !collected.has(key)) {
+    collected.add(key);
+    log.push(['collect', id, pegmanX, pegmanY]);
+  }
 }
 
 /**
@@ -1471,7 +1675,15 @@ function isPath(direction, id) {
  * @returns {boolean} True if not done, false if done.
  */
 function notDone() {
-  return pegmanX !== finish_.x || pegmanY !== finish_.y;
+  if (pegmanX !== finish_.x || pegmanY !== finish_.y) {
+    return true;
+  }
+  if (level_.requireAllCollectibles &&
+      collected.size < collectibles.length) {
+    // Standing on the flag is not enough; every gem has to be gathered.
+    return true;
+  }
+  return false;
 }
 
 BlocklyGames.callWhenLoaded(init);

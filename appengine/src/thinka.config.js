@@ -34,6 +34,19 @@ ThinkaConfig.TEACHER_PASSWORD = 'thinka';
 ThinkaConfig.UNLOCK_KEY_SUFFIX = '_teacherUnlock';
 
 /**
+ * localStorage suffix for a level's mastery star count.
+ * @type {string}
+ */
+ThinkaConfig.STARS_KEY_SUFFIX = '_stars';
+
+/**
+ * localStorage suffix for a maze topic whose picture-book explainer has
+ * already been shown (or skipped) on this browser.
+ * @type {string}
+ */
+ThinkaConfig.EXPLAINED_KEY_SUFFIX = '_explained';
+
+/**
  * localStorage key for a teacher-unlocked level.
  * @param {string} name Game storage name (maze, bird, ...).
  * @param {number} level Level number.
@@ -41,6 +54,25 @@ ThinkaConfig.UNLOCK_KEY_SUFFIX = '_teacherUnlock';
  */
 ThinkaConfig.unlockKey = function(name, level) {
   return name + level + ThinkaConfig.UNLOCK_KEY_SUFFIX;
+};
+
+/**
+ * localStorage key for a level's mastery star count.
+ * @param {string} name Game storage name (maze_g2_repeat, bird, ...).
+ * @param {number} level Level number.
+ * @returns {string} Storage key.
+ */
+ThinkaConfig.starsKey = function(name, level) {
+  return name + level + ThinkaConfig.STARS_KEY_SUFFIX;
+};
+
+/**
+ * localStorage key for a maze topic whose explainer has been seen.
+ * @param {string} name Game storage name (maze_g2_repeat, ...).
+ * @returns {string} Storage key.
+ */
+ThinkaConfig.explainedKey = function(name) {
+  return name + ThinkaConfig.EXPLAINED_KEY_SUFFIX;
 };
 
 /**
@@ -82,4 +114,29 @@ ThinkaConfig.isLevelPlayable = function(level, hasSavedLevel, hasTeacherUnlock) 
     return true;
   }
   return false;
+};
+
+/**
+ * Whether a concept unit may be entered.
+ *
+ * Units run in order, so a unit opens once the one before it is finished.
+ * The first unit is always open, and a unit the student has already started
+ * stays open.  A teacher unlock on the unit's first level opens it too, which
+ * is how a class can jump straight to the topic they are working on.
+ *
+ * @param {Object} previous The preceding unit's progress summary, or null if
+ *     this is the first unit.  Shape: {total, done}.
+ * @param {number} startedLevels How many levels of this unit have progress.
+ * @param {boolean} hasTeacherUnlock True if a teacher unlocked this unit.
+ * @returns {boolean} True if the unit is playable.
+ */
+ThinkaConfig.isUnitPlayable = function(previous, startedLevels,
+    hasTeacherUnlock) {
+  if (!previous) {
+    return true;
+  }
+  if (startedLevels > 0 || hasTeacherUnlock) {
+    return true;
+  }
+  return previous.total > 0 && previous.done >= previous.total;
 };

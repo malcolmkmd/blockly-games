@@ -145,6 +145,7 @@ BlocklyGames.html.doneDialog = function() {
   return `
 <div id="dialogDone" class="dialogHiddenContent">
   <div style="font-size: large; margin: 1em;">${BlocklyGames.getMsg('Games.congratulations', true)}</div>
+  <div id="dialogStars"></div>
   <div id="dialogLinesText" style="font-size: large; margin: 1em;"></div>
   <pre id="containerCode"></pre>
   <div id="dialogDoneText" style="font-size: large; margin: 1em;"></div>

@@ -399,6 +399,254 @@
     "desc": "callout - This advises the user to solve a maze by keeping his/her left hand in contact with the wall while proceeding through it.  The final sentence is a warning that only advanced programmers should attempt this problem, as beginners tend to get frustrated.",
     "msg": "Can you solve this complicated maze? Try following the left-hand wall. Advanced programmers only!"
   },
+  "Maze.repeatTimes": {
+    "desc": "block text - Imperative or infinitive of a verb to repeat the following commands a fixed number of times.  %1 will be replaced by a number the user types in.",
+    "msg": "repeat %1 times"
+  },
+  "Maze.repeatTimesTooltip": {
+    "desc": "tooltip - Repeat the enclosed commands a fixed number of times.",
+    "msg": "Do the enclosed actions the given number of times."
+  },
+  "Maze.whilePath": {
+    "desc": "block text - Imperative or infinitive of a verb to repeat the following commands for as long as a path exists in a direction.  This is followed by a dropdown menu of directions.",
+    "msg": "while there is a path"
+  },
+  "Maze.whilePathTooltip": {
+    "desc": "tooltip - Repeat the enclosed commands for as long as there is a path in the chosen direction.",
+    "msg": "Do the enclosed actions while there is a path in this direction."
+  },
+  "Maze.helpRepeatCount": {
+    "desc": "callout - This is shown when the counted 'repeat' block is introduced.  The word 'block' refers to a child's building block.",
+    "msg": "Reach the end of this path using only two blocks. Put a 'move forward' block inside 'repeat', then type in how many times to repeat it."
+  },
+  "Maze.helpNestedLoops": {
+    "desc": "callout - This is a hint that the user should place one 'repeat' block inside another 'repeat' block.",
+    "msg": "A 'repeat' block can go inside another 'repeat' block. Use the inner one for the steps along one side, and the outer one for the sides."
+  },
+  "Maze.helpCollect": {
+    "desc": "callout - This is shown on the first level containing gems that the player must pick up.  The player collects a gem by walking over it.",
+    "msg": "Walk over a gem to pick it up. You need every gem before the finish counts."
+  },
+  "Maze.stars1": {
+    "desc": "score - Shown when the player solved the level, but used too many blocks or missed some gems.",
+    "msg": "1 star: solved it!"
+  },
+  "Maze.stars2": {
+    "desc": "score - Shown when the player solved the level and met one of the two bonus goals (few enough blocks, or every gem).",
+    "msg": "2 stars: nearly perfect."
+  },
+  "Maze.stars3": {
+    "desc": "score - Shown when the player solved the level within the target number of blocks and collected every gem.",
+    "msg": "3 stars: perfect!"
+  },
+  "Maze.selectIntro": {
+    "desc": "instructions - Shown at the top of the screen that lists the stages of the maze curriculum.",
+    "msg": "Pick your stage."
+  },
+  "Maze.selectTopic": {
+    "desc": "instructions - Shown at the top of the screen that lists the topics within one stage.",
+    "msg": "Pick a topic. Finish a topic to open the next one."
+  },
+  "Maze.stageTopics1": {
+    "desc": "status - Shown when a stage holds exactly one topic.",
+    "msg": "1 topic"
+  },
+  "Maze.stageTopics": {
+    "desc": "status - How many topics a stage holds.  %1 is the number of topics, always two or more.",
+    "msg": "%1 topics"
+  },
+  "Maze.allStages": {
+    "desc": "link - Goes back to the screen that lists every stage.",
+    "msg": "All stages"
+  },
+  "Maze.comingSoon": {
+    "desc": "status - Shown in place of a topic's levels when that topic has no levels written yet.",
+    "msg": "Coming soon"
+  },
+  "Maze.unitProgress": {
+    "desc": "status - Progress through one topic.  %1 is levels finished, %2 is levels in the topic, %3 is stars earned, %4 is stars available.",
+    "msg": "%1 of %2 levels · %3 of %4 stars"
+  },
+  "Maze.unlockUnit": {
+    "desc": "button - Asks the teacher for a password so the class can skip ahead to a locked topic.",
+    "msg": "Unlock with teacher password"
+  },
+  "Maze.explainNext": {
+    "desc": "button - Goes to the next page of a topic's picture-book explainer.",
+    "msg": "Next"
+  },
+  "Maze.explainBack": {
+    "desc": "button - Goes to the previous page of a topic's picture-book explainer.",
+    "msg": "Back"
+  },
+  "Maze.explainPlay": {
+    "desc": "button - Closes the topic explainer so the child can start the maze.",
+    "msg": "Let's play"
+  },
+  "Maze.explainSkip": {
+    "desc": "button - Closes the topic explainer without reading the remaining pages.",
+    "msg": "Skip"
+  },
+  "Maze.explainAgain": {
+    "desc": "button - Reopens the picture-book that explains this topic.",
+    "msg": "How this works"
+  },
+  "Maze.explainSequence1": {
+    "desc": "explainer - First page of the Sequencing topic.  Keep this short enough for early readers.",
+    "msg": "A program is a list of steps. The player does them in order, from the top."
+  },
+  "Maze.explainSequence2": {
+    "desc": "explainer - Second page of the Sequencing topic.",
+    "msg": "Each block is one step. Snap them together, like a to-do list."
+  },
+  "Maze.explainSequence3": {
+    "desc": "explainer - Last page of the Sequencing topic.",
+    "msg": "Press Run to watch. If they get stuck, press Reset and try a new list."
+  },
+  "Maze.explainTurns1": {
+    "desc": "explainer - First page of the Turning topic.",
+    "msg": "The path bends. Going forward is not enough."
+  },
+  "Maze.explainTurns2": {
+    "desc": "explainer - Second page of the Turning topic.",
+    "msg": "Turn left or turn right, then move again."
+  },
+  "Maze.explainTurns3": {
+    "desc": "explainer - Last page of the Turning topic.",
+    "msg": "Think of it as: walk, turn, walk. Like following a corridor."
+  },
+  "Maze.explainDebug1": {
+    "desc": "explainer - First page of the Debugging topic.",
+    "msg": "Someone already wrote a program. It is almost right… but not quite."
+  },
+  "Maze.explainDebug2": {
+    "desc": "explainer - Second page of the Debugging topic.",
+    "msg": "Watch it run. Where does the player go the wrong way?"
+  },
+  "Maze.explainDebug3": {
+    "desc": "explainer - Last page of the Debugging topic.",
+    "msg": "Fix the mistake. Change one block, then try again. That is debugging."
+  },
+  "Maze.explainSequenceLong1": {
+    "desc": "explainer - First page of the Long sequences topic.",
+    "msg": "This path is longer. Plan the whole trip before you press Run."
+  },
+  "Maze.explainSequenceLong2": {
+    "desc": "explainer - Second page of the Long sequences topic.",
+    "msg": "Count the squares. Each square needs a 'move forward'."
+  },
+  "Maze.explainSequenceLong3": {
+    "desc": "explainer - Last page of the Long sequences topic.",
+    "msg": "If they bump a wall, count again. The list has to match the path."
+  },
+  "Maze.explainRepeat1": {
+    "desc": "explainer - First page of the Repeat loops topic.",
+    "msg": "Doing the same step many times is tiring to stack."
+  },
+  "Maze.explainRepeat2": {
+    "desc": "explainer - Second page of the Repeat loops topic.",
+    "msg": "A repeat block says: do this inside, this many times."
+  },
+  "Maze.explainRepeat3": {
+    "desc": "explainer - Last page of the Repeat loops topic.",
+    "msg": "Put 'move forward' inside 'repeat 5'. That is five steps, with two blocks."
+  },
+  "Maze.explainDebugLoops1": {
+    "desc": "explainer - First page of the Debugging loops topic.",
+    "msg": "The loop is nearly right. A number or a turn is off."
+  },
+  "Maze.explainDebugLoops2": {
+    "desc": "explainer - Second page of the Debugging loops topic.",
+    "msg": "Run it. Does the player go too far, or turn too soon?"
+  },
+  "Maze.explainDebugLoops3": {
+    "desc": "explainer - Last page of the Debugging loops topic.",
+    "msg": "Change the repeat count or the blocks inside. Then try again."
+  },
+  "Maze.explainCollect1": {
+    "desc": "explainer - First page of the Collecting topic.",
+    "msg": "Gems sit on the path. Walk over a gem to pick it up."
+  },
+  "Maze.explainCollect2": {
+    "desc": "explainer - Second page of the Collecting topic.",
+    "msg": "The flag only counts after every gem is collected."
+  },
+  "Maze.explainCollect3": {
+    "desc": "explainer - Last page of the Collecting topic.",
+    "msg": "Plan a route that visits every gem, then the flag."
+  },
+  "Maze.explainNested1": {
+    "desc": "explainer - First page of the Nested loops topic.",
+    "msg": "A square has the same side, over and over."
+  },
+  "Maze.explainNested2": {
+    "desc": "explainer - Second page of the Nested loops topic.",
+    "msg": "The inside loop walks one side. The outside loop does every side."
+  },
+  "Maze.explainNested3": {
+    "desc": "explainer - Last page of the Nested loops topic.",
+    "msg": "A loop inside a loop is a nested loop. Two loops, many steps."
+  },
+  "Maze.explainOptimise1": {
+    "desc": "explainer - First page of the Fewer blocks topic.",
+    "msg": "You already know the way. Now make the program shorter."
+  },
+  "Maze.explainOptimise2": {
+    "desc": "explainer - Second page of the Fewer blocks topic.",
+    "msg": "If you repeat the same steps, a loop can replace a long stack."
+  },
+  "Maze.explainOptimise3": {
+    "desc": "explainer - Last page of the Fewer blocks topic.",
+    "msg": "Fewer blocks can still reach the flag. That is the puzzle."
+  },
+  "Maze.explainUntil1": {
+    "desc": "explainer - First page of the Repeat until topic.",
+    "msg": "You do not have to count. Keep going until something is true."
+  },
+  "Maze.explainUntil2": {
+    "desc": "explainer - Second page of the Repeat until topic.",
+    "msg": "Repeat until the flag: walk while you are not there yet."
+  },
+  "Maze.explainUntil3": {
+    "desc": "explainer - Last page of the Repeat until topic.",
+    "msg": "The maze can be long or short. The same program still works."
+  },
+  "Maze.explainIfPath1": {
+    "desc": "explainer - First page of the If there is a path topic.",
+    "msg": "Sometimes the path splits. Look before you move."
+  },
+  "Maze.explainIfPath2": {
+    "desc": "explainer - Second page of the If there is a path topic.",
+    "msg": "If there is a path to the left, then turn left."
+  },
+  "Maze.explainIfPath3": {
+    "desc": "explainer - Last page of the If there is a path topic.",
+    "msg": "If not, skip those blocks and keep going."
+  },
+  "Maze.explainIfElse1": {
+    "desc": "explainer - First page of the If / else topic.",
+    "msg": "If one thing is true, do this. If not, do that instead."
+  },
+  "Maze.explainIfElse2": {
+    "desc": "explainer - Second page of the If / else topic.",
+    "msg": "If there is a path ahead, walk. Else, turn."
+  },
+  "Maze.explainIfElse3": {
+    "desc": "explainer - Last page of the If / else topic.",
+    "msg": "One of the two sides always runs. Never both."
+  },
+  "Maze.explainWall1": {
+    "desc": "explainer - First page of the Wall following topic.",
+    "msg": "A huge maze can still have one simple rule."
+  },
+  "Maze.explainWall2": {
+    "desc": "explainer - Second page of the Wall following topic.",
+    "msg": "Keep the wall on your left."
+  },
+  "Maze.explainWall3": {
+    "desc": "explainer - Last page of the Wall following topic.",
+    "msg": "The same program can finish mazes you have never seen."
+  },
   "Bird.noWorm": {
     "desc": "block text - Bird is not in possession of a worm.  This phrase is prefixed with 'if'.",
     "msg": "does not have worm"

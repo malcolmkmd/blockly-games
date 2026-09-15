@@ -187,7 +187,8 @@ BlocklyGames.getIntegerParamFromUrl = function(name, minValue, maxValue) {
 BlocklyGames.storageName;
 
 /**
- * Maximum number of levels.  Common to all apps.
+ * Maximum number of levels.  Default for all apps; apps whose level count
+ * varies (Maze, whose units are different lengths) call setMaxLevel.
  */
 BlocklyGames.MAX_LEVEL = 10;
 
@@ -197,6 +198,18 @@ BlocklyGames.MAX_LEVEL = 10;
  */
 BlocklyGames.LEVEL =
     BlocklyGames.getIntegerParamFromUrl('level', 1, BlocklyGames.MAX_LEVEL);
+
+/**
+ * Change the number of levels in the current app, re-clamping LEVEL against
+ * the new cap.  LEVEL is derived from the URL at load time against the default
+ * cap, so it has to be recomputed whenever the cap moves.
+ * @param {number} maxLevel New level count (at least 1).
+ */
+BlocklyGames.setMaxLevel = function(maxLevel) {
+  BlocklyGames.MAX_LEVEL = Math.max(1, maxLevel);
+  BlocklyGames.LEVEL =
+      BlocklyGames.getIntegerParamFromUrl('level', 1, BlocklyGames.MAX_LEVEL);
+};
 
 /**
  * Common startup tasks for all apps.
@@ -317,6 +330,40 @@ BlocklyGames.loadFromLocalStorage = function(name, level) {
     // Restarting Firefox fixes this, so it looks like a bug.
   }
   return xml;
+};
+
+/**
+ * Read the mastery stars earned on a level.
+ * @param {string} name Game storage name (maze_g2_repeat, bird, ...).
+ * @param {number} level Level number.
+ * @returns {number} Stars from 0 to 3.
+ */
+BlocklyGames.loadStars = function(name, level) {
+  let stars;
+  try {
+    stars = Number(window.localStorage[ThinkaConfig.starsKey(name, level)]);
+  } catch (e) {
+    // Firefox sometimes throws a SecurityError when accessing localStorage.
+  }
+  return stars > 0 ? Math.min(3, Math.floor(stars)) : 0;
+};
+
+/**
+ * Record the mastery stars earned on a level.  A weaker replay never lowers a
+ * score the student has already achieved.
+ * @param {string} name Game storage name.
+ * @param {number} level Level number.
+ * @param {number} stars Stars from 1 to 3.
+ */
+BlocklyGames.saveStars = function(name, level, stars) {
+  if (!window.localStorage || stars <= BlocklyGames.loadStars(name, level)) {
+    return;
+  }
+  try {
+    window.localStorage[ThinkaConfig.starsKey(name, level)] = String(stars);
+  } catch (e) {
+    // Ignore quota / SecurityError; the level is still marked complete.
+  }
 };
 
 /**

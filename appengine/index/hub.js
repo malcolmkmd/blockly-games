@@ -11,6 +11,21 @@
   var START_ORDER = ['maze', 'puzzle', 'bird', 'turtle', 'movie', 'music',
                      'pond-tutor', 'pond-duck'];
   var MAX_LEVEL = 10;
+  var MAZE_STORAGE = [
+    {name: 'maze_g1_sequence', levels: 10},
+    {name: 'maze_g1_turns', levels: 10},
+    {name: 'maze_g1_debug', levels: 9},
+    {name: 'maze_g2_sequence-long', levels: 10},
+    {name: 'maze_g2_repeat', levels: 10},
+    {name: 'maze_g2_debug-loops', levels: 4},
+    {name: 'maze_g3_repeat-collect', levels: 5},
+    {name: 'maze_g3_nested-loops', levels: 4},
+    {name: 'maze_g3_optimise', levels: 4},
+    {name: 'maze_g4_until', levels: 3},
+    {name: 'maze_g4_if-path', levels: 3},
+    {name: 'maze_g5_if-else', levels: 1},
+    {name: 'maze_g8_wall-follow', levels: 1}
+  ];
   var LANGS = [
     'am', 'ar', 'be', 'be-tarask', 'bg', 'bn', 'br', 'ca', 'cs', 'da', 'de',
     'el', 'en', 'eo', 'es', 'eu', 'fa', 'fi', 'fo', 'fr', 'gl', 'ha', 'he',
@@ -44,12 +59,22 @@
     return document.getElementById(id);
   }
 
-  function stored(app, level) {
+  function stored(name, level) {
     try {
-      return !!(window.localStorage && window.localStorage[app + level]);
+      return !!(window.localStorage && window.localStorage[name + level]);
     } catch (e) {
       return false;
     }
+  }
+
+  function storageNames(app) {
+    if (app === 'puzzle') {
+      return [{name: app, levels: 1}];
+    }
+    if (app === 'maze') {
+      return MAZE_STORAGE;
+    }
+    return [{name: app, levels: MAX_LEVEL}];
   }
 
   function withLang(href) {
@@ -115,7 +140,12 @@
   }
 
   function denomFor(app) {
-    return (APPS.indexOf(app) === 0) ? 1 : MAX_LEVEL;
+    var total = 0;
+    var names = storageNames(app);
+    for (var i = 0; i < names.length; i++) {
+      total += names[i].levels;
+    }
+    return total;
   }
 
   function renderStars(containerId, done, total) {
@@ -126,7 +156,9 @@
     el.innerHTML = '';
     el.setAttribute('role', 'img');
     el.setAttribute('aria-label', done + ' / ' + total);
-    for (var i = 0; i < total; i++) {
+    var slots = Math.min(total, MAX_LEVEL);
+    var lit = done ? Math.max(1, Math.floor(done / total * slots)) : 0;
+    for (var i = 0; i < slots; i++) {
       var star = document.createElement('i');
       if (i < done) {
         star.className = 'is-lit';
@@ -219,10 +251,13 @@
       var app = APPS[i];
       var denom = denomFor(app);
       var done = 0;
-      for (var j = 1; j <= MAX_LEVEL; j++) {
-        if (stored(app, j)) {
-          done++;
-          any = true;
+      var names = storageNames(app);
+      for (var n = 0; n < names.length; n++) {
+        for (var j = 1; j <= names[n].levels; j++) {
+          if (stored(names[n].name, j)) {
+            done++;
+            any = true;
+          }
         }
       }
       levelsDone[i] = done;
@@ -276,9 +311,15 @@
     }
     try {
       for (var i = 0; i < APPS.length; i++) {
-        for (var j = 1; j <= MAX_LEVEL; j++) {
-          delete window.localStorage[APPS[i] + j];
-          delete window.localStorage[APPS[i] + j + '_teacherUnlock'];
+        var names = storageNames(APPS[i]);
+        for (var n = 0; n < names.length; n++) {
+          for (var j = 1; j <= names[n].levels; j++) {
+            delete window.localStorage[names[n].name + j];
+            delete window.localStorage[
+                names[n].name + j + '_teacherUnlock'];
+            delete window.localStorage[names[n].name + j + '_stars'];
+          }
+          delete window.localStorage[names[n].name + '_explained'];
         }
       }
     } catch (e) {

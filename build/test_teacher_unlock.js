@@ -102,4 +102,41 @@ test('password unlock plus later completion does not skip further', () => {
   assert.strictEqual(playable(4, [5], [5]), false);
 });
 
+test('star keys sit next to progress keys', () => {
+  assert.strictEqual(ThinkaConfig.starsKey('maze_g2_repeat', 3),
+      'maze_g2_repeat3_stars');
+  assert.strictEqual(ThinkaConfig.starsKey('bird', 10), 'bird10_stars');
+});
+
+test('explained keys sit next to a unit\'s progress', () => {
+  assert.strictEqual(ThinkaConfig.explainedKey('maze_g2_repeat'),
+      'maze_g2_repeat_explained');
+});
+
+test('the first unit is always playable', () => {
+  assert.strictEqual(ThinkaConfig.isUnitPlayable(null, 0, false), true);
+});
+
+test('a unit stays locked until the one before it is finished', () => {
+  const half = {total: 6, done: 3};
+  const whole = {total: 6, done: 6};
+  assert.strictEqual(ThinkaConfig.isUnitPlayable(half, 0, false), false);
+  assert.strictEqual(ThinkaConfig.isUnitPlayable(whole, 0, false), true);
+});
+
+test('a started unit stays open even if the one before it regresses', () => {
+  const half = {total: 6, done: 3};
+  assert.strictEqual(ThinkaConfig.isUnitPlayable(half, 2, false), true);
+});
+
+test('the teacher password opens a locked unit', () => {
+  const none = {total: 6, done: 0};
+  assert.strictEqual(ThinkaConfig.isUnitPlayable(none, 0, true), true);
+});
+
+test('an empty preceding unit does not count as finished', () => {
+  assert.strictEqual(ThinkaConfig.isUnitPlayable({total: 0, done: 0}, 0, false),
+      false);
+});
+
 console.log('\n' + passed + ' tests passed');

@@ -169,6 +169,31 @@ html[dir="RTL"] .farSide {
   box-shadow: none;
 }
 
+/* Mastery: the more stars a level was solved with, the warmer its dot. */
+.level_stars1 {
+  background-color: #ffeab3;
+}
+.level_stars2 {
+  background-color: #ffd569;
+}
+.level_stars3 {
+  background-color: #fc3;
+}
+/* Empty for games that do not score stars, so it must not take up space. */
+#dialogStars:not(:empty) {
+  margin: 0.5em 1em;
+}
+.mazeStar {
+  color: #ddd;
+  font-size: 200%;
+  letter-spacing: 0.1em;
+}
+.mazeStarOn {
+  color: #fc3;
+}
+.mazeStarCaption {
+  color: #666;
+}
 a.level_locked:hover,
 span.level_locked:hover {
   background-color: var(--thinka-panel) !important;

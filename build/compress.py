@@ -129,22 +129,34 @@ def language(gameName, lang):
   f.close()
 
 
+# Sources one game needs from another game's directory.
+#
+# Most games store progress as "<name><level>" for levels 1 to MAX_LEVEL, so
+# the index page can size its progress gauges on its own.  Maze instead splits
+# its curriculum into one storage name per concept unit, and only Maze.Levels
+# knows the shape, so the index's build has to reach into the maze sources.
+EXTRA_GAME_SOURCES = {
+  'index': ['maze'],
+}
+
+
 def generate_uncompressed(gameName):
-  cmd = ['python3', 'third-party/closurebuilder/closurebuilder.py',
+  cmd = [sys.executable, 'third-party/closurebuilder/closurebuilder.py',
       '--root=appengine/third-party/',
       '--root=appengine/generated/',
       '--root=appengine/src/',
       '--exclude=',
       '--namespace=%s' % gameName.replace('/', '.').title()]
-  directory = gameName
-  while directory:
-    subdir = 'appengine/%s/generated/' % directory
-    if os.path.isdir(subdir):
-      cmd.append('--root=%s' % subdir)
-    subdir = 'appengine/%s/src/' % directory
-    if os.path.isdir(subdir):
-      cmd.append('--root=%s' % subdir)
-    (directory, sep, fragment) = directory.rpartition(os.path.sep)
+  directories = [gameName] + EXTRA_GAME_SOURCES.get(gameName, [])
+  for directory in directories:
+    while directory:
+      subdir = 'appengine/%s/generated/' % directory
+      if os.path.isdir(subdir):
+        cmd.append('--root=%s' % subdir)
+      subdir = 'appengine/%s/src/' % directory
+      if os.path.isdir(subdir):
+        cmd.append('--root=%s' % subdir)
+      (directory, sep, fragment) = directory.rpartition(os.path.sep)
   try:
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
   except:
@@ -208,10 +220,10 @@ def generate_compressed(gameName):
     "--js='appengine/src/*.js'",
     '--warning_level', 'QUIET',
   ]
-  directory = gameName
-  while directory:
-    cmd.append("--js='appengine/%s/src/*.js'" % directory)
-    (directory, sep, fragment) = directory.rpartition(os.path.sep)
+  for directory in [gameName] + EXTRA_GAME_SOURCES.get(gameName, []):
+    while directory:
+      cmd.append("--js='appengine/%s/src/*.js'" % directory)
+      (directory, sep, fragment) = directory.rpartition(os.path.sep)
   try:
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
   except:

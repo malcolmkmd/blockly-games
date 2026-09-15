@@ -48,6 +48,8 @@ pond-duck: common
 games: index puzzle maze bird turtle movie music pond-tutor pond-duck
 
 common:
+	@# Remove ignored output left by pre-offline builds of the deleted gallery.
+	rm -rf appengine/gallery appengine/gallery_api
 	@echo "Converting messages.js to JSON for Translatewiki."
 	python3 build/messages_to_json.py
 	@echo "Converting JSON from Translatewiki to message files."
@@ -58,6 +60,7 @@ test:
 	node build/test_teacher_unlock.js
 	node build/test_offline_first.js
 	node build/test_thinka_theme.js
+	node build/test_maze_levels.js
 
 deps:
 	$(foreach bin,$(REQUIRED_BINS),\

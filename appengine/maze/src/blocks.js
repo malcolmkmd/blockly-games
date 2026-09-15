@@ -17,6 +17,7 @@ goog.require('Blockly.JavaScript');
 goog.require('Blockly.Extensions');
 goog.require('Blockly.FieldDropdown');
 goog.require('Blockly.FieldImage');
+goog.require('Blockly.FieldNumber');
 goog.require('BlocklyGames');
 
 
@@ -174,6 +175,59 @@ Maze.Blocks.init = function() {
       "colour": LOOPS_HUE,
       "tooltip": BlocklyGames.getMsg('Maze.whileTooltip', false),
     },
+
+    // Block for a counted loop.  The message already contains %1 for the
+    // count, so the dummy input and statement continue from %2.
+    {
+      "type": "maze_repeat",
+      "message0": `${BlocklyGames.getMsg('Maze.repeatTimes', false)}%2${BlocklyGames.getMsg('Maze.doCode', false)}%3`,
+      "args0": [
+        {
+          "type": "field_number",
+          "name": "TIMES",
+          "value": 4,
+          "min": 1,
+          "max": 100,
+          "precision": 1,
+        },
+        {
+          "type": "input_dummy",
+        },
+        {
+          "type": "input_statement",
+          "name": "DO",
+        },
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": LOOPS_HUE,
+      "tooltip": BlocklyGames.getMsg('Maze.repeatTimesTooltip', false),
+    },
+
+    // Block for looping while a path is available.
+    {
+      "type": "maze_whilePath",
+      "message0": `${BlocklyGames.getMsg('Maze.whilePath', false)}%1%2${BlocklyGames.getMsg('Maze.doCode', false)}%3`,
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "DIR",
+          "options": PATH_DIRECTIONS,
+        },
+        {
+          "type": "input_dummy",
+        },
+        {
+          "type": "input_statement",
+          "name": "DO",
+        },
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": LOOPS_HUE,
+      "tooltip": BlocklyGames.getMsg('Maze.whilePathTooltip', false),
+      "extensions": ["maze_turn_arrows"],
+    },
   ]);
 };
 
@@ -211,4 +265,29 @@ Blockly.JavaScript['maze_forever'] = function(block) {
         `'block_id_${block.id}'`) + branch;
   }
   return `while (notDone()) {\n${branch}}\n`;
+};
+
+Blockly.JavaScript['maze_repeat'] = function(block) {
+  // Generate JavaScript for a counted loop.  The counter is named after the
+  // block so that nested loops never share a variable.
+  const times = Number(block.getFieldValue('TIMES')) || 0;
+  const counter = 'count_' + block.id.replace(/\W/g, '_');
+  let branch = Blockly.JavaScript.statementToCode(block, 'DO');
+  if (Blockly.JavaScript.INFINITE_LOOP_TRAP) {
+    branch = Blockly.JavaScript.INFINITE_LOOP_TRAP.replace(/%1/g,
+        `'block_id_${block.id}'`) + branch;
+  }
+  return `for (var ${counter} = 0; ${counter} < ${times}; ${counter}++) {\n` +
+      `${branch}}\n`;
+};
+
+Blockly.JavaScript['maze_whilePath'] = function(block) {
+  // Generate JavaScript for looping while a path is available.
+  const argument = `${block.getFieldValue('DIR')}('block_id_${block.id}')`;
+  let branch = Blockly.JavaScript.statementToCode(block, 'DO');
+  if (Blockly.JavaScript.INFINITE_LOOP_TRAP) {
+    branch = Blockly.JavaScript.INFINITE_LOOP_TRAP.replace(/%1/g,
+        `'block_id_${block.id}'`) + branch;
+  }
+  return `while (${argument}) {\n${branch}}\n`;
 };

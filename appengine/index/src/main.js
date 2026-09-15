@@ -14,6 +14,7 @@ goog.provide('Index');
 
 goog.require('BlocklyGames');
 goog.require('Index.html');
+goog.require('Maze.Levels');
 goog.require('ThinkaConfig');
 
 /**
@@ -28,6 +29,35 @@ const APPS = ['puzzle', 'maze', 'bird', 'turtle', 'movie', 'music',
  */
 const START_ORDER = ['maze', 'puzzle', 'bird', 'turtle', 'movie', 'music',
                      'pond-tutor', 'pond-duck'];
+
+/**
+ * Every localStorage name an app keeps progress under, paired with how many
+ * levels that name holds.
+ *
+ * Most apps store progress as `<app><level>` for levels 1..MAX_LEVEL.  Puzzle
+ * is a single level, and Maze splits its curriculum across one name per
+ * concept unit (`maze_g2_repeat1`), so it contributes many names.
+ * @param {string} app Name of application.
+ * @returns {!Array<!Object>} Records of {name, levels}.
+ */
+function storageNames(app) {
+  if (app === 'puzzle') {
+    return [{name: app, levels: 1}];
+  }
+  if (app === 'maze') {
+    const names = [];
+    for (const {stage, unit} of Maze.Levels.allUnits()) {
+      if (unit.levels.length) {
+        names.push({
+          name: Maze.Levels.storageName(stage, unit.id),
+          levels: unit.levels.length,
+        });
+      }
+    }
+    return names;
+  }
+  return [{name: app, levels: BlocklyGames.MAX_LEVEL}];
+}
 
 /**
  * Render the page and load any progress data.  Called on page load.
@@ -47,12 +77,17 @@ function init() {
 
   let storedData = false;
   const levelsDone = [];
+  const levelsTotal = [];
   for (let i = 0; i < APPS.length; i++) {
     levelsDone[i] = 0;
-    for (let j = 1; j <= BlocklyGames.MAX_LEVEL; j++) {
-      if (BlocklyGames.loadFromLocalStorage(APPS[i], j)) {
-        storedData = true;
-        levelsDone[i]++;
+    levelsTotal[i] = 0;
+    for (const {name, levels} of storageNames(APPS[i])) {
+      levelsTotal[i] += levels;
+      for (let j = 1; j <= levels; j++) {
+        if (BlocklyGames.loadFromLocalStorage(name, j)) {
+          storedData = true;
+          levelsDone[i]++;
+        }
       }
     }
   }
@@ -64,7 +99,7 @@ function init() {
 
   for (let i = 0; i < levelsDone.length; i++) {
     const app = APPS[i];
-    const denominator = (i === 0) ? 1 : BlocklyGames.MAX_LEVEL;
+    const denominator = levelsTotal[i];
     const done = levelsDone[i];
     const bar = BlocklyGames.getElementById('progress-' + app);
     const label = BlocklyGames.getElementById('progress-label-' + app);
@@ -88,20 +123,20 @@ function init() {
     renderStars('stars-' + app, done, denominator);
   }
 
-  decorateFeatured(levelsDone);
+  decorateFeatured(levelsDone, levelsTotal);
 }
 
 /**
  * First incomplete game in START_ORDER, or Maze if everything is done.
  * @param {!Array<number>} levelsDone Completed-level counts, APPS order.
+ * @param {!Array<number>} levelsTotal Total-level counts, APPS order.
  * @returns {string} Application id.
  */
-function pickStartApp(levelsDone) {
+function pickStartApp(levelsDone, levelsTotal) {
   for (let o = 0; o < START_ORDER.length; o++) {
     const app = START_ORDER[o];
     const i = APPS.indexOf(app);
-    const denom = (i === 0) ? 1 : BlocklyGames.MAX_LEVEL;
-    if (levelsDone[i] < denom) {
+    if (levelsDone[i] < levelsTotal[i]) {
       return app;
     }
   }
@@ -124,9 +159,11 @@ function renderStars(containerId, done, total) {
   }
   el.setAttribute('role', 'img');
   el.setAttribute('aria-label', done + ' / ' + total);
-  for (let i = 0; i < total; i++) {
+  const slots = Math.min(total, BlocklyGames.MAX_LEVEL);
+  const lit = total ? Math.round(done / total * slots) : 0;
+  for (let i = 0; i < slots; i++) {
     const star = document.createElement('i');
-    if (i < done) {
+    if (i < lit) {
       star.className = 'is-lit';
     }
     el.appendChild(star);
@@ -136,9 +173,10 @@ function renderStars(containerId, done, total) {
 /**
  * Point the featured banner at the next game to play.
  * @param {!Array<number>} levelsDone Completed-level counts, APPS order.
+ * @param {!Array<number>} levelsTotal Total-level counts, APPS order.
  */
-function decorateFeatured(levelsDone) {
-  const startApp = pickStartApp(levelsDone);
+function decorateFeatured(levelsDone, levelsTotal) {
+  const startApp = pickStartApp(levelsDone, levelsTotal);
   const startCard = BlocklyGames.getElementById('card-' + startApp);
   const featured = BlocklyGames.getElementById('thinkaFeatured');
   const playNow = BlocklyGames.getElementById('thinkaPlayNow');
@@ -163,7 +201,7 @@ function decorateFeatured(levelsDone) {
   playNow.href = startCard.href;
 
   const i = APPS.indexOf(startApp);
-  const denom = (i === 0) ? 1 : BlocklyGames.MAX_LEVEL;
+  const denom = levelsTotal[i];
   const done = levelsDone[i];
   renderStars('stars-featured', done, denom);
   const featLabel = BlocklyGames.getElementById('progress-label-featured');
@@ -175,8 +213,7 @@ function decorateFeatured(levelsDone) {
   const playLabel = BlocklyGames.getElementById('thinkaPlayNowLabel');
   let allDone = true;
   for (let a = 0; a < APPS.length; a++) {
-    const need = (a === 0) ? 1 : BlocklyGames.MAX_LEVEL;
-    if (levelsDone[a] < need) {
+    if (levelsDone[a] < levelsTotal[a]) {
       allDone = false;
       break;
     }
@@ -212,10 +249,14 @@ function clearData() {
   if (!confirm(BlocklyGames.getMsg('Index.clear', false))) {
     return;
   }
-  for (let i = 0; i < APPS.length; i++) {
-    for (let j = 1; j <= BlocklyGames.MAX_LEVEL; j++) {
-      delete window.localStorage[APPS[i] + j];
-      delete window.localStorage[ThinkaConfig.unlockKey(APPS[i], j)];
+  for (const app of APPS) {
+    for (const {name, levels} of storageNames(app)) {
+      for (let j = 1; j <= levels; j++) {
+        delete window.localStorage[name + j];
+        delete window.localStorage[ThinkaConfig.unlockKey(name, j)];
+        delete window.localStorage[ThinkaConfig.starsKey(name, j)];
+      }
+      delete window.localStorage[ThinkaConfig.explainedKey(name)];
     }
   }
   location.reload();

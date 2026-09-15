@@ -8,6 +8,8 @@
 (function() {
   var APPS = ['puzzle', 'maze', 'bird', 'turtle', 'movie', 'music',
               'pond-tutor', 'pond-duck'];
+  var START_ORDER = ['maze', 'puzzle', 'bird', 'turtle', 'movie', 'music',
+                     'pond-tutor', 'pond-duck'];
   var MAX_LEVEL = 10;
   var LANGS = [
     'am', 'ar', 'be', 'be-tarask', 'bg', 'bn', 'br', 'ca', 'cs', 'da', 'de',
@@ -112,11 +114,110 @@
     });
   }
 
+  function denomFor(app) {
+    return (APPS.indexOf(app) === 0) ? 1 : MAX_LEVEL;
+  }
+
+  function renderStars(containerId, done, total) {
+    var el = $(containerId);
+    if (!el) {
+      return;
+    }
+    el.innerHTML = '';
+    el.setAttribute('role', 'img');
+    el.setAttribute('aria-label', done + ' / ' + total);
+    for (var i = 0; i < total; i++) {
+      var star = document.createElement('i');
+      if (i < done) {
+        star.className = 'is-lit';
+      }
+      el.appendChild(star);
+    }
+  }
+
+  function pickStartApp(levelsDone) {
+    for (var o = 0; o < START_ORDER.length; o++) {
+      var app = START_ORDER[o];
+      var i = APPS.indexOf(app);
+      if (levelsDone[i] < denomFor(app)) {
+        return app;
+      }
+    }
+    return 'maze';
+  }
+
+  function decorateFeatured(levelsDone) {
+    var startApp = pickStartApp(levelsDone);
+    var startCard = $('card-' + startApp);
+    var featured = $('thinkaFeatured');
+    var playNow = $('thinkaPlayNow');
+    if (!featured || !startCard || !playNow) {
+      return;
+    }
+    featured.className = 'thinka-featured thinka-featured--' + startApp;
+    var art = $('featuredArt');
+    if (art) {
+      art.src = 'index/art/' + startApp + '.svg';
+    }
+    var name = $('featuredName');
+    var blurb = $('featuredBlurb');
+    var nameEl = startCard.querySelector('.thinka-card-name');
+    if (name && nameEl) {
+      name.textContent = nameEl.textContent;
+    }
+    if (blurb) {
+      blurb.textContent = startCard.getAttribute('data-blurb') || '';
+    }
+    playNow.href = startCard.href;
+
+    var i = APPS.indexOf(startApp);
+    var denom = denomFor(startApp);
+    var done = levelsDone[i];
+    renderStars('stars-featured', done, denom);
+    var featLabel = $('progress-label-featured');
+    if (featLabel) {
+      featLabel.textContent = done ? (done + ' / ' + denom) : 'New';
+    }
+
+    var kicker = $('featuredKicker');
+    var playLabel = $('thinkaPlayNowLabel');
+    var allDone = true;
+    for (var a = 0; a < APPS.length; a++) {
+      if (levelsDone[a] < denomFor(APPS[a])) {
+        allDone = false;
+        break;
+      }
+    }
+    if (allDone) {
+      if (kicker) {
+        kicker.textContent = 'Play again';
+      }
+      if (playLabel) {
+        playLabel.textContent = 'Play again';
+      }
+    } else if (done > 0) {
+      if (kicker) {
+        kicker.textContent = 'Keep going';
+      }
+      if (playLabel) {
+        playLabel.textContent = 'Keep playing';
+      }
+    } else {
+      if (kicker) {
+        kicker.textContent = "Let's play";
+      }
+      if (playLabel) {
+        playLabel.textContent = 'Start playing';
+      }
+    }
+  }
+
   function paintProgress() {
     var any = false;
+    var levelsDone = [];
     for (var i = 0; i < APPS.length; i++) {
       var app = APPS[i];
-      var denom = (i === 0) ? 1 : MAX_LEVEL;
+      var denom = denomFor(app);
       var done = 0;
       for (var j = 1; j <= MAX_LEVEL; j++) {
         if (stored(app, j)) {
@@ -124,6 +225,7 @@
           any = true;
         }
       }
+      levelsDone[i] = done;
       var bar = $('progress-' + app);
       var label = $('progress-label-' + app);
       var card = $('card-' + app);
@@ -137,13 +239,17 @@
         }
       }
       if (label) {
-        label.textContent = done + ' / ' + denom;
+        label.textContent = done ? (done + ' / ' + denom) : 'New';
       }
       if (card) {
         card.href = withLang(card.getAttribute('href') || (app + '.html'));
+        if (done === 0) {
+          card.classList.add('thinka-card--fresh');
+        }
       }
+      renderStars('stars-' + app, done, denom);
     }
-    var about = document.querySelector('.thinka-hero-about');
+    var about = document.querySelector('.thinka-bar-about, .thinka-hero-about');
     if (about) {
       about.href = withLang(about.getAttribute('href') || 'about.html');
     }
@@ -151,6 +257,7 @@
     if (logo) {
       logo.href = withLang(logo.getAttribute('href') || 'index.html');
     }
+    decorateFeatured(levelsDone);
     if (any) {
       var para = $('clearDataPara');
       if (para) {

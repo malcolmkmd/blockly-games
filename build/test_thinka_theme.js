@@ -82,30 +82,47 @@ test('repo-root index redirects into the static hub', () => {
   assert.doesNotMatch(root, /id="path"/);
 });
 
-test('hub markup is card-based and Thinka-named', () => {
+test('hub markup is a static game menu with featured play path', () => {
   const html = read('appengine/index/src/html.js');
   assert.match(html, /thinka-card/);
-  assert.match(html, /thinka/);
+  assert.match(html, /thinka-featured/);
+  assert.match(html, /thinkaPlayNow/);
+  assert.match(html, /index\/art\/maze\.svg/);
+  assert.match(html, /thinka-stars/);
   assert.doesNotMatch(html, /title\.svg/);
   const index = read('appengine/index.html');
   assert.match(index, /Thinka Games/);
   assert.match(index, /thinka-card--maze/);
-  assert.match(index, /Code\. Build\./);
+  assert.match(index, /thinkaFeatured/);
+  assert.match(index, /index\/art\/maze\.svg/);
+  assert.match(index, /index\/hub\.js/);
+  assert.doesNotMatch(index, /boot\.js/);
+  assert.doesNotMatch(index, /compressed\.js/);
   assert.doesNotMatch(index, /id="path"/);
 });
 
 test('hub HTML is standalone and never loads compressed.js', () => {
-  const index = read('appengine/index.html');
-  assert.match(index, /index\/hub\.js/);
-  assert.doesNotMatch(index, /boot\.js/);
-  assert.doesNotMatch(index, /compressed\.js/);
   const boot = read('appengine/common/boot.js');
   assert.match(boot, /appName === 'index'/);
   assert.match(boot, /index\/hub\.js/);
   const hub = read('appengine/index/hub.js');
   assert.match(hub, /progress-' \+ app/);
   assert.match(hub, /detectLanguage/);
+  assert.match(hub, /decorateFeatured/);
   assert.doesNotMatch(hub, /gauge-/);
+});
+
+test('hub ships local illustrated art for every game', () => {
+  const dir = path.join(ROOT, 'appengine', 'index', 'art');
+  for (const name of ['puzzle.svg', 'maze.svg', 'bird.svg', 'turtle.svg',
+                     'movie.svg', 'music.svg', 'pond-tutor.svg',
+                     'pond-duck.svg']) {
+    const full = path.join(dir, name);
+    assert.strictEqual(fs.existsSync(full), true, name);
+    const svg = fs.readFileSync(full, 'utf8');
+    assert.match(svg, /<svg/);
+    assert.doesNotMatch(svg, /fonts\.googleapis/);
+  }
 });
 
 test('runtime CSS/HTML do not require a CDN', () => {

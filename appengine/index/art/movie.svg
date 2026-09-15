@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" aria-hidden="true">
+  <defs>
+    <radialGradient id="movieGlow" cx="50%" cy="40%" r="62%">
+      <stop offset="0%" stop-color="#F472B6" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#F472B6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="240" height="240" rx="52" fill="#1A0C14"/>
+  <rect width="240" height="240" rx="52" fill="url(#movieGlow)"/>
+  <circle cx="112" cy="118" r="62" fill="#F472B6"/>
+  <circle cx="112" cy="118" r="46" fill="#1A0C14"/>
+  <circle cx="112" cy="118" r="16" fill="#F9A8D4"/>
+  <circle cx="112" cy="70" r="8" fill="#F9A8D4"/>
+  <circle cx="154" cy="94" r="8" fill="#F9A8D4"/>
+  <circle cx="154" cy="142" r="8" fill="#F9A8D4"/>
+  <circle cx="112" cy="166" r="8" fill="#F9A8D4"/>
+  <circle cx="70" cy="142" r="8" fill="#F9A8D4"/>
+  <circle cx="70" cy="94" r="8" fill="#F9A8D4"/>
+  <path d="M168 150 h42 v22 h-28 z" fill="#F9A8D4"/>
+  <path d="M182 172 h28 v10 a8 8 0 0 1-8 8 h-20 z" fill="#F472B6"/>
+</svg>

@@ -151,6 +151,12 @@ a {
 .thinka-featured-art {
   display: grid;
   place-items: center;
+  padding: 0.4em;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.14), transparent 40%),
+    rgba(var(--thinka-tile-rgb), 0.16);
+  box-shadow: inset 0 0 0 2px rgba(var(--thinka-tile-rgb), 0.28);
 }
 
 .thinka-featured-art img {
@@ -255,7 +261,7 @@ a {
   color: var(--thinka-text);
   position: relative;
   overflow: hidden;
-  animation: thinka-card-in 0.45s ease both;
+  animation: thinka-card-in 0.4s ease both;
   transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
 }
 
@@ -270,12 +276,10 @@ a {
 
 @keyframes thinka-card-in {
   from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.96);
+    transform: translateY(14px);
   }
   to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
@@ -299,10 +303,17 @@ a {
 .thinka-card-art {
   display: grid;
   place-items: center;
-  width: 168px;
+  width: min(100%, 188px);
   height: 168px;
-  margin: 0.15em 0 0.55em;
-  filter: drop-shadow(0 10px 18px rgba(var(--thinka-tile-rgb), 0.32));
+  margin: 0.05em 0 0.65em;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.16), transparent 42%),
+    radial-gradient(circle at 50% 80%, rgba(var(--thinka-tile-rgb), 0.55), transparent 70%),
+    #07110a;
+  box-shadow:
+    inset 0 0 0 2px rgba(var(--thinka-tile-rgb), 0.35),
+    0 10px 22px rgba(var(--thinka-tile-rgb), 0.28);
 }
 
 .thinka-card-icon {
@@ -343,8 +354,8 @@ a {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 2px solid rgba(248, 250, 252, 0.28);
-  background: var(--thinka-panel);
+  border: 2px solid rgba(var(--thinka-tile-rgb), 0.55);
+  background: rgba(var(--thinka-tile-rgb), 0.12);
 }
 
 .thinka-stars i.is-lit {
@@ -360,9 +371,9 @@ a {
 
 .thinka-card-progress-track {
   display: block;
-  height: 10px;
+  height: 12px;
   border-radius: var(--thinka-radius-pill);
-  background: var(--thinka-panel);
+  background: rgba(var(--thinka-tile-rgb), 0.16);
   overflow: hidden;
 }
 
@@ -389,13 +400,15 @@ a {
 }
 
 .thinka-card-go {
-  margin-top: 0.7em;
-  padding: 0.4em 1em;
+  margin-top: 0.75em;
+  min-height: 2.4em;
+  padding: 0.45em 1.2em;
   border-radius: var(--thinka-radius-pill);
-  background: rgba(var(--thinka-tile-rgb), 0.18);
+  background: var(--thinka-orange);
   color: var(--thinka-text-strong);
   font-family: var(--thinka-display);
   font-weight: 700;
+  box-shadow: 0 0 16px rgba(255, 69, 0, 0.35);
 }
 
 .thinka-card:focus,
@@ -422,9 +435,14 @@ a {
   color: var(--thinka-yellow);
 }
 
+.thinka-card--fresh .thinka-card-progress-label {
+  color: var(--thinka-yellow);
+}
+
 .thinka-card--done .thinka-card-go {
   background: var(--thinka-mint);
   color: var(--thinka-page);
+  box-shadow: none;
 }
 
 .thinka-card--done .thinka-card-go::after {

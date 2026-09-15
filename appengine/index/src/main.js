@@ -80,7 +80,10 @@ function init() {
       }
     }
     if (label) {
-      label.textContent = done + ' / ' + denominator;
+      label.textContent = done ? (done + ' / ' + denominator) : 'New';
+    }
+    if (card && done === 0) {
+      card.classList.add('thinka-card--fresh');
     }
     renderStars('stars-' + app, done, denominator);
   }
@@ -165,7 +168,7 @@ function decorateFeatured(levelsDone) {
   renderStars('stars-featured', done, denom);
   const featLabel = BlocklyGames.getElementById('progress-label-featured');
   if (featLabel) {
-    featLabel.textContent = done + ' / ' + denom;
+    featLabel.textContent = done ? (done + ' / ' + denom) : 'New';
   }
 
   const kicker = BlocklyGames.getElementById('featuredKicker');

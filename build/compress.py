@@ -55,7 +55,7 @@ def main(gameName):
   boot = open('appengine/common/boot.js', 'r')
   js = ' '.join(boot.readlines())
   boot.close()
-  m = re.search('\[\'BlocklyGamesLanguages\'\] = (\[[-,\'\\s\\w]+\])', js)
+  m = re.search(r"\['BlocklyGamesLanguages'\] = (\[[-,'\s\w]+\])", js)
   if not m:
     raise Exception("Can't find BlocklyGamesLanguages in boot.js")
   langs = m.group(1)
@@ -77,13 +77,13 @@ def filterMessages(gameName):
   # Load any language file (they all should have the same keys).
   msgs = getMessages('en')
   for msg in msgs:
-    m = re.search('BlocklyMsg\["([^"]+)"\] = ', msg)
+    m = re.search(r'BlocklyMsg\["([^"]+)"\] = ', msg)
     if m:
       if (('"' + m.group(1) + '"') in js or
           ('.' + m.group(1)) in js or
           ('%{BKY_' + m.group(1) + '}') in js):
         blocklyMessageNames.append(m.group(1))
-    m = re.search('BlocklyGamesMsg\["([^"]+)"\] = ', msg)
+    m = re.search(r'BlocklyGamesMsg\["([^"]+)"\] = ', msg)
     if m:
       if ('"' + m.group(1) + '"') in js or ('.' + m.group(1)) in js:
         blocklyGamesMessageNames.append(m.group(1))
@@ -109,11 +109,11 @@ def language(gameName, lang):
   bMsgs = []
   bgMsgs = []
   for msg in msgs:
-    m = re.search('BlocklyMsg\["([^"]+)"\] = (.*);\s*', msg)
+    m = re.search(r'BlocklyMsg\["([^"]+)"\] = (.*);\s*', msg)
     if m and m.group(1) in blocklyMessageNames:
       # Blockly message names are all alphabetic, no need to quote.
       bMsgs.append('%s:%s' % (m.group(1), m.group(2)))
-    m = re.search('BlocklyGamesMsg\["([^"]+)"\] = (.*);\s*', msg)
+    m = re.search(r'BlocklyGamesMsg\["([^"]+)"\] = (.*);\s*', msg)
     if m and m.group(1) in blocklyGamesMessageNames:
       # Blockly Games message names contain dots, quotes required.
       bgMsgs.append('"%s":%s' % (m.group(1), m.group(2)))

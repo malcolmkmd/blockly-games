@@ -74,6 +74,14 @@ test('bundled fonts ship next to the theme', () => {
   }
 });
 
+test('repo-root index redirects into the static hub', () => {
+  const root = read('index.html');
+  assert.match(root, /appengine\/index\.html/);
+  assert.match(root, /location\.replace\('appengine\/index\.html'\)/);
+  assert.match(root, /#030A03/);
+  assert.doesNotMatch(root, /id="path"/);
+});
+
 test('hub markup is card-based and Thinka-named', () => {
   const html = read('appengine/index/src/html.js');
   assert.match(html, /thinka-card/);

@@ -9,6 +9,14 @@
   var APPS = ['puzzle', 'maze', 'bird', 'turtle', 'movie', 'music',
               'pond-tutor', 'pond-duck'];
   var MAX_LEVEL = 10;
+  var LANGS = [
+    'am', 'ar', 'be', 'be-tarask', 'bg', 'bn', 'br', 'ca', 'cs', 'da', 'de',
+    'el', 'en', 'eo', 'es', 'eu', 'fa', 'fi', 'fo', 'fr', 'gl', 'ha', 'he',
+    'hi', 'hr', 'hu', 'hy', 'ia', 'id', 'ig', 'is', 'it', 'ja', 'kab', 'kn',
+    'ko', 'lt', 'lv', 'ms', 'my', 'nb', 'nl', 'pl', 'pms', 'pt', 'pt-br',
+    'ro', 'ru', 'sc', 'sk', 'sl', 'sq', 'sr', 'sr-latn', 'sv', 'th', 'ti',
+    'tr', 'uk', 'ur', 'vi', 'yo', 'zh-hans', 'zh-hant'
+  ];
   var LANG_NAMES = {
     'am': 'አማርኛ', 'ar': 'العربية', 'be': 'беларускі',
     'be-tarask': 'Taraškievica', 'bg': 'български език', 'bn': 'বাংলা',
@@ -51,12 +59,34 @@
     return href + join + 'lang=' + encodeURIComponent(lang);
   }
 
+  function detectLanguage() {
+    window['BlocklyGamesLanguages'] = LANGS;
+    var param = location.search.match(/[?&]lang=([^&]+)/);
+    var lang = param ? decodeURIComponent(param[1].replace(/\+/g, ' ')) : null;
+    if (LANGS.indexOf(lang) !== -1) {
+      var exp = (new Date(Date.now() + 2 * 31536000000)).toUTCString();
+      document.cookie = 'lang=' + encodeURIComponent(lang) +
+          '; expires=' + exp + '; path=/';
+    } else {
+      var cookie = document.cookie.match(/(^|;)\s*lang=([\w\-]+)/);
+      lang = cookie ? decodeURIComponent(cookie[2]) : null;
+      if (LANGS.indexOf(lang) === -1) {
+        lang = navigator.language;
+        if (LANGS.indexOf(lang) === -1) {
+          lang = 'en';
+        }
+      }
+    }
+    window['BlocklyGamesLang'] = lang;
+    return lang;
+  }
+
   function fillLanguageMenu() {
     var menu = $('languageMenu');
     if (!menu) {
       return;
     }
-    var langs = window['BlocklyGamesLanguages'] || ['en'];
+    var langs = window['BlocklyGamesLanguages'] || LANGS;
     var current = window['BlocklyGamesLang'] || 'en';
     menu.innerHTML = '';
     for (var i = 0; i < langs.length; i++) {
@@ -151,6 +181,7 @@
   }
 
   function init() {
+    detectLanguage();
     document.body.classList.add('thinka-hub');
     fillLanguageMenu();
     paintProgress();

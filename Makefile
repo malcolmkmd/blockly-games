@@ -13,8 +13,13 @@ REQUIRED_BINS = git wget java python3
 
 all: deps games
 
-index: common
-	python3 build/compress.py index
+index:
+	@echo "Hub is static HTML (appengine/index.html + index/hub.js)."
+	rm -f appengine/index/generated/compressed.js
+	rm -f appengine/index/generated/uncompressed.js
+
+serve:
+	python3 build/serve.py --port 8088
 
 puzzle: common
 	python3 build/compress.py puzzle

@@ -94,12 +94,17 @@ test('hub markup is card-based and Thinka-named', () => {
   assert.doesNotMatch(index, /id="path"/);
 });
 
-test('hub boot skips stale compressed.js', () => {
+test('hub HTML is standalone and never loads compressed.js', () => {
+  const index = read('appengine/index.html');
+  assert.match(index, /index\/hub\.js/);
+  assert.doesNotMatch(index, /boot\.js/);
+  assert.doesNotMatch(index, /compressed\.js/);
   const boot = read('appengine/common/boot.js');
   assert.match(boot, /appName === 'index'/);
   assert.match(boot, /index\/hub\.js/);
   const hub = read('appengine/index/hub.js');
   assert.match(hub, /progress-' \+ app/);
+  assert.match(hub, /detectLanguage/);
   assert.doesNotMatch(hub, /gauge-/);
 });
 

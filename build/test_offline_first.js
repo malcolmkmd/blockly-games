@@ -45,8 +45,10 @@ function read(rel) {
 }
 
 test('index hub does not depend on compiled compressed.js', () => {
-  const boot = read('appengine/common/boot.js');
-  assert.match(boot, /index\/hub\.js/);
+  const index = read('appengine/index.html');
+  assert.doesNotMatch(index, /boot\.js/);
+  assert.doesNotMatch(index, /compressed\.js/);
+  assert.match(index, /index\/hub\.js/);
   assert.strictEqual(fs.existsSync(path.join(ROOT, 'appengine/index.html')), true);
   assert.strictEqual(fs.existsSync(path.join(ROOT, 'appengine/index/hub.js')), true);
 });

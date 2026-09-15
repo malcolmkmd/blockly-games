@@ -58,6 +58,16 @@
     // Don't even think of throwing an error.
   }
 
+  // The hub is static HTML. Do not load index/generated/compressed.js —
+  // a stale copy still paints the old Blockly SVG path over the Thinka cards.
+  if (appName === 'index') {
+    var hub = document.createElement('script');
+    hub.src = 'index/hub.js';
+    hub.type = 'text/javascript';
+    document.head.appendChild(hub);
+    return;
+  }
+
   // Load the chosen language pack.
   var script = document.createElement('script');
   if (debug) {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="google" value="notranslate">
@@ -10,7 +10,127 @@
   <link rel="stylesheet" href="index/style.css">
   <script src="common/boot.js"></script>
 </head>
-<body>
-  <noscript>Thinka Games requires JavaScript.</noscript>
+<body class="thinka-hub">
+<div class="thinka-page">
+  <header class="thinka-hero">
+    <div class="thinka-nav">
+      <a class="thinka-logo" href="index.html">thinka<span class="thinka-logo-dot">.</span></a>
+      <select id="languageMenu"></select>
+    </div>
+    <div class="thinka-hero-inner">
+      <h1 id="subtitle" class="thinka-hero-title">Code. Build. <em>Innovate.</em></h1>
+      <p class="thinka-hero-sub">Colourful block coding for the classroom — offline, no experience needed.</p>
+      <a class="thinka-hero-about" href="about.html">Info for educators...</a>
+      <div class="thinka-hero-chips">
+        <span>Grade R–9</span>
+        <span>Offline classroom</span>
+        <span>Teacher unlock</span>
+      </div>
+    </div>
+  </header>
+  <main class="thinka-grid" id="thinkaGames">
+    <a class="thinka-card thinka-card--puzzle" id="card-puzzle" href="puzzle.html">
+      <span class="thinka-card-accent" aria-hidden="true"></span>
+      <img class="thinka-card-icon" src="index/puzzle.png" height="100" width="100" alt="">
+      <span class="thinka-card-name">Puzzle</span>
+      <span class="thinka-card-blurb">Snap the pieces together</span>
+      <span class="thinka-card-progress">
+        <span class="thinka-card-progress-track">
+          <span class="thinka-card-progress-bar" id="progress-puzzle"></span>
+        </span>
+        <span class="thinka-card-progress-label" id="progress-label-puzzle"></span>
+      </span>
+    </a>
+    <a class="thinka-card thinka-card--maze" id="card-maze" href="maze.html">
+      <span class="thinka-card-accent" aria-hidden="true"></span>
+      <img class="thinka-card-icon" src="index/maze.png" height="100" width="100" alt="">
+      <span class="thinka-card-name">Maze</span>
+      <span class="thinka-card-blurb">Find the path with loops</span>
+      <span class="thinka-card-progress">
+        <span class="thinka-card-progress-track">
+          <span class="thinka-card-progress-bar" id="progress-maze"></span>
+        </span>
+        <span class="thinka-card-progress-label" id="progress-label-maze"></span>
+      </span>
+    </a>
+    <a class="thinka-card thinka-card--bird" id="card-bird" href="bird.html">
+      <span class="thinka-card-accent" aria-hidden="true"></span>
+      <img class="thinka-card-icon" src="index/bird.png" height="100" width="100" alt="">
+      <span class="thinka-card-name">Bird</span>
+      <span class="thinka-card-blurb">Fly with if and else</span>
+      <span class="thinka-card-progress">
+        <span class="thinka-card-progress-track">
+          <span class="thinka-card-progress-bar" id="progress-bird"></span>
+        </span>
+        <span class="thinka-card-progress-label" id="progress-label-bird"></span>
+      </span>
+    </a>
+    <a class="thinka-card thinka-card--turtle" id="card-turtle" href="turtle.html">
+      <span class="thinka-card-accent" aria-hidden="true"></span>
+      <img class="thinka-card-icon" src="index/turtle.png" height="100" width="100" alt="">
+      <span class="thinka-card-name">Turtle</span>
+      <span class="thinka-card-blurb">Draw with nested loops</span>
+      <span class="thinka-card-progress">
+        <span class="thinka-card-progress-track">
+          <span class="thinka-card-progress-bar" id="progress-turtle"></span>
+        </span>
+        <span class="thinka-card-progress-label" id="progress-label-turtle"></span>
+      </span>
+    </a>
+    <a class="thinka-card thinka-card--movie" id="card-movie" href="movie.html">
+      <span class="thinka-card-accent" aria-hidden="true"></span>
+      <img class="thinka-card-icon" src="index/movie.png" height="100" width="100" alt="">
+      <span class="thinka-card-name">Movie</span>
+      <span class="thinka-card-blurb">Animate with maths</span>
+      <span class="thinka-card-progress">
+        <span class="thinka-card-progress-track">
+          <span class="thinka-card-progress-bar" id="progress-movie"></span>
+        </span>
+        <span class="thinka-card-progress-label" id="progress-label-movie"></span>
+      </span>
+    </a>
+    <a class="thinka-card thinka-card--music" id="card-music" href="music.html">
+      <span class="thinka-card-accent" aria-hidden="true"></span>
+      <img class="thinka-card-icon" src="index/music.png" height="100" width="100" alt="">
+      <span class="thinka-card-name">Music</span>
+      <span class="thinka-card-blurb">Compose with functions</span>
+      <span class="thinka-card-progress">
+        <span class="thinka-card-progress-track">
+          <span class="thinka-card-progress-bar" id="progress-music"></span>
+        </span>
+        <span class="thinka-card-progress-label" id="progress-label-music"></span>
+      </span>
+    </a>
+    <a class="thinka-card thinka-card--pond-tutor" id="card-pond-tutor" href="pond-tutor.html">
+      <span class="thinka-card-accent" aria-hidden="true"></span>
+      <img class="thinka-card-icon" src="index/pond-tutor.png" height="100" width="100" alt="">
+      <span class="thinka-card-name">Pond Tutor</span>
+      <span class="thinka-card-blurb">From blocks to JavaScript</span>
+      <span class="thinka-card-progress">
+        <span class="thinka-card-progress-track">
+          <span class="thinka-card-progress-bar" id="progress-pond-tutor"></span>
+        </span>
+        <span class="thinka-card-progress-label" id="progress-label-pond-tutor"></span>
+      </span>
+    </a>
+    <a class="thinka-card thinka-card--pond-duck" id="card-pond-duck" href="pond-duck.html">
+      <span class="thinka-card-accent" aria-hidden="true"></span>
+      <img class="thinka-card-icon" src="index/pond-duck.png" height="100" width="100" alt="">
+      <span class="thinka-card-name">Pond</span>
+      <span class="thinka-card-blurb">Program the smartest duck</span>
+      <span class="thinka-card-progress">
+        <span class="thinka-card-progress-track">
+          <span class="thinka-card-progress-bar" id="progress-pond-duck"></span>
+        </span>
+        <span class="thinka-card-progress-label" id="progress-label-pond-duck"></span>
+      </span>
+    </a>
+  </main>
+  <p id="clearDataPara" class="thinka-reset" style="visibility: hidden">
+    Want to start over?
+    <button class="secondary" id="clearData">Clear data</button>
+  </p>
+</div>
+<noscript>Thinka Games requires JavaScript for progress and language switching. The games still open from the cards above if your browser allows it.</noscript>
 </body>
 </html>

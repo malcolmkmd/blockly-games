@@ -81,6 +81,18 @@ test('hub markup is card-based and Thinka-named', () => {
   assert.doesNotMatch(html, /title\.svg/);
   const index = read('appengine/index.html');
   assert.match(index, /Thinka Games/);
+  assert.match(index, /thinka-card--maze/);
+  assert.match(index, /Code\. Build\./);
+  assert.doesNotMatch(index, /id="path"/);
+});
+
+test('hub boot skips stale compressed.js', () => {
+  const boot = read('appengine/common/boot.js');
+  assert.match(boot, /appName === 'index'/);
+  assert.match(boot, /index\/hub\.js/);
+  const hub = read('appengine/index/hub.js');
+  assert.match(hub, /progress-' \+ app/);
+  assert.doesNotMatch(hub, /gauge-/);
 });
 
 test('runtime CSS/HTML do not require a CDN', () => {

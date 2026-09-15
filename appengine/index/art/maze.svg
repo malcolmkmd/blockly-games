@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" aria-hidden="true">
+  <defs>
+    <radialGradient id="mazeGlow" cx="50%" cy="38%" r="62%">
+      <stop offset="0%" stop-color="#FF4500" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#FF4500" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="240" height="240" rx="52" fill="#1C1008"/>
+  <rect width="240" height="240" rx="52" fill="url(#mazeGlow)"/>
+  <path d="M44 176 C44 128 88 128 88 96 C88 64 152 60 152 104 C152 146 196 144 196 86" stroke="#FACC15" stroke-width="26" stroke-linecap="round" fill="none"/>
+  <path d="M44 176 C44 128 88 128 88 96 C88 64 152 60 152 104 C152 146 196 144 196 86" stroke="#FFE566" stroke-width="10" stroke-linecap="round" fill="none" opacity=".7"/>
+  <circle cx="44" cy="176" r="20" fill="#FF4500"/>
+  <rect x="37" y="150" width="14" height="26" rx="7" fill="#FF4500"/>
+  <circle cx="44" cy="142" r="12" fill="#FFE8D6"/>
+  <circle cx="40" cy="140" r="2" fill="#1C1008"/>
+  <circle cx="48" cy="140" r="2" fill="#1C1008"/>
+  <circle cx="196" cy="72" r="18" fill="#FF4500"/>
+  <circle cx="196" cy="72" r="7" fill="#fff"/>
+  <path d="M196 90 v28" stroke="#FF4500" stroke-width="7" stroke-linecap="round"/>
+</svg>

@@ -8,13 +8,23 @@ The shared teacher password (default `thinka`, set in `appengine/src/thinka.conf
 
 The UI uses the **Thinka.org.za** visual system: green-black surfaces (`#030A03`), orange glow CTAs (`#FF4500`), and playful tile accents. The hub is **static HTML** (`appengine/index.html` + `index/hub.js`) so it looks right without `make games`. In-game Blockly workspaces stay light. Tokens live in `appengine/common/thinka-theme.css`. Fredoka and Nunito are bundled under `appengine/common/fonts/` (no CDN). Rebuild with `make games` after changing a **game** template (`appengine/{maze,bird,...}/src/*.js`).
 
-Serve the hub at `http://localhost:8088/` (same page as `http://[::]:8088/`):
+The card hub and `build/serve.py` live on the visual-theme branch (not `master`). On your laptop:
 
 ```bash
-python3 build/serve.py --port 8088
+git fetch origin
+git checkout cursor/thinka-visual-theme-0f6c
+git pull origin cursor/thinka-visual-theme-0f6c
+python3 serve.py --port 8088
 ```
 
-That serves `appengine/` with no-cache headers so a leftover `index/generated/compressed.js` cannot paint the old Blockly path. `cd appengine && python3 -m http.server 8088` also works.
+Then open `http://127.0.0.1:8088/` (or `http://[::]:8088/`). That serves `appengine/` with no-cache headers.
+
+No extra script needed after checkout:
+
+```bash
+cd appengine
+python3 -m http.server 8088
+```
 
 ## Requirements (build machine only)
 

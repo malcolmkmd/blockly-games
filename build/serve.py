@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # Copyright 2026 Thinka
 # SPDX-License-Identifier: Apache-2.0
-"""Serve appengine/ so http://[::]:8088/ is the Thinka hub.
+"""Serve appengine/ so http://localhost:8088/ is the Thinka hub.
 
-Python's default http.server from the repo root makes / a redirect stub.
-This script serves the static web root and disables caching so a leftover
-index/generated/compressed.js cannot keep painting the old Blockly path.
+Works on macOS (Homebrew Python) and Linux. Falls back to IPv4 if
+binding [::] fails.
 """
 
 import argparse
@@ -29,8 +28,20 @@ class DualStackServer(ThreadingHTTPServer):
   address_family = socket.AF_INET6
 
   def server_bind(self):
-    self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
+    try:
+      self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
+    except OSError:
+      pass
     super().server_bind()
+
+
+def make_server(bind, port, handler):
+  if bind in ('::', '', '*'):
+    try:
+      return DualStackServer(('::', port), handler)
+    except OSError:
+      bind = '0.0.0.0'
+  return ThreadingHTTPServer((bind, port), handler)
 
 
 def main():
@@ -38,10 +49,13 @@ def main():
   parser.add_argument('--port', type=int, default=8088)
   parser.add_argument('--bind', default='::')
   args = parser.parse_args()
+  if not os.path.isdir(ROOT):
+    raise SystemExit('Missing %s — run this from the Thinka repo after '
+                     'checking out the visual-theme branch.' % ROOT)
   handler = functools.partial(NoCacheHandler, directory=ROOT)
-  server = DualStackServer((args.bind, args.port), handler)
-  host = args.bind if args.bind != '::' else '[::]'
-  print('Thinka hub: http://%s:%d/' % (host, args.port), flush=True)
+  server = make_server(args.bind, args.port, handler)
+  print('Thinka hub: http://127.0.0.1:%d/' % args.port, flush=True)
+  print('Also:       http://[::]:%d/' % args.port, flush=True)
   print('Serving %s (no-cache)' % ROOT, flush=True)
   server.serve_forever()
 

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" aria-hidden="true">
+  <defs>
+    <radialGradient id="keysGlow" cx="50%" cy="38%" r="62%">
+      <stop offset="0%" stop-color="#2DD4BF" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#2DD4BF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="240" height="240" rx="52" fill="#08201C"/>
+  <rect width="240" height="240" rx="52" fill="url(#keysGlow)"/>
+  <rect x="28" y="78" width="184" height="108" rx="22" fill="#0A140A" stroke="#2DD4BF" stroke-width="4"/>
+  <rect x="44" y="96" width="28" height="26" rx="7" fill="#121F12"/>
+  <rect x="78" y="96" width="28" height="26" rx="7" fill="#121F12"/>
+  <rect x="112" y="96" width="28" height="26" rx="7" fill="#FF4500"/>
+  <rect x="146" y="96" width="28" height="26" rx="7" fill="#121F12"/>
+  <rect x="180" y="96" width="16" height="26" rx="7" fill="#121F12"/>
+  <rect x="44" y="128" width="28" height="26" rx="7" fill="#FACC15"/>
+  <rect x="78" y="128" width="28" height="26" rx="7" fill="#121F12"/>
+  <rect x="112" y="128" width="28" height="26" rx="7" fill="#121F12"/>
+  <rect x="146" y="128" width="50" height="26" rx="7" fill="#121F12"/>
+  <circle cx="72" cy="58" r="16" fill="#FF4500"/>
+  <circle cx="72" cy="52" r="10" fill="#FFE8D6"/>
+  <circle cx="68" cy="50" r="1.8" fill="#1C1008"/>
+  <circle cx="76" cy="50" r="1.8" fill="#1C1008"/>
+  <path d="M64 56 q8 6 16 0" stroke="#1C1008" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M56 70 h32 v18 a16 16 0 0 1-32 0 z" fill="#FF4500"/>
+  <path d="M126 46 h52 a8 8 0 0 1 8 8 v18 h-68 v-18 a8 8 0 0 1 8-8 z" fill="#2DD4BF"/>
+  <rect x="134" y="56" width="10" height="10" rx="2" fill="#03211C"/>
+  <rect x="148" y="56" width="10" height="10" rx="2" fill="#03211C"/>
+  <rect x="162" y="56" width="10" height="10" rx="2" fill="#03211C"/>
+</svg>

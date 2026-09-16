@@ -136,7 +136,7 @@ def language(gameName, lang):
 # its curriculum into one storage name per concept unit, and only Maze.Levels
 # knows the shape, so the index's build has to reach into the maze sources.
 EXTRA_GAME_SOURCES = {
-  'index': ['maze'],
+  'index': ['maze', 'keys'],
 }
 
 

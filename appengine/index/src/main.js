@@ -14,20 +14,21 @@ goog.provide('Index');
 
 goog.require('BlocklyGames');
 goog.require('Index.html');
+goog.require('Keys.Levels');
 goog.require('Maze.Levels');
 goog.require('ThinkaConfig');
 
 /**
  * Array of application names.
  */
-const APPS = ['puzzle', 'maze', 'bird', 'turtle', 'movie', 'music',
+const APPS = ['keys', 'puzzle', 'maze', 'bird', 'turtle', 'movie', 'music',
               'pond-tutor', 'pond-duck'];
 
 /**
  * Play order for the featured "Start playing" path.
  * Maze is the club favourite; other games follow after it is complete.
  */
-const START_ORDER = ['maze', 'puzzle', 'bird', 'turtle', 'movie', 'music',
+const START_ORDER = ['maze', 'keys', 'puzzle', 'bird', 'turtle', 'movie', 'music',
                      'pond-tutor', 'pond-duck'];
 
 /**
@@ -55,6 +56,9 @@ function storageNames(app) {
       }
     }
     return names;
+  }
+  if (app === 'keys') {
+    return Keys.Levels.storageNames();
   }
   return [{name: app, levels: BlocklyGames.MAX_LEVEL}];
 }

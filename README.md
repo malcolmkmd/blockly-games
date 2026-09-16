@@ -1,6 +1,6 @@
 # Thinka Blockly Games (offline-first)
 
-Thinka’s classroom fork of [Google Blockly Games](https://github.com/google/blockly-games) for [Thinka.org.za](https://thinka.org.za). It teaches programming with Maze, Bird, Turtle, Movie, Music, Pond, and Puzzle.
+Thinka’s classroom fork of [Google Blockly Games](https://github.com/google/blockly-games) for [Thinka.org.za](https://thinka.org.za). It teaches programming with Maze, Bird, Turtle, Movie, Music, Pond, Puzzle, and the Keys typing game (lessons, race, and code words).
 
 This product is **offline-first**. After a build, the games run from a local folder or ZIP. There is no App Engine backend, no gallery, and no runtime network.
 
@@ -39,6 +39,17 @@ make offline   # write offline/thinka-blockly-games.zip
 ```
 
 `make deps` needs internet. Playing the built games does not.
+
+### Try Keys (typing game)
+
+After `make games` (or just `make keys` once `common` has been built):
+
+1. Open `http://127.0.0.1:8088/` and click the **Keys** tile.
+2. **Lessons** — 8 levels, home row → words → a short sentence. Locked levels use the teacher password `thinka`.
+3. **Race** — 5 short tracks. The car moves on every correct key.
+4. **Code** — 6 levels typing `if`, `else`, `while`, `function`, `print`, and `{ }`.
+
+Progress is stored as `keys_lessonsN`, `keys_raceN`, and `keys_codeN` in `localStorage`.
 
 The `appengine/` folder is the static web root (legacy name from upstream). It is not an App Engine app.
 

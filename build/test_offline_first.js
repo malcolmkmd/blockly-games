@@ -108,6 +108,8 @@ test('Makefile games target no longer builds gallery', () => {
   assert.match(mk, /^games: .+$/m);
   const gamesLine = mk.match(/^games: (.+)$/m)[1];
   assert.doesNotMatch(gamesLine, /\bgallery\b/);
+  assert.match(gamesLine, /\bkeys\b/);
+  assert.match(mk, /^keys: common$/m);
   assert.match(mk, /^offline:/m);
   assert.match(mk, /git clone/);
   assert.match(mk, /SHELL := \/bin\/bash/);

@@ -6,11 +6,16 @@
 'use strict';
 
 (function() {
-  var APPS = ['puzzle', 'maze', 'bird', 'turtle', 'movie', 'music',
+  var APPS = ['keys', 'puzzle', 'maze', 'bird', 'turtle', 'movie', 'music',
               'pond-tutor', 'pond-duck'];
-  var START_ORDER = ['maze', 'puzzle', 'bird', 'turtle', 'movie', 'music',
+  var START_ORDER = ['maze', 'keys', 'puzzle', 'bird', 'turtle', 'movie', 'music',
                      'pond-tutor', 'pond-duck'];
   var MAX_LEVEL = 10;
+  var KEYS_STORAGE = [
+    {name: 'keys_lessons', levels: 8},
+    {name: 'keys_race', levels: 5},
+    {name: 'keys_code', levels: 6}
+  ];
   var MAZE_STORAGE = [
     {name: 'maze_g1_sequence', levels: 10},
     {name: 'maze_g1_turns', levels: 10},
@@ -73,6 +78,9 @@
     }
     if (app === 'maze') {
       return MAZE_STORAGE;
+    }
+    if (app === 'keys') {
+      return KEYS_STORAGE;
     }
     return [{name: app, levels: MAX_LEVEL}];
   }

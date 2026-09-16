@@ -139,6 +139,7 @@ a {
     0 0 48px rgba(var(--thinka-tile-rgb), 0.22);
 }
 
+.thinka-featured--keys { --thinka-tile: #2DD4BF; --thinka-tile-rgb: 45, 212, 191; }
 .thinka-featured--puzzle { --thinka-tile: var(--thinka-yellow); --thinka-tile-rgb: 250, 204, 21; }
 .thinka-featured--maze { --thinka-tile: var(--thinka-orange); --thinka-tile-rgb: 255, 69, 0; }
 .thinka-featured--bird { --thinka-tile: var(--thinka-sky); --thinka-tile-rgb: 96, 165, 250; }
@@ -273,6 +274,7 @@ a {
 .thinka-card:nth-child(6) { animation-delay: 0.27s; }
 .thinka-card:nth-child(7) { animation-delay: 0.32s; }
 .thinka-card:nth-child(8) { animation-delay: 0.37s; }
+.thinka-card:nth-child(9) { animation-delay: 0.42s; }
 
 @keyframes thinka-card-in {
   from {
@@ -291,6 +293,7 @@ a {
   pointer-events: none;
 }
 
+.thinka-card--keys { --thinka-tile: #2DD4BF; --thinka-tile-rgb: 45, 212, 191; }
 .thinka-card--puzzle { --thinka-tile: var(--thinka-yellow); --thinka-tile-rgb: 250, 204, 21; }
 .thinka-card--maze { --thinka-tile: var(--thinka-orange); --thinka-tile-rgb: 255, 69, 0; }
 .thinka-card--bird { --thinka-tile: var(--thinka-sky); --thinka-tile-rgb: 96, 165, 250; }

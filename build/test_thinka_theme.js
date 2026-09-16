@@ -85,6 +85,7 @@ test('repo-root index redirects into the static hub', () => {
 test('hub markup is a static game menu with featured play path', () => {
   const html = read('appengine/index/src/html.js');
   assert.match(html, /thinka-card/);
+  assert.match(html, /Games\.keys/);
   assert.match(html, /thinka-featured/);
   assert.match(html, /thinkaPlayNow/);
   assert.match(html, /index\/art\/maze\.svg/);
@@ -92,6 +93,7 @@ test('hub markup is a static game menu with featured play path', () => {
   assert.doesNotMatch(html, /title\.svg/);
   const index = read('appengine/index.html');
   assert.match(index, /Thinka Games/);
+  assert.match(index, /thinka-card--keys/);
   assert.match(index, /thinka-card--maze/);
   assert.match(index, /thinkaFeatured/);
   assert.match(index, /index\/art\/maze\.svg/);
@@ -114,8 +116,8 @@ test('hub HTML is standalone and never loads compressed.js', () => {
 
 test('hub ships local illustrated art for every game', () => {
   const dir = path.join(ROOT, 'appengine', 'index', 'art');
-  for (const name of ['puzzle.svg', 'maze.svg', 'bird.svg', 'turtle.svg',
-                     'movie.svg', 'music.svg', 'pond-tutor.svg',
+  for (const name of ['keys.svg', 'puzzle.svg', 'maze.svg', 'bird.svg',
+                     'turtle.svg', 'movie.svg', 'music.svg', 'pond-tutor.svg',
                      'pond-duck.svg']) {
     const full = path.join(dir, name);
     assert.strictEqual(fs.existsSync(full), true, name);

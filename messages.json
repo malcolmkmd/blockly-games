@@ -35,6 +35,10 @@
     "desc": "title - Specifies that this is Blockly's '''Pond''' game.",
     "msg": "Pond"
   },
+  "Games.keys": {
+    "desc": "title - Specifies that this is Thinka's '''Keys''' typing game.",
+    "msg": "Keys"
+  },
   "Games.linesOfCode1": {
     "desc": "alert - Displayed when a level is complete.",
     "msg": "You solved this level with 1 line of JavaScript:"

@@ -89,6 +89,17 @@ CSV, reset a picture password or PIN, and download progress. Download
 backup saves the whole data file. Copy that file to a USB stick.
 Restore backup puts it back.
 
+Lessons
+-------
+
+The games page has a Lessons tile. Week 1 is Sequencing: a short
+explainer, then Maze. Foundation (Gr 1-3) plays Maze level 1 in pairs.
+Intermediate (Gr 4-6) plays levels 1-2. Senior (Gr 7-9) plays levels
+1-3. Later weeks are listed and marked coming soon.
+
+When a child is signed in, finishing the explainer or the Maze levels
+shows on the class roster.
+
 Teacher password
 ----------------
 

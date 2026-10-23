@@ -75,6 +75,8 @@ test:
 	python3 build/test_class.py
 	node build/test_class_sync.js
 	node build/test_class_browser.js
+	node build/test_lessons.js
+	node build/test_lessons_play.js
 
 deps:
 	$(foreach bin,$(REQUIRED_BINS),\

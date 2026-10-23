@@ -1,0 +1,227 @@
+/**
+ * @license
+ * Copyright 2026 Thinka
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+.lesson-page {
+  margin: 0;
+  min-height: 100vh;
+  background: #030A03;
+  color: #F8FAFC;
+  font-family: "Thinka Nunito", "Nunito", sans-serif;
+}
+
+.lesson-page * { box-sizing: border-box; }
+
+.lesson-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+}
+
+.lesson-logo {
+  font-family: "Thinka Fredoka", "Fredoka", sans-serif;
+  font-size: 1.6rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+.lesson-logo span { color: #FF4500; }
+
+.lesson-back {
+  color: #FACC15;
+  font-weight: 700;
+  text-decoration: none;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.lesson-wrap {
+  width: min(1100px, calc(100% - 28px));
+  margin: 0 auto 48px;
+}
+
+.lesson-kicker {
+  margin: 0;
+  color: #FACC15;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lesson-wrap h1 {
+  margin: 4px 0 12px;
+  font-size: 2.4rem;
+  color: #fff;
+}
+
+.lesson-card {
+  background: #121F12;
+  border-radius: 28px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.lesson-card.is-soon {
+  opacity: 0.72;
+}
+
+.lesson-week {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.lesson-week h2 {
+  margin: 0;
+  font-family: "Thinka Fredoka", "Fredoka", sans-serif;
+  font-size: 1.8rem;
+}
+
+.lesson-badge {
+  background: #334155;
+  color: #F8FAFC;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 700;
+}
+
+.lesson-card.is-ready .lesson-badge {
+  background: #FF4500;
+}
+
+.lesson-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson-parts li {
+  background: #0A140A;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 700;
+}
+
+.lesson-bands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 14px;
+}
+
+.lesson-bands button {
+  min-height: 64px;
+  min-width: 140px;
+  border-radius: 18px;
+  border: 3px solid transparent;
+  background: #0A140A;
+  color: #fff;
+  font-family: "Thinka Fredoka", "Fredoka", sans-serif;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.lesson-bands button.is-on {
+  border-color: #FACC15;
+  background: #1f2937;
+}
+
+.lesson-bands small {
+  display: block;
+  color: #94A3B8;
+  font-family: "Thinka Nunito", "Nunito", sans-serif;
+}
+
+.lesson-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lesson-actions a,
+.lesson-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+  padding: 0 18px;
+  border-radius: 18px;
+  text-decoration: none;
+  font-family: "Thinka Fredoka", "Fredoka", sans-serif;
+  font-size: 1.2rem;
+  border: 0;
+  cursor: pointer;
+}
+
+.lesson-go {
+  background: #FF4500;
+  color: #fff;
+}
+
+.lesson-soft {
+  background: #FACC15;
+  color: #111827;
+}
+
+.lesson-note {
+  margin: 8px 0 0;
+  color: #94A3B8;
+}
+
+.lesson-status {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+
+.lesson-status span {
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: #0A140A;
+  color: #94A3B8;
+  font-weight: 700;
+}
+
+.lesson-status span.is-on {
+  background: #166534;
+  color: #bbf7d0;
+}
+
+.lesson-soon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.lesson-notes {
+  margin-top: 8px;
+}
+
+.lesson-notes[hidden] { display: none !important; }
+
+.lesson-notes input {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 0;
+  padding: 0 12px;
+  font-size: 1.1rem;
+}
+
+.lesson-notes .lesson-error {
+  color: #F87171;
+  min-height: 1.2em;
+}
+
+.lesson-notes ol {
+  padding-left: 1.2em;
+}
+
+.lesson-notes li { margin: 0.4em 0; }

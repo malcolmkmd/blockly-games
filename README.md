@@ -8,6 +8,8 @@ The shared teacher password (built-in default `thinka`) unlocks sequential level
 
 **Start Class** also keeps a class roster on the teacher laptop. Students on the classroom Wi-Fi open the games address, tap their class, then tap their name. Grades 1–3 choose two animal pictures, in order. Grades 4–9 can be set to use a 4-digit PIN. Progress for the signed-in student is stored in `data/thinka-class.json` next to the Start Class launcher and follows that child to another laptop. Solo play from **START HERE** does not ask for a name and keeps progress in that browser only. The class roster page is `appengine/class.html`, behind the teacher password.
 
+The hub **Lessons** tile opens `appengine/lessons.html`. Week 1 is Sequencing: a short explainer, then Maze. Foundation (Gr 1–3) plays Maze level 1 in pairs, Intermediate (Gr 4–6) plays levels 1–2, and Senior (Gr 7–9) plays levels 1–3. Weeks 2–10 are listed as coming soon. Lesson text lives in `appengine/lessons/outline.js`.
+
 The UI uses the **Thinka.org.za** visual system: green-black surfaces (`#030A03`), orange glow CTAs (`#FF4500`), and playful tile accents. The hub is **static HTML** (`appengine/index.html` + `index/hub.js`) so it looks right without `make games`. In-game Blockly workspaces stay light. Tokens live in `appengine/common/thinka-theme.css`. Fredoka and Nunito are bundled under `appengine/common/fonts/` (no CDN). Rebuild with `make games` after changing a **game** template (`appengine/{maze,bird,...}/src/*.js`).
 
 Serve the hub at `http://127.0.0.1:8088/` (same page as `http://[::]:8088/`):

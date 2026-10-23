@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sequencing — Thinka Lessons</title>
+  <link rel="stylesheet" href="common/common.css">
+  <link rel="stylesheet" href="lessons/player.css">
+</head>
+<body class="xp-page">
+  <header class="xp-bar">
+    <a class="xp-back" href="lessons.html">Lessons</a>
+    <div id="xpDots" class="xp-dots"></div>
+    <button type="button" id="xpReplay" class="xp-replay">Replay</button>
+  </header>
+  <p id="xpCaption" class="xp-caption"></p>
+  <aside id="xpTerm" class="xp-term" hidden></aside>
+  <div id="xpRoot" class="xp-root" data-scene="meet"></div>
+  <p id="xpHint" class="xp-hint" role="status"></p>
+  <button type="button" id="xpNext" class="xp-next" hidden>Next</button>
+  <div id="xpCelebrate" class="xp-celebrate" hidden>
+    <div class="xp-celebrate-card">
+      <div class="xp-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div id="xpCelebrateBot"></div>
+      <p class="xp-yay">You did it!</p>
+      <a id="xpMaze" class="xp-maze" href="maze.html?stage=1&unit=sequence&level=1">Maze</a>
+    </div>
+  </div>
+  <script src="common/class_sync_core.js?v=thinka-class"></script>
+  <script src="common/class_sync.js?v=thinka-class"></script>
+  <script src="lessons/outline.js?v=thinka-lessons"></script>
+  <script src="lessons/player.js?v=thinka-lessons"></script>
+  <script src="lessons/sequence.js?v=thinka-lessons"></script>
+</body>
+</html>

@@ -300,6 +300,7 @@ a {
   display: none;
 }
 
+.thinka-card--lessons { --thinka-tile: #FACC15; --thinka-tile-rgb: 250, 204, 21; }
 .thinka-card--race { --thinka-tile: #FB923C; --thinka-tile-rgb: 251, 146, 60; }
 .thinka-card--race .thinka-stars,
 .thinka-card--race .thinka-card-progress-track { display: none; }

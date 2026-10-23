@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lessons — Thinka Games</title>
+  <link rel="stylesheet" href="common/common.css">
+  <link rel="stylesheet" href="lessons.css">
+</head>
+<body class="lesson-page">
+  <header class="lesson-bar">
+    <a class="lesson-logo" href="index.html">thinka<span>.</span></a>
+    <a class="lesson-back" href="index.html">Games</a>
+  </header>
+  <main class="lesson-wrap">
+    <p class="lesson-kicker">Coding club</p>
+    <h1>Lessons</h1>
+    <div id="lessonReady"></div>
+    <div id="lessonSoon" class="lesson-soon-grid"></div>
+    <section id="teacherNotesPanel" class="lesson-card lesson-notes" hidden>
+      <h2>Teacher notes</h2>
+      <form id="notesGate" autocomplete="off">
+        <p>Teacher password</p>
+        <input id="notesPassword" type="password" autocomplete="current-password">
+        <p id="notesError" class="lesson-error" role="alert"></p>
+        <button type="submit" class="lesson-go">Open</button>
+      </form>
+      <ol id="notesList" hidden></ol>
+    </section>
+  </main>
+  <script>
+    var goog = window.goog || {};
+    goog.provide = goog.provide || function(name) {
+      var obj = window;
+      var parts = name.split('.');
+      var i;
+      for (i = 0; i < parts.length; i++) {
+        obj[parts[i]] = obj[parts[i]] || {};
+        obj = obj[parts[i]];
+      }
+    };
+    goog.require = goog.require || function() {};
+  </script>
+  <script src="src/thinka.config.js"></script>
+  <script src="common/class_sync_core.js?v=thinka-class"></script>
+  <script src="common/class_sync.js?v=thinka-class"></script>
+  <script src="lessons/outline.js?v=thinka-lessons"></script>
+  <script src="lessons/lessons.js?v=thinka-lessons"></script>
+</body>
+</html>

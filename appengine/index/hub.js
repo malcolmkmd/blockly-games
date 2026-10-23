@@ -326,6 +326,9 @@
       logo.href = withLang(logo.getAttribute('href') || 'index.html');
     }
     decorateFeatured(levelsDone);
+    if (paintLessons()) {
+      any = true;
+    }
     if (any) {
       var para = $('clearDataPara');
       if (para) {
@@ -336,6 +339,79 @@
         btn.addEventListener('click', clearData);
       }
     }
+  }
+
+  function lessonBand() {
+    try {
+      var saved = window.sessionStorage.getItem('thinkaLessonBand');
+      if (saved === 'foundation' || saved === 'intermediate' || saved === 'senior') {
+        return saved;
+      }
+    } catch (e) {
+      // sessionStorage is optional here.
+    }
+    var session = window.ThinkaClass && ThinkaClass.session;
+    var grade = session && Number(session.grade);
+    if (grade >= 7) {
+      return 'senior';
+    }
+    if (grade >= 4) {
+      return 'intermediate';
+    }
+    return 'foundation';
+  }
+
+  function paintLessons() {
+    var card = $('card-lessons');
+    if (!card) {
+      return false;
+    }
+    var band = lessonBand();
+    var need = band === 'senior' ? 3 : (band === 'intermediate' ? 2 : 1);
+    var level;
+    var exerciseReady = true;
+    for (level = 1; level <= need; level++) {
+      if (!stored('maze_g1_sequence', level)) {
+        exerciseReady = false;
+        break;
+      }
+    }
+    try {
+      if (exerciseReady &&
+          window.localStorage.getItem('thinkaLesson_w1_exercise') !== '1') {
+        window.localStorage.setItem('thinkaLesson_w1_exercise', '1');
+      }
+    } catch (e) {
+      exerciseReady = false;
+    }
+    var explainer = false;
+    var exercise = false;
+    try {
+      explainer = window.localStorage.getItem('thinkaLesson_w1_explainer') === '1';
+      exercise = window.localStorage.getItem('thinkaLesson_w1_exercise') === '1';
+    } catch (e2) {
+      explainer = false;
+      exercise = false;
+    }
+    var done = (explainer ? 1 : 0) + (exercise ? 1 : 0);
+    card.href = withLang('lessons.html');
+    var label = $('progress-label-lessons');
+    if (label) {
+      label.textContent = done ? (done + ' / 2') : 'Week 1';
+    }
+    var bar = $('progress-lessons');
+    if (bar) {
+      bar.style.width = (done / 2 * 100) + '%';
+      if (done >= 2) {
+        bar.classList.add('is-complete');
+        card.classList.add('thinka-card--done');
+      }
+    }
+    if (done === 0) {
+      card.classList.add('thinka-card--fresh');
+    }
+    renderStars('stars-lessons', done, 2);
+    return done > 0;
   }
 
   function clearData() {
@@ -357,7 +433,9 @@
           delete window.localStorage[names[n].name + '_explained'];
         }
       }
-      var extras = ARCADE_EXTRA_KEYS.concat(REBOOT_EXTRA_KEYS);
+      var extras = ARCADE_EXTRA_KEYS.concat(REBOOT_EXTRA_KEYS).concat([
+        'thinkaLesson_w1_explainer', 'thinkaLesson_w1_exercise'
+      ]);
       for (var k = 0; k < extras.length; k++) {
         delete window.localStorage[extras[k]];
       }

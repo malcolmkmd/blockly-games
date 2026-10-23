@@ -55,7 +55,8 @@ mkdir -p "$GAMES/third-party/JS-Interpreter"
 mv "$STAGE/compressed.js" "$GAMES/third-party/JS-Interpreter/"
 rm -rf "$STAGE"
 
-cp build/serve.py build/race_hub.py build/race_ws.py build/race_rules.py "$PACK/server/"
+cp build/serve.py build/race_hub.py build/race_ws.py build/race_rules.py \
+   build/class_store.py build/class_api.py "$PACK/server/"
 cp build/start_class_mac.command "$PACK/Start Class (Mac).command"
 cp build/start_class_windows.bat "$PACK/Start Class (Windows).bat"
 chmod +x "$PACK/Start Class (Mac).command" build/start_class_mac.command

@@ -72,6 +72,9 @@ test:
 	node build/test_reboot.js
 	python3 build/test_race.py
 	node build/test_race_qr.js
+	python3 build/test_class.py
+	node build/test_class_sync.js
+	node build/test_class_browser.js
 
 deps:
 	$(foreach bin,$(REQUIRED_BINS),\

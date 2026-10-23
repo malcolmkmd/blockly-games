@@ -356,7 +356,9 @@
         '</div><p class="race-rules">Same setting, different speeds. One computer is slower, one is quicker.</p>' +
         '<h2>Racers</h2><div class="race-roster">' + roster + '</div>' + fill +
         '<p class="race-rules">' + esc(rulesLine()) + '</p>' +
-        '<div class="race-actions">' + start + '</div>' +
+        '<div class="race-actions">' + start +
+        (teacher ? '<a class="race-line" href="class.html">Class roster</a>' : '') +
+        '</div>' +
         '<p class="race-error">' + esc(errorText) + '</p></div>';
     if (teacher) {
       document.getElementById('startBtn').addEventListener('click', function() {

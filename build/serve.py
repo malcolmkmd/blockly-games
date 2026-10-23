@@ -21,13 +21,14 @@ import subprocess
 import sys
 import time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 from race_hub import HUB  # noqa: E402
 from race_ws import accept_value  # noqa: E402
+import class_api  # noqa: E402
 
 
 class NoCacheHandler(SimpleHTTPRequestHandler):
@@ -38,6 +39,9 @@ class NoCacheHandler(SimpleHTTPRequestHandler):
 
   def do_GET(self):
     path = urlparse(self.path).path
+    if path.startswith('/class/api/'):
+      self._class_api()
+      return
     if path == '/race/ws':
       self._race_ws()
       return
@@ -45,6 +49,40 @@ class NoCacheHandler(SimpleHTTPRequestHandler):
       self._race_info()
       return
     super().do_GET()
+
+  def do_POST(self):
+    path = urlparse(self.path).path
+    if path.startswith('/class/api/'):
+      self._class_api()
+      return
+    self.send_error(404)
+
+  def do_PUT(self):
+    path = urlparse(self.path).path
+    if path.startswith('/class/api/'):
+      self._class_api()
+      return
+    self.send_error(404)
+
+  def _class_api(self):
+    parsed = urlparse(self.path)
+    try:
+      length = int(self.headers.get('Content-Length') or '0')
+    except ValueError:
+      length = 0
+    if length < 0 or length > 8 * 1024 * 1024:
+      self.send_error(413)
+      return
+    raw = self.rfile.read(length) if length else b''
+    status, content_type, body, extra = class_api.handle(
+        self.command, parsed.path, parse_qs(parsed.query), raw)
+    self.send_response(status)
+    self.send_header('Content-Type', content_type)
+    self.send_header('Content-Length', str(len(body)))
+    for key, value in extra:
+      self.send_header(key, value)
+    self.end_headers()
+    self.wfile.write(body)
 
   def _race_info(self):
     port = self.server.server_address[1]
@@ -189,20 +227,27 @@ def classroom_banner(port):
   print('  Thinka class is ready', flush=True)
   print('=' * 56, flush=True)
   print('', flush=True)
+  hub = 'http://127.0.0.1:%d/' % port
   if urls:
-    print('Students on the same Wi-Fi open this address:', flush=True)
+    hub = urls[0].split('/race.html')[0] + '/'
+    print('Students on the same Wi-Fi open the games:', flush=True)
     print('', flush=True)
+    print('    %s' % hub, flush=True)
+    print('', flush=True)
+    print('They tap their class, then their name.', flush=True)
+    print('Race join:', flush=True)
     for url in urls:
       print('    %s' % url, flush=True)
     print('', flush=True)
-    print('Students join at: %s' % urls[0], flush=True)
+    print('Students join at: %s' % hub, flush=True)
   else:
     print('No Wi-Fi address found on this computer.', flush=True)
     print('Connect to the classroom Wi-Fi and start the class again.', flush=True)
     print('', flush=True)
-    print('Students join at: http://127.0.0.1:%d/race.html' % port, flush=True)
+    print('Students join at: %s' % hub, flush=True)
   print('', flush=True)
   print('Teacher page: %s' % teacher, flush=True)
+  print('Class roster file: %s' % class_api.get_store().path, flush=True)
   print('', flush=True)
   print('Close this window to end the class.', flush=True)
   print('=' * 56, flush=True)
@@ -261,8 +306,10 @@ def main():
     server.serve_forever()
     return
   server = make_server(args.bind, args.port, handler)
-  print('Thinka hub: http://127.0.0.1:%d/' % args.port, flush=True)
-  print('Also:       http://[::]:%d/' % args.port, flush=True)
+  port = server.server_address[1]
+  print('Thinka hub: http://127.0.0.1:%d/' % port, flush=True)
+  print('Also:       http://[::]:%d/' % port, flush=True)
+  print('Class roster file: %s' % class_api.get_store().path, flush=True)
   print('Serving %s (no-cache)' % root, flush=True)
   server.serve_forever()
 

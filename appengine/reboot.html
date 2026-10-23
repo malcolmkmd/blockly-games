@@ -973,6 +973,25 @@ table.stats td.v{ color: var(--amber); text-align: right; }
 (function(){
 'use strict';
 
+// Reboot stays one file. When Start Class is serving the page, pull in the
+// shared progress sync before this game reads localStorage. file:// does nothing.
+(function() {
+  if (location.protocol === 'file:') return;
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'common/class_sync_core.js', false);
+    xhr.send(null);
+    if (xhr.status !== 200) return;
+    (0, eval)(xhr.responseText);
+    xhr.open('GET', 'common/class_sync.js', false);
+    xhr.send(null);
+    if (xhr.status === 200) (0, eval)(xhr.responseText);
+  } catch (e) {
+    // A static server or a blocked request leaves solo progress local.
+  }
+})();
+
+
 /* ================================================================
  * 0. TINY HELPERS
  * ============================================================== */

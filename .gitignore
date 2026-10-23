@@ -7,4 +7,5 @@ appengine/*/*/generated/
 appengine/third-party/
 build/third-party-downloads/
 /offline
+/data
 /node_modules

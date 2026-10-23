@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "privateKeys": [
+    "thinkaTeacherPassword",
+    "thinkaStudentSession",
+    "thinkaSyncQueue"
+  ],
+  "lessons": [
+    {
+      "id": "w1",
+      "label": "Week 1 · Sequencing",
+      "parts": [
+        {"id": "explainer", "label": "Explainer", "key": "thinkaLesson_w1_explainer"},
+        {"id": "exercise", "label": "Exercise", "key": "thinkaLesson_w1_exercise"}
+      ],
+      "exerciseTrack": "maze_g1_sequence",
+      "exerciseLevels": {"foundation": 1, "intermediate": 2, "senior": 3}
+    }
+  ],
+  "games": [
+    {"id": "puzzle", "label": "Puzzle", "tracks": [{"name": "puzzle", "levels": 1}]},
+    {"id": "maze", "label": "Maze", "tracks": [
+      {"name": "maze_g1_sequence", "levels": 10},
+      {"name": "maze_g1_turns", "levels": 10},
+      {"name": "maze_g1_debug", "levels": 9},
+      {"name": "maze_g2_sequence-long", "levels": 10},
+      {"name": "maze_g2_repeat", "levels": 10},
+      {"name": "maze_g2_debug-loops", "levels": 4},
+      {"name": "maze_g3_repeat-collect", "levels": 5},
+      {"name": "maze_g3_nested-loops", "levels": 4},
+      {"name": "maze_g3_optimise", "levels": 4},
+      {"name": "maze_g4_until", "levels": 3},
+      {"name": "maze_g4_if-path", "levels": 3},
+      {"name": "maze_g5_if-else", "levels": 1},
+      {"name": "maze_g8_wall-follow", "levels": 1}
+    ]},
+    {"id": "bird", "label": "Bird", "tracks": [{"name": "bird", "levels": 10}]},
+    {"id": "turtle", "label": "Turtle", "tracks": [{"name": "turtle", "levels": 10}]},
+    {"id": "movie", "label": "Movie", "tracks": [{"name": "movie", "levels": 10}]},
+    {"id": "music", "label": "Music", "tracks": [{"name": "music", "levels": 10}]},
+    {"id": "pond-tutor", "label": "Pond Tutor", "tracks": [{"name": "pond-tutor", "levels": 10}]},
+    {"id": "pond-duck", "label": "Pond", "tracks": [{"name": "pond-duck", "levels": 10}]},
+    {"id": "keys", "label": "Keys", "tracks": [
+      {"name": "keys_lessons", "levels": 8},
+      {"name": "keys_race", "levels": 5},
+      {"name": "keys_code", "levels": 6}
+    ]},
+    {"id": "arcade", "label": "Arcade", "tracks": [
+      {"name": "arcade_pop", "levels": 6},
+      {"name": "arcade_drag", "levels": 6},
+      {"name": "arcade_catch", "levels": 6},
+      {"name": "arcade_zap", "levels": 6},
+      {"name": "arcade_combo", "levels": 6}
+    ]},
+    {"id": "reboot", "label": "Reboot", "tracks": [{"name": "reboot", "levels": 10}]}
+  ]
+}

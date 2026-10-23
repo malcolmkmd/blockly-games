@@ -6,6 +6,8 @@ This product is **offline-first**. After a build, the games run from a local fol
 
 The shared teacher password (built-in default `thinka`) unlocks sequential level locks. A teacher can change or remove it from the **Teacher** link on the hub (`appengine/teacher.html`). That choice is stored in this browser’s `localStorage` on this computer. With the password removed, locked levels open with no password prompt.
 
+**Start Class** also keeps a class roster on the teacher laptop. Students on the classroom Wi-Fi open the games address, tap their class, then tap their name. Grades 1–3 choose two animal pictures, in order. Grades 4–9 can be set to use a 4-digit PIN. Progress for the signed-in student is stored in `data/thinka-class.json` next to the Start Class launcher and follows that child to another laptop. Solo play from **START HERE** does not ask for a name and keeps progress in that browser only. The class roster page is `appengine/class.html`, behind the teacher password.
+
 The UI uses the **Thinka.org.za** visual system: green-black surfaces (`#030A03`), orange glow CTAs (`#FF4500`), and playful tile accents. The hub is **static HTML** (`appengine/index.html` + `index/hub.js`) so it looks right without `make games`. In-game Blockly workspaces stay light. Tokens live in `appengine/common/thinka-theme.css`. Fredoka and Nunito are bundled under `appengine/common/fonts/` (no CDN). Rebuild with `make games` after changing a **game** template (`appengine/{maze,bird,...}/src/*.js`).
 
 Serve the hub at `http://127.0.0.1:8088/` (same page as `http://[::]:8088/`):
@@ -151,7 +153,8 @@ Open the games hub and use the small **Teacher** link in the footer (not a game 
 - **Reset to default:** enter the current password, then **Reset to default (thinka)**. That clears the saved choice. The built-in password `thinka` works again, and locked levels ask for it.
 - **Remove it:** enter the current password, then **Remove password**. The page stores an explicit `off` flag. Locked levels, locked Maze topics, and locked Arcade levels and zones then open straight away — the password dialog does not appear. In Reboot, Part 2 is offered from the title screen as well. Race is a live class race and does not use this password.
 - **Turn it back on:** with the password off, the settings page opens directly. Set a new password there.
-- **This computer only:** the note on the page says the setting applies to this browser on this computer. Progress and the password stay on that computer, in that browser.
+- **This computer only:** the note on the page says the setting applies to this browser on this computer. The password stays on that computer, in that browser. Solo play progress stays there too. A class hosted with Start Class keeps each child's progress in `data/thinka-class.json` on the teacher laptop.
+- **Class roster:** the same page links to the roster. Create a class (name and grade), add students, import a CSV (`First name, surname initial`), move or remove a student, and reset a picture password or PIN. The progress table is per student, by game and lesson. Download a CSV or a backup of the whole data file, and restore that file from a USB stick.
 - **Reset progress:** the same page can clear student solutions, stars, scores, and unlocks on this computer. The password setting stays. The hub **Clear data** button also leaves the password alone.
 - Forgetting a custom password: use **Reset to default (thinka)** on that page, or clear this site’s data for Thinka Games in the browser. The built-in password `thinka` comes back. This is a classroom soft gate, not authentication.
 

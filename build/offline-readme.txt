@@ -23,10 +23,12 @@ Host a Race with the class
 
 1. Double-click Start Class (Mac) or Start Class (Windows).
 2. Leave that window open. The teacher page opens in the browser.
-3. Students join the same Wi-Fi. They open the address shown on
-   the teacher screen, or they scan the code.
+3. Students join the same Wi-Fi. They open the games address shown
+   in the Start Class window. They tap their class, then their name.
+   Grades 1 to 3 tap two animals, in order. Older classes tap their
+   name, or type a 4-digit PIN if you turned that on.
 4. Close the Start Class window when the class is finished.
-   That ends the race.
+   That ends the race. The class roster stays saved.
 
 Mac, the first time: if the computer says the file cannot be opened,
 right-click Start Class (Mac).command, choose Open, then Open.
@@ -72,8 +74,20 @@ compete.
 Progress
 --------
 
-Progress saves on that computer, in that browser. It is not sent
-anywhere, and it is not shared with other computers.
+Solo play saves progress on that computer, in that browser.
+
+When the class uses Start Class, each child taps their name. Their
+progress is saved on the teacher laptop, in the data folder next to
+Start Class (data/thinka-class.json). The same child can use a
+different laptop next week and their games come back. Switching
+student on a shared laptop clears that browser so the next child
+starts clean.
+
+Teachers open Class roster from Teacher settings (password thinka,
+unless you changed it). You can add a class, type names or import a
+CSV, reset a picture password or PIN, and download progress. Download
+backup saves the whole data file. Copy that file to a USB stick.
+Restore backup puts it back.
 
 Teacher password
 ----------------

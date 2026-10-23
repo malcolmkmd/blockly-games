@@ -1,0 +1,178 @@
+/**
+ * Teacher class roster. Same tokens as the teacher password page.
+ */
+
+body.thinka-class {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 100% -10%, rgba(255, 69, 0, 0.22), transparent 34%),
+    var(--thinka-page);
+  color: var(--thinka-text);
+  color-scheme: dark;
+  font-family: var(--thinka-font);
+}
+
+.class-bar,
+.class-wrap {
+  width: min(68rem, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.class-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0 0.2rem;
+}
+
+.class-logo {
+  font-family: var(--thinka-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--thinka-text-strong);
+  letter-spacing: -0.04em;
+  text-decoration: none;
+}
+
+.class-logo span { color: var(--thinka-orange); }
+
+.class-back {
+  margin-left: auto;
+  color: var(--thinka-muted);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.class-wrap h1 {
+  margin: 0.4rem 0;
+  font-family: var(--thinka-display);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+}
+
+.class-lead, .class-hint {
+  color: var(--thinka-muted);
+  max-width: 40rem;
+}
+
+.class-card {
+  background: var(--thinka-surface);
+  border-radius: var(--thinka-radius);
+  padding: 1rem 1.1rem 1.2rem;
+  margin: 0 0 1rem;
+}
+
+.class-card h2 {
+  margin: 0 0 0.6rem;
+  font-family: var(--thinka-display);
+}
+
+.class-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: end;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+  font: 1rem var(--thinka-font);
+  color: var(--thinka-ink);
+  background: var(--thinka-paper);
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 0.55rem 0.7rem;
+  min-width: 10rem;
+}
+
+textarea { min-width: min(28rem, 100%); min-height: 6rem; }
+
+button, .class-link {
+  font: 700 1rem var(--thinka-display);
+  border: 0;
+  border-radius: var(--thinka-radius-pill);
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+button.primary, a.primary {
+  background: var(--thinka-orange);
+  color: white;
+}
+
+button.secondary, a.secondary {
+  background: var(--thinka-panel);
+  color: var(--thinka-text);
+}
+
+button.danger {
+  background: transparent;
+  color: var(--thinka-error);
+  border: 2px solid var(--thinka-error);
+}
+
+.class-error { color: var(--thinka-error); font-weight: 700; min-height: 1.2rem; }
+.class-ok { color: var(--thinka-mint); font-weight: 700; }
+
+.class-picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.class-pick {
+  border-radius: 0.9rem;
+  background: var(--thinka-panel);
+  color: var(--thinka-text);
+  padding: 0.45rem 0.7rem;
+}
+
+.class-pick.is-on {
+  outline: 3px solid var(--thinka-orange);
+}
+
+.class-table-wrap { overflow: auto; }
+
+table.class-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.class-table th, .class-table td {
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid #243324;
+  white-space: nowrap;
+}
+
+.class-table th {
+  font-family: var(--thinka-display);
+  color: var(--thinka-muted);
+  font-weight: 700;
+}
+
+.class-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.class-offline {
+  padding: 1rem;
+  border-radius: var(--thinka-radius);
+  background: var(--thinka-panel);
+}

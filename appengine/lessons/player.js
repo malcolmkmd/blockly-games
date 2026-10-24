@@ -6,6 +6,10 @@
 /**
  * Reusable explainer shell. Scenes draw into #xpRoot and call
  * ctx.done(), ctx.hint(), or ctx.finish(). No audio.
+ *
+ * ctx.finish() marks the explainer done and plays a short hand-off straight
+ * into the week's exercise. Later weeks pass week, exerciseHref and
+ * lessonLevels to ThinkaPlayer.start and inherit the same path.
  */
 (function(root) {
   var DIRS = {
@@ -396,6 +400,73 @@
     window.setTimeout(next, state && state.fast ? 16 : 40);
   }
 
+  function bandChoices(bands) {
+    var order = ['foundation', 'intermediate', 'senior'];
+    var labels = {
+      foundation: 'Foundation',
+      intermediate: 'Intermediate',
+      senior: 'Senior'
+    };
+    var out = [];
+    var i;
+    var id;
+    var label;
+    for (i = 0; i < order.length; i++) {
+      id = order[i];
+      if (bands && !bands[id]) {
+        continue;
+      }
+      label = (bands && bands[id] && bands[id].label) || labels[id];
+      out.push({id: id, label: label});
+    }
+    return out;
+  }
+
+  function lessonExerciseHref(href, week, band, levels) {
+    if (root.ThinkaLessons && ThinkaLessons.exerciseUrl) {
+      return ThinkaLessons.exerciseUrl(href, week, band, levels);
+    }
+    return href || '';
+  }
+
+  function fillBand(select) {
+    var choices;
+    var html;
+    var i;
+    if (!select || !state) {
+      return;
+    }
+    choices = bandChoices(state.bands);
+    html = '';
+    for (i = 0; i < choices.length; i++) {
+      html += '<option value="' + choices[i].id + '"' +
+          (choices[i].id === state.band ? ' selected' : '') + '>' +
+          esc(choices[i].label) + '</option>';
+    }
+    select.innerHTML = html;
+    select.addEventListener('change', function() {
+      var next = select.value;
+      var file;
+      var query;
+      if (!next || next === state.band) {
+        return;
+      }
+      if (root.ThinkaLessons) {
+        ThinkaLessons.rememberBand(next);
+      }
+      file = String((root.location && root.location.pathname) || '').split('/').pop() ||
+          'lesson-play.html';
+      query = 'week=' + encodeURIComponent(state.week) + '&band=' + encodeURIComponent(next);
+      if (state.fast) {
+        query += '&fast=1';
+      }
+      if (state.stay) {
+        query += '&stay=1';
+      }
+      root.location.href = file + '?' + query;
+    });
+  }
+
   function renderDots() {
     var wrap = $('xpDots');
     if (!wrap || !state) {
@@ -463,22 +534,27 @@
         $('xpHint').textContent = text || 'Try again';
       },
       finish: function() {
+        var celebrate;
+        var dots;
         try {
-          window.localStorage.setItem('thinkaLesson_w1_explainer', '1');
+          window.localStorage.setItem(state.progressKey, '1');
         } catch (err) {
-          // Private mode can throw. The celebration still plays.
+          // Private mode can throw. The hand-off still plays.
         }
         $('xpHint').textContent = '';
         $('xpNext').hidden = true;
-        $('xpCelebrate').hidden = false;
-        var dots = document.querySelectorAll('.xp-dot');
+        celebrate = $('xpCelebrate');
+        if (celebrate) {
+          celebrate.hidden = false;
+        }
+        dots = document.querySelectorAll('.xp-dot');
         if (dots.length) {
           dots[dots.length - 1].className = 'xp-dot is-done';
         }
-        if (!state.stay) {
+        if (!state.stay && state.exerciseHref) {
           window.setTimeout(function() {
-            window.location.href = $('xpMaze').getAttribute('href');
-          }, state.fast ? 80 : 1400);
+            window.location.href = state.exerciseHref;
+          }, state.fast ? 80 : 1500);
         }
       }
     };
@@ -491,16 +567,39 @@
   }
 
   function start(opts) {
+    var week = Number(opts.week);
+    if (!(week >= 1)) {
+      week = 1;
+    }
     state = {
       scenes: opts.scenes,
       band: opts.band || 'foundation',
+      week: week,
       fast: !!opts.fast,
       stay: !!opts.stay,
+      bands: opts.bands || null,
+      lessonLevels: Number(opts.lessonLevels) >= 1 ? Number(opts.lessonLevels) : 1,
+      progressKey: opts.progressKey ||
+          ('thinkaLesson_w' + week + '_explainer'),
+      exerciseHref: '',
       index: 0,
       api: null
     };
+    if (root.ThinkaLessons && !opts.progressKey) {
+      state.progressKey = ThinkaLessons.progressKey(state.week, 'explainer');
+    }
+    state.exerciseHref = lessonExerciseHref(
+        opts.exerciseHref, state.week, state.band, state.lessonLevels);
+    if (root.ThinkaLessons) {
+      ThinkaLessons.rememberBand(state.band);
+    }
+    var mazeLink = $('xpMaze');
+    if (mazeLink && state.exerciseHref) {
+      mazeLink.setAttribute('href', state.exerciseHref);
+    }
     document.body.setAttribute('data-band', state.band);
     document.body.classList.toggle('is-fast', state.fast);
+    fillBand($('xpBand'));
     var term = $('xpTerm');
     if (term && state.band === 'senior' && opts.terms && opts.terms.length) {
       var html = '';

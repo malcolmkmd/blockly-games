@@ -80,6 +80,21 @@ img[src$="help_down.png"] {
   margin: -0.5em 0 0.5em;
 }
 
+.mazeLessonBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  margin-right: 0.75em;
+  padding: 0.1em 0.55em;
+  border-radius: 999px;
+  background: #FACC15;
+  color: #111;
+  font-size: 0.85em;
+  font-weight: 700;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
 /* Stage and topic picker */
 #mazeSelect {
   max-width: 55em;

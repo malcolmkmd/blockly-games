@@ -287,22 +287,55 @@
     return match ? decodeURIComponent(match[1].replace(/\+/g, ' ')) : '';
   }
 
+  function lessonRecord(weekNum) {
+    var list = root.THINKA_LESSONS || [];
+    var i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i].week === weekNum && list[i].player === 'sequence') {
+        return list[i];
+      }
+    }
+    return list[0] || null;
+  }
+
   function boot() {
+    var requested;
+    var band;
+    var weekNum;
+    var lesson;
+    var info;
+    var terms;
     if (!root.document || !root.document.getElementById('xpRoot') || !root.ThinkaPlayer) {
       return;
     }
-    var band = query('band');
-    if (band !== 'intermediate' && band !== 'senior') {
+    requested = query('band');
+    if (requested === 'foundation' || requested === 'intermediate' || requested === 'senior') {
+      band = requested;
+    } else if (root.ThinkaLessons) {
+      band = ThinkaLessons.resolveBand().band;
+    } else {
       band = 'foundation';
     }
-    var week = root.THINKA_LESSONS && root.THINKA_LESSONS[0];
-    var terms = week && week.bands && week.bands.senior && week.bands.senior.terms;
+    weekNum = Number(query('week'));
+    if (!(weekNum >= 1)) {
+      weekNum = 1;
+    }
+    lesson = lessonRecord(weekNum);
+    info = (lesson && lesson.bands && lesson.bands[band]) || {};
+    terms = lesson && lesson.bands && lesson.bands.senior && lesson.bands.senior.terms;
     root.ThinkaPlayer.start({
       scenes: scenes(band),
       band: band,
+      week: lesson && lesson.week || weekNum,
       fast: query('fast') === '1',
       stay: query('stay') === '1',
-      terms: terms || []
+      terms: terms || [],
+      bands: lesson && lesson.bands,
+      exerciseHref: info.exerciseHref || '',
+      lessonLevels: info.levels || 1,
+      progressKey: root.ThinkaLessons ?
+          ThinkaLessons.progressKey(lesson && lesson.week || weekNum, 'explainer') :
+          ''
     });
   }
 

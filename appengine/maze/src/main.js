@@ -187,6 +187,12 @@ let pegmanY;
 let pegmanD;
 
 /**
+ * True once a finished lesson level has started navigating away.
+ * @type {boolean}
+ */
+let lessonLeaving_ = false;
+
+/**
  * Every collectible square on the map, as "x,y" keys.
  * @type !Array<string>
  */
@@ -461,9 +467,12 @@ function init() {
 
   Maze.Blocks.init();
 
-  // Keep the stage, unit and skin when moving between levels.
+  // Keep the stage, unit and skin when moving between levels. A lesson
+  // visit also keeps the week and age band so the next maze stays in the lesson.
+  const lesson = lessonQuery_();
   BlocklyInterface.nextLevelParam =
-      `stage=${stage_}&unit=${encodeURIComponent(unit_.id)}&skin=${SKIN_ID}`;
+      `stage=${stage_}&unit=${encodeURIComponent(unit_.id)}&skin=${SKIN_ID}` +
+      lessonSuffix_(lesson);
   BlocklyInterface.nextLevel = nextLevel;
 
   // Render the HTML.
@@ -477,6 +486,7 @@ function init() {
        unitId: unit_.id,
        unitName: unit_.name,
        hasExplainer: Maze.Explain.has(unit_),
+       lessonBack: !!lesson,
        toolbox: level_.toolbox,
        html: BlocklyGames.IS_HTML});
 
@@ -574,7 +584,10 @@ function init() {
     });
   }
 
-  if (Maze.Explain.has(unit_)) {
+  if (lesson) {
+    // The lesson explainer just played. Open the maze itself.
+    startHints_();
+  } else if (Maze.Explain.has(unit_)) {
     // A topic explainer replaces any one-off intro dialog so two modals
     // do not stack.  Hints wait until the book has been closed (or skipped).
     if (!Maze.Explain.maybeAutoShow(stage_, unit_, startHints_)) {
@@ -652,12 +665,99 @@ function starsMsg_(stars) {
 }
 
 /**
+ * Lesson hand-off from the explainer. Absent when this maze was opened
+ * from the game list. Week, band and how many levels complete the set
+ * travel in the URL so a later week can reuse the same path.
+ * @returns {?{week: number, band: string, levels: number}} Lesson context.
+ * @private
+ */
+function lessonQuery_() {
+  const week = BlocklyGames.getIntegerParamFromUrl('lesson', 0, 52);
+  if (!week) {
+    return null;
+  }
+  let band = BlocklyGames.getStringParamFromUrl('band', 'foundation');
+  if (band !== 'intermediate' && band !== 'senior') {
+    band = 'foundation';
+  }
+  const levels = BlocklyGames.getIntegerParamFromUrl('lessonLevels', 1, 30);
+  return {week: week, band: band, levels: levels};
+}
+
+/**
+ * Query tail that keeps a lesson maze inside the lesson.
+ * @param {?Object} lesson Lesson context.
+ * @returns {string} Starts with '&', or ''.
+ * @private
+ */
+function lessonSuffix_(lesson) {
+  if (!lesson) {
+    return '';
+  }
+  return '&lesson=' + lesson.week + '&band=' + encodeURIComponent(lesson.band) +
+      '&lessonLevels=' + lesson.levels;
+}
+
+/**
+ * The required levels for this band are done, so class progress matches
+ * the flag the lessons page and the hub already record.
+ * @param {?Object} lesson Lesson context.
+ * @private
+ */
+function noteLessonExercise_(lesson) {
+  if (!lesson || BlocklyGames.LEVEL < lesson.levels) {
+    return;
+  }
+  const key = 'thinkaLesson_w' + lesson.week + '_exercise';
+  try {
+    if (window.localStorage[key] === '1') {
+      return;
+    }
+    window.localStorage[key] = '1';
+  } catch (e) {
+    // Private mode. The maze level keys still count on the class server.
+  }
+}
+
+/**
+ * Leave a finished lesson level. Same-unit levels, including early-finisher
+ * mazes, follow on their own. The end of the unit returns to Lessons.
+ * @private
+ */
+function leaveLessonLevel_() {
+  if (lessonLeaving_) {
+    return;
+  }
+  lessonLeaving_ = true;
+  nextLevel();
+}
+
+/**
  * Go to the next level or topic.  Overrides BlocklyInterface.nextLevel so
  * that finishing the last level of a topic rolls into the next topic rather
  * than dropping the student back on the index page, and so that finishing a
  * whole stage hands them back to that stage's topic list.
+ *
+ * A lesson visit stays inside the unit and records the lesson set as soon
+ * as the band's levels are done, then keeps going into early-finisher levels.
  */
 function nextLevel() {
+  const lesson = lessonQuery_();
+  if (lesson) {
+    noteLessonExercise_(lesson);
+    if (unit_ && BlocklyGames.LEVEL < unit_.levels.length) {
+      location = location.protocol + '//' + location.host + location.pathname +
+          '?lang=' + encodeURIComponent(BlocklyGames.LANG) +
+          '&stage=' + stage_ +
+          '&unit=' + encodeURIComponent(unit_.id) +
+          '&level=' + (BlocklyGames.LEVEL + 1) +
+          '&skin=' + SKIN_ID +
+          lessonSuffix_(lesson);
+      return;
+    }
+    location = 'lessons.html?lang=' + encodeURIComponent(BlocklyGames.LANG);
+    return;
+  }
   const next = Maze.Levels.next(stage_, unit_.id, BlocklyGames.LEVEL);
   if (!next) {
     location = Maze.Select.stageUrl(stage_);
@@ -1268,6 +1368,11 @@ function animate() {
       BlocklyInterface.saveToLocalStorage();
       BlocklyGames.saveStars(BlocklyGames.storageName, BlocklyGames.LEVEL,
           action[2]);
+      if (lessonQuery_()) {
+        noteLessonExercise_(lessonQuery_());
+        setTimeout(leaveLessonLevel_, 1400);
+        break;
+      }
       setTimeout(function() {
         showStars_(action[2]);
         BlocklyCode.congratulations();

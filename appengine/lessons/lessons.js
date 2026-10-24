@@ -10,24 +10,11 @@
     return document.getElementById(id);
   }
 
-  function savedBand() {
-    try {
-      var saved = sessionStorage.getItem('thinkaLessonBand');
-      if (BANDS.indexOf(saved) !== -1) {
-        return saved;
-      }
-    } catch (err) {
-      // sessionStorage can throw in a locked browser.
+  function resolvedBand() {
+    if (window.ThinkaLessons) {
+      return ThinkaLessons.resolveBand();
     }
-    var session = window.ThinkaClass && ThinkaClass.session;
-    var grade = session && Number(session.grade);
-    if (grade >= 7) {
-      return 'senior';
-    }
-    if (grade >= 4) {
-      return 'intermediate';
-    }
-    return 'foundation';
+    return {band: 'foundation', source: 'default'};
   }
 
   function levelsFor(band) {
@@ -94,17 +81,43 @@
     $('lessonSoon').innerHTML = html;
   }
 
-  function renderReady(lesson, band) {
+  function exerciseLink(href, lesson, band, levels) {
+    if (window.ThinkaLessons) {
+      return ThinkaLessons.exerciseUrl(href, lesson.week, band, levels);
+    }
+    return href;
+  }
+
+  function renderReady(lesson, band, compact) {
     var info = lesson.bands[band];
-    var buttons = '';
+    var bandControl = '';
     var name;
-    for (name in lesson.bands) {
-      if (!Object.prototype.hasOwnProperty.call(lesson.bands, name)) {
-        continue;
+    var exerciseHref = exerciseLink(info.exerciseHref, lesson, band, info.levels);
+    var earlyHref = exerciseLink(info.earlyHref, lesson, band, info.levels);
+    if (compact) {
+      bandControl = '<label class="lesson-band-chip">Band <select id="bandSelect" aria-label="Age band">';
+      for (name = 0; name < BANDS.length; name++) {
+        var id = BANDS[name];
+        var item = lesson.bands[id];
+        if (!item) {
+          continue;
+        }
+        bandControl += '<option value="' + id + '"' + (id === band ? ' selected' : '') + '>' +
+            item.label + '</option>';
       }
-      var item = lesson.bands[name];
-      buttons += '<button type="button" class="band-pick' + (name === band ? ' is-on' : '') +
-          '" data-band="' + name + '">' + item.label + '<small>' + item.grades + '</small></button>';
+      bandControl += '</select></label>';
+    } else {
+      bandControl = '<div class="lesson-bands" id="bandPicker">';
+      for (name = 0; name < BANDS.length; name++) {
+        var pick = BANDS[name];
+        var choice = lesson.bands[pick];
+        if (!choice) {
+          continue;
+        }
+        bandControl += '<button type="button" class="band-pick' + (pick === band ? ' is-on' : '') +
+            '" data-band="' + pick + '">' + choice.label + '<small>' + choice.grades + '</small></button>';
+      }
+      bandControl += '</div>';
     }
     var note = info.exerciseNote ? '<p class="lesson-note" id="exerciseNote">' + info.exerciseNote + '</p>' : '<p class="lesson-note" id="exerciseNote"></p>';
     $('lessonReady').innerHTML =
@@ -116,26 +129,36 @@
             '<span id="statusExercise"' + (flag('thinkaLesson_w1_exercise') ? ' class="is-on"' : '') + '>Exercise</span>' +
           '</div>' +
           partChips(lesson.parts) +
-          '<div class="lesson-bands" id="bandPicker">' + buttons + '</div>' +
+          bandControl +
           '<div class="lesson-actions">' +
-            '<a class="lesson-go" id="startExplainer" href="lesson-play.html?week=1&amp;band=' + band + '">Start explainer</a>' +
-            '<a class="lesson-go" id="startExercise" href="' + esc(info.exerciseHref) + '">Start exercise</a>' +
-            '<a class="lesson-soft" id="startEarly" href="' + esc(info.earlyHref) + '">Early finishers</a>' +
+            '<a class="lesson-go" id="startExplainer" href="lesson-play.html?week=' + lesson.week + '&amp;band=' + band + '">Start</a>' +
+            '<a class="lesson-go" id="startExercise" href="' + esc(exerciseHref) + '">Start exercise</a>' +
+            '<a class="lesson-soft" id="startEarly" href="' + esc(earlyHref) + '">Early finishers</a>' +
             '<button type="button" class="lesson-soft" id="teacherNotes">Teacher notes</button>' +
           '</div>' +
           '<p class="lesson-note" id="exerciseLabel">' + info.exerciseLabel + '</p>' +
           note +
         '</article>';
-    var picks = document.querySelectorAll('.band-pick');
-    var i;
-    for (i = 0; i < picks.length; i++) {
-      picks[i].addEventListener('click', function(ev) {
-        var next = ev.currentTarget.getAttribute('data-band');
-        try {
-          sessionStorage.setItem('thinkaLessonBand', next);
-        } catch (err) {}
-        renderReady(lesson, next);
+    if (compact) {
+      $('bandSelect').addEventListener('change', function() {
+        var next = $('bandSelect').value;
+        if (window.ThinkaLessons) {
+          ThinkaLessons.rememberBand(next);
+        }
+        renderReady(lesson, next, true);
       });
+    } else {
+      var picks = document.querySelectorAll('.band-pick');
+      var i;
+      for (i = 0; i < picks.length; i++) {
+        picks[i].addEventListener('click', function(ev) {
+          var next = ev.currentTarget.getAttribute('data-band');
+          if (window.ThinkaLessons) {
+            ThinkaLessons.rememberBand(next);
+          }
+          renderReady(lesson, next, true);
+        });
+      }
     }
     $('teacherNotes').addEventListener('click', function() {
       openNotes(lesson.teacherNotes || []);
@@ -188,10 +211,10 @@
         soon.push(lessons[i]);
       }
     }
-    var band = savedBand();
-    markExercise(band);
+    var resolved = resolvedBand();
+    markExercise(resolved.band);
     if (ready) {
-      renderReady(ready, band);
+      renderReady(ready, resolved.band, resolved.source !== 'default');
     }
     renderSoon(soon);
   }

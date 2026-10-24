@@ -117,17 +117,73 @@ test('explainer has no narration and the hub links it', () => {
   assert.match(play, /id="xpReplay"/);
   assert.match(play, /id="xpNext"/);
   assert.match(play, /id="xpMaze"/);
+  assert.match(play, /id="xpBand"/);
+  assert.match(play, /class="xp-handoff"/);
   assert.match(play, /href="maze\.html\?stage=1&unit=sequence&level=1"/);
+  assert.doesNotMatch(play, /You did it/);
   assert.match(play, /class_sync\.js/);
   const index = read('appengine/index.html');
   assert.match(index, /id="card-lessons"/);
   assert.match(index, /lessons\.html/);
+  assert.match(index, /lessons\/outline\.js/);
   assert.doesNotMatch(index, /boot\.js/);
   assert.doesNotMatch(index, /compressed\.js/);
   const hub = read('appengine/index/hub.js');
   assert.match(hub, /paintLessons/);
+  assert.match(hub, /ThinkaLessons\.resolveBand/);
   assert.match(hub, /thinkaLesson_w1_explainer/);
   assert.match(hub, /thinkaLesson_w1_exercise/);
+  const player = read('appengine/lessons/player.js');
+  assert.match(player, /exerciseHref/);
+  assert.match(player, /location\.href = state\.exerciseHref/);
+  assert.doesNotMatch(player, /You did it/);
+  const mazeMain = read('appengine/maze/src/main.js');
+  assert.match(mazeMain, /function lessonQuery_/);
+  assert.match(mazeMain, /function leaveLessonLevel_/);
+  assert.match(mazeMain, /thinkaLesson_w/);
+  assert.match(mazeMain, /lessonBack:/);
+  assert.match(mazeMain, /lessons\.html/);
+  const mazeHtml = read('appengine/maze/src/html.js');
+  assert.match(mazeHtml, /id="lessonBack"/);
+  assert.match(mazeHtml, /mazeLessonBack/);
+});
+
+function memoryStore(initial) {
+  const data = Object.assign({}, initial || {});
+  return {
+    getItem(key) {
+      return Object.prototype.hasOwnProperty.call(data, key) ? data[key] : null;
+    },
+    setItem(key, value) {
+      data[key] = String(value);
+    },
+    data,
+  };
+}
+
+test('grade wins, otherwise the last chosen band is kept', () => {
+  const saved = loadLessons();
+  saved.localStorage = memoryStore({thinkaLessonBand: 'foundation'});
+  saved.sessionStorage = memoryStore({});
+  saved.ThinkaClass = {session: {grade: '8'}};
+  assert.strictEqual(saved.ThinkaLessons.bandForGrade(2), 'foundation');
+  assert.strictEqual(saved.ThinkaLessons.bandForGrade(5), 'intermediate');
+  assert.strictEqual(saved.ThinkaLessons.bandForGrade(9), 'senior');
+  let resolved = saved.ThinkaLessons.resolveBand();
+  assert.strictEqual(resolved.band, 'senior');
+  assert.strictEqual(resolved.source, 'grade');
+  saved.ThinkaClass = {session: null};
+  resolved = saved.ThinkaLessons.resolveBand();
+  assert.strictEqual(resolved.band, 'foundation');
+  assert.strictEqual(resolved.source, 'saved');
+  saved.localStorage = memoryStore({});
+  resolved = saved.ThinkaLessons.resolveBand();
+  assert.strictEqual(resolved.band, 'foundation');
+  assert.strictEqual(resolved.source, 'default');
+  assert.strictEqual(
+      saved.ThinkaLessons.exerciseUrl('maze.html?stage=1&unit=sequence&level=2', 1, 'intermediate', 2),
+      'maze.html?stage=1&unit=sequence&level=2&lesson=1&band=intermediate&lessonLevels=2');
+  assert.strictEqual(saved.ThinkaLessons.progressKey(1, 'exercise'), 'thinkaLesson_w1_exercise');
 });
 
 console.log('\n' + passed + ' tests passed');

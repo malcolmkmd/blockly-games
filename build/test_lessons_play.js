@@ -6,6 +6,7 @@
 'use strict';
 
 const assert = require('assert');
+const fs = require('fs');
 const http = require('http');
 const path = require('path');
 const {spawn} = require('child_process');
@@ -145,19 +146,62 @@ async function play(browser, band, shots) {
   await cdp.click(browser, '#xpBug');
   await cdp.waitFor(browser, `!document.getElementById('xpCelebrate').hidden`, 8000);
   if (shots) {
-    await sleep(80);
+    await sleep(240);
+    await cdp.screenshot(browser, path.join(SHOTS, 'lesson-handoff.png'));
     await cdp.screenshot(browser, path.join(SHOTS, 'explainer-celebration.png'));
   }
+  const levels = {foundation: 1, intermediate: 2, senior: 3}[band];
   const done = await cdp.evaluate(browser, `(function(){
+    var card = document.getElementById('xpCelebrate');
+    var link = document.getElementById('xpMaze');
     return {
       flag: localStorage.getItem('thinkaLesson_w1_explainer'),
-      href: document.getElementById('xpMaze').getAttribute('href'),
-      yay: document.querySelector('.xp-yay').textContent
+      href: link.getAttribute('href'),
+      mazeHidden: link.hidden,
+      words: (card.textContent || '').replace(/\\s+/g, ' ').trim(),
+      nextHidden: document.getElementById('xpNext').hidden
     };
   })()`);
   assert.strictEqual(done.flag, '1');
-  assert.strictEqual(done.href, 'maze.html?stage=1&unit=sequence&level=1');
-  assert.match(done.yay, /You did it/);
+  assert.strictEqual(done.href,
+      'maze.html?stage=1&unit=sequence&level=1&lesson=1&band=' + band + '&lessonLevels=' + levels);
+  assert.strictEqual(done.mazeHidden, true);
+  assert.strictEqual(done.words, '');
+  assert.strictEqual(done.nextHidden, true);
+  if (shots) {
+    await openLessonMaze(browser, base, done.href);
+  }
+}
+
+async function openLessonMaze(browser, base, href) {
+  const bundle = path.join(ROOT, 'appengine/maze/generated/compressed.js');
+  if (!fs.existsSync(bundle)) {
+    console.log('skip maze lesson screen (run make games)');
+    return;
+  }
+  await cdp.go(browser, base + '/' + href);
+  await cdp.waitFor(browser,
+      `document.getElementById('lessonBack') && document.getElementById('runButton')`, 20000);
+  const screen = await cdp.evaluate(browser, `(function(){
+    var back = document.getElementById('lessonBack');
+    var run = document.getElementById('runButton');
+    var shell = document.getElementById('dialogExplain');
+    var box = run.getBoundingClientRect();
+    return {
+      lesson: back.textContent,
+      href: back.getAttribute('href'),
+      run: box.width > 0 && box.height > 0,
+      explainParked: !!(shell && shell.parentNode && shell.parentNode.id !== 'dialog'),
+      level: (location.search.match(/[?&]level=(\\d+)/) || [])[1]
+    };
+  })()`);
+  assert.match(screen.lesson, /Lesson/);
+  assert.match(screen.href, /^lessons\.html/);
+  assert.strictEqual(screen.run, true);
+  assert.strictEqual(screen.explainParked, true);
+  assert.strictEqual(screen.level, '1');
+  await sleep(300);
+  await cdp.screenshot(browser, path.join(SHOTS, 'lesson-exercise.png'));
 }
 
 async function main() {
@@ -183,20 +227,56 @@ async function main() {
         exercise: document.getElementById('startExercise').getAttribute('href'),
         early: document.getElementById('startEarly').getAttribute('href'),
         notes: !!document.getElementById('teacherNotes'),
-        pairs: document.getElementById('exerciseNote').textContent
+        pairs: document.getElementById('exerciseNote').textContent,
+        picker: !!document.getElementById('bandPicker'),
+        chip: !!document.getElementById('bandSelect')
       };
     })()`);
     assert.strictEqual(page.weeks, 10);
     assert.strictEqual(page.soon, 9);
     assert.match(page.explainer, /lesson-play\.html\?week=1&band=foundation/);
-    assert.strictEqual(page.exercise, 'maze.html?stage=1&unit=sequence&level=1');
-    assert.strictEqual(page.early, 'maze.html?stage=1&unit=sequence&level=2');
+    assert.strictEqual(page.exercise,
+        'maze.html?stage=1&unit=sequence&level=1&lesson=1&band=foundation&lessonLevels=1');
+    assert.strictEqual(page.early,
+        'maze.html?stage=1&unit=sequence&level=2&lesson=1&band=foundation&lessonLevels=1');
     assert.strictEqual(page.notes, true);
     assert.match(page.pairs, /pairs/i);
+    assert.strictEqual(page.picker, true);
+    assert.strictEqual(page.chip, false);
     await cdp.screenshot(browser, path.join(SHOTS, 'lessons-page.png'), true);
+    await cdp.evaluate(browser, `localStorage.setItem('thinkaLessonBand','intermediate')`);
+    await cdp.go(browser, origin + '/lessons.html');
+    await cdp.waitFor(browser, `document.getElementById('startExplainer') && document.getElementById('bandSelect')`);
+    const remembered = await cdp.evaluate(browser, `(function(){
+      return {
+        picker: !!document.getElementById('bandPicker'),
+        band: document.getElementById('bandSelect').value,
+        explainer: document.getElementById('startExplainer').getAttribute('href'),
+        exercise: document.getElementById('startExercise').getAttribute('href')
+      };
+    })()`);
+    assert.strictEqual(remembered.picker, false);
+    assert.strictEqual(remembered.band, 'intermediate');
+    assert.match(remembered.explainer, /band=intermediate/);
+    assert.match(remembered.exercise, /lesson=1&band=intermediate&lessonLevels=2/);
+    await cdp.evaluate(browser, `localStorage.removeItem('thinkaLessonBand')`);
     await play(browser, 'foundation', true);
     await cdp.setViewport(browser, 1024, 768);
     await play(browser, 'senior', false);
+    const fileUrl = 'file://' + path.join(ROOT, 'appengine/lesson-play.html') +
+        '?week=1&band=foundation&fast=1&stay=1';
+    await cdp.go(browser, fileUrl);
+    await cdp.waitFor(browser,
+        `document.getElementById('xpRoot') && document.getElementById('xpRoot').getAttribute('data-scene')==='meet' && document.getElementById('xpMaze')`);
+    const offline = await cdp.evaluate(browser, `(function(){
+      return {
+        href: document.getElementById('xpMaze').getAttribute('href'),
+        protocol: location.protocol
+      };
+    })()`);
+    assert.strictEqual(offline.protocol, 'file:');
+    assert.strictEqual(offline.href,
+        'maze.html?stage=1&unit=sequence&level=1&lesson=1&band=foundation&lessonLevels=1');
     console.log('lessons play passed');
   } finally {
     if (chrome) await chrome.close();

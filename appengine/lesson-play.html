@@ -11,6 +11,7 @@
   <header class="xp-bar">
     <a class="xp-back" href="lessons.html">Lessons</a>
     <div id="xpDots" class="xp-dots"></div>
+    <label class="xp-band"><select id="xpBand" aria-label="Age band"></select></label>
     <button type="button" id="xpReplay" class="xp-replay">Replay</button>
   </header>
   <p id="xpCaption" class="xp-caption"></p>
@@ -18,14 +19,11 @@
   <div id="xpRoot" class="xp-root" data-scene="meet"></div>
   <p id="xpHint" class="xp-hint" role="status"></p>
   <button type="button" id="xpNext" class="xp-next" hidden>Next</button>
-  <div id="xpCelebrate" class="xp-celebrate" hidden>
-    <div class="xp-celebrate-card">
-      <div class="xp-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div id="xpCelebrateBot"></div>
-      <p class="xp-yay">You did it!</p>
-      <a id="xpMaze" class="xp-maze" href="maze.html?stage=1&unit=sequence&level=1">Maze</a>
-    </div>
+  <div id="xpCelebrate" class="xp-handoff" hidden>
+    <div class="xp-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div id="xpCelebrateBot"></div>
   </div>
+  <a id="xpMaze" class="xp-maze" hidden href="maze.html?stage=1&unit=sequence&level=1">Maze</a>
   <script src="common/class_sync_core.js?v=thinka-class"></script>
   <script src="common/class_sync.js?v=thinka-class"></script>
   <script src="lessons/outline.js?v=thinka-lessons"></script>

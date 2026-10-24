@@ -110,6 +110,26 @@
   font-weight: 700;
 }
 
+.lesson-band-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 12px;
+  color: #94A3B8;
+  font-weight: 700;
+}
+
+.lesson-band-chip select {
+  font-family: "Thinka Fredoka", "Fredoka", sans-serif;
+  font-size: 1rem;
+  min-height: 40px;
+  border-radius: 999px;
+  border: 0;
+  background: #0A140A;
+  color: #fff;
+  padding: 0 12px;
+}
+
 .lesson-bands {
   display: flex;
   flex-wrap: wrap;

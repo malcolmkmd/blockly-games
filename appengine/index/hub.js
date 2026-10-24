@@ -342,21 +342,9 @@
   }
 
   function lessonBand() {
-    try {
-      var saved = window.sessionStorage.getItem('thinkaLessonBand');
-      if (saved === 'foundation' || saved === 'intermediate' || saved === 'senior') {
-        return saved;
-      }
-    } catch (e) {
-      // sessionStorage is optional here.
-    }
-    var session = window.ThinkaClass && ThinkaClass.session;
-    var grade = session && Number(session.grade);
-    if (grade >= 7) {
-      return 'senior';
-    }
-    if (grade >= 4) {
-      return 'intermediate';
+    // Same order as ThinkaLessons.resolveBand: signed-in grade, else last chosen.
+    if (window.ThinkaLessons) {
+      return ThinkaLessons.resolveBand().band;
     }
     return 'foundation';
   }

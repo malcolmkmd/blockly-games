@@ -156,8 +156,11 @@ Maze.html.breadcrumb_ = function(ij) {
   const again = ij.hasExplainer ? `
   <button type="button" id="explainAgain" class="mazeExplainOpen"
       title="${BlocklyGames.getMsg('Maze.explainAgain', true)}">?</button>` : '';
+  const lesson = ij.lessonBack ? `
+  <a id="lessonBack" class="mazeLessonBack" href="lessons.html?lang=${ij.lang}"><span aria-hidden="true">\u2190</span> Lesson</a>` : '';
   return `
 <div id="mazeBreadcrumb">
+  ${lesson}
   <a href="${ij.html ? 'maze.html' : 'maze'}?lang=${ij.lang}">${BlocklyGames.getMsg('Maze.allStages', true)}</a>
   &rsaquo; <a href="${ij.html ? 'maze.html' : 'maze'}?lang=${ij.lang}&amp;stage=${ij.stage}">${BlocklyGames.esc(ij.stageName)}</a>
   &rsaquo; ${BlocklyGames.esc(ij.unitName)}${again}
